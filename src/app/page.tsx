@@ -308,7 +308,7 @@ export default function HomePage() {
                   .
                 </p>
               </div>
-              <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+              <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
                   { b: "2006", s: "año de fundación, en Perú" },
                   { b: "+35", s: "países con presencia" },
@@ -317,15 +317,15 @@ export default function HomePage() {
                 ].map((st, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/60 p-4 text-center"
+                    className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/60 px-2.5 py-4 text-center flex flex-col items-center justify-center overflow-hidden"
                   >
                     <b
-                      className="block text-2xl sm:text-3xl font-extrabold text-[#0093DD]"
+                      className="block text-xl xl:text-[22px] font-extrabold tracking-tight leading-none text-[#0093DD] whitespace-nowrap"
                       style={{ fontFamily: "var(--display)" }}
                     >
                       {st.b}
                     </b>
-                    <span className="text-xs text-[#5A6B78] mt-1 block">
+                    <span className="text-xs text-[#5A6B78] mt-1.5 block leading-snug">
                       {st.s}
                     </span>
                   </div>
