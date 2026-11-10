@@ -1,0 +1,152 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/Breadcrumbs";
+import ProductCard from "@/components/ProductCard";
+import {
+  getAllCategories,
+  getCategoryBySlug,
+  getProductsByCategory,
+  SHOP_TIENDA_URL,
+  SITE_URL,
+} from "@/lib/data";
+
+export async function generateStaticParams() {
+  return getAllCategories().map((c) => ({ slug: c.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getCategoryBySlug(slug);
+  if (!category) return {};
+
+  return {
+    title: category.seoTitle,
+    description: category.seoDescription,
+    alternates: {
+      canonical: `${SITE_URL}/linea/${category.slug}/`,
+    },
+  };
+}
+
+export default async function LineaPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const category = getCategoryBySlug(slug);
+  if (!category) notFound();
+
+  const products = getProductsByCategory(category.slug);
+  const allCategories = getAllCategories();
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: category.name,
+    description: category.description,
+    url: `${SITE_URL}/linea/${category.slug}/`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: products.map((p, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `${SITE_URL}/productos/${p.slug}/`,
+        name: p.cleanName,
+      })),
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Header />
+
+      <main className="min-h-screen bg-white pb-20">
+        {/* Hero de Línea */}
+        <section className="bg-[#0093DD] text-[#FFFFF0] py-12 sm:py-16">
+          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-bold uppercase tracking-wider text-[#EFFBC4] mb-3">
+              <span>{category.icon}</span>
+              <span>{category.step} · FuXion Perú</span>
+            </span>
+            <h1
+              className="text-3xl sm:text-5xl font-extrabold text-white leading-tight mb-3"
+              style={{ fontFamily: "var(--display)" }}
+            >
+              {category.name}
+            </h1>
+            <p className="text-base sm:text-lg text-[#EAF6FD] max-w-3xl leading-relaxed">
+              {category.description}
+            </p>
+          </div>
+        </section>
+
+        <div className="mx-auto max-w-[1180px] px-4 sm:px-6 pt-8">
+          <Breadcrumbs
+            items={[
+              { label: "Inicio", href: "/" },
+              { label: "Tienda", href: "/tienda/" },
+              { label: category.name },
+            ]}
+          />
+
+          {/* Navegación rápida entre líneas */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {allCategories.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/linea/${c.slug}/`}
+                className={`px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all ${
+                  c.slug === category.slug
+                    ? "bg-[#0093DD] text-white"
+                    : "bg-[#EDF7FD] text-[#12232E] hover:bg-[#D7E4EC]"
+                }`}
+              >
+                {c.icon} {c.shortName}
+              </Link>
+            ))}
+          </div>
+
+          {/* Grid de Productos de la Línea */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-14">
+            {products.map((product) => (
+              <ProductCard key={product.slug} product={product} />
+            ))}
+          </div>
+
+          {/* CTA hacia tienda oficial */}
+          <div className="rounded-3xl border border-[#D7E4EC] bg-[#EDF7FD] p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h2 className="text-2xl font-extrabold text-[#12232E]">
+                Compra productos de la {category.name} en la Tienda Oficial
+              </h2>
+              <p className="text-sm sm:text-base text-[#5A6B78] mt-1">
+                Precios oficiales en Soles (S/), despacho rápido a Lima y
+                provincias y garantía de autenticidad FuXion Biotech SAC.
+              </p>
+            </div>
+            <a
+              href={SHOP_TIENDA_URL}
+              className="btn-fx btn-fx--buy text-sm sm:text-base font-bold shrink-0"
+            >
+              Ir a Tienda Oficial FuXion →
+            </a>
+          </div>
+        </div>
+      </main>
+
+      <Footer />
+    </>
+  );
+}

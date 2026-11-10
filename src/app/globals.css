@@ -1,0 +1,204 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ========= TOKENS OFICIALES DE SHOP.SITE.FUXION.COM ========= */
+:root {
+  --plum: #0093DD;            /* azul Fuxion oficial */
+  --plum-mid: #007CBC;
+  --plum-deep: #0093DD;       /* azul Fuxion también en secciones oscuras */
+  --plum-soft: #EDF7FD;       /* superficie azul muy clara para controles */
+  --plum-line: #D7E4EC;
+  --lime: #8CC63F;
+  --lime-dark: #1F3105;
+  --ivory: #FFFFF0;
+  --ink: #12232E;
+  --ink-soft: #5A6B78;
+  --paper: #FFFFFF;
+  --ft-bg: #0093DD;           /* azul del logo Fuxion */
+  --ft-accent: #EFFBC4;       /* acento claro para el footer */
+  --limeD: #4E7A16;
+  --gold: #8A5A10;
+  --white: #ffffff;
+  --display: var(--font-outfit), 'Outfit', system-ui, sans-serif;
+  --body: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  --wrap: 1180px;
+  --page-pad-x: clamp(18px, 5vw, 32px);
+  --r: 14px;
+  --shadow: 0 18px 44px -20px rgba(0, 147, 221, 0.26);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 74px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--body);
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 16px;
+  line-height: 1.65;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+/* Regla diagonal característica de FuXion (eco de la X del empaque) */
+.xrule {
+  width: 58px;
+  height: 4px;
+  background: var(--lime);
+  transform: skewX(-24deg);
+  margin: 0 0 16px;
+  border-radius: 1px;
+}
+
+.xrule--light {
+  background: var(--ft-accent);
+}
+
+/* Botones idénticos a shop.site.fuxion.com */
+.btn-fx {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: var(--display);
+  font-weight: 600;
+  padding: 0.85rem 1.5rem;
+  border-radius: 100px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+  text-align: center;
+  cursor: pointer;
+}
+
+.btn-fx--buy {
+  background: var(--plum);
+  color: #ffffff;
+  box-shadow: 0 10px 24px -12px rgba(0, 147, 221, 0.6);
+}
+
+.btn-fx--buy:hover {
+  background: var(--plum-mid);
+  transform: translateY(-2px);
+}
+
+.btn-fx--lime {
+  background: var(--lime);
+  color: #1F3105;
+  box-shadow: 0 10px 24px -12px rgba(140, 198, 63, 0.55);
+}
+
+.btn-fx--lime:hover {
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+}
+
+.btn-fx--ghost {
+  border: 1.5px solid var(--plum);
+  color: var(--plum);
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.btn-fx--ghost:hover {
+  background: var(--plum);
+  color: #ffffff;
+}
+
+.btn-fx--ghostlight {
+  border: 1.5px solid rgba(255, 255, 240, 0.5);
+  color: var(--ivory);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-fx--ghostlight:hover {
+  background: var(--ivory);
+  color: var(--plum-deep);
+}
+
+.btn-fx--ftcta {
+  background: #ffffff;
+  color: var(--ft-bg);
+}
+
+.btn-fx--ftcta:hover {
+  background: #EAF6FE;
+  transform: translateY(-2px);
+}
+
+/* Contenido de artículos SEO */
+.fx-prose h2 {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 2.2rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.45rem;
+  border-bottom: 2px solid var(--plum-soft);
+}
+
+.fx-prose h3 {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 1.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.fx-prose p {
+  color: #2B3D4B;
+  margin-bottom: 1.15rem;
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+
+.fx-prose ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.1rem 0 1.5rem;
+  display: grid;
+  gap: 0.65rem;
+}
+
+.fx-prose ul li {
+  position: relative;
+  padding-left: 1.75rem;
+  color: #1E313E;
+  line-height: 1.65;
+}
+
+.fx-prose ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 999px;
+  background: #E8F6D5;
+  color: #3B630C;
+  font-weight: 800;
+  font-size: 0.75rem;
+  display: grid;
+  place-items: center;
+}
+
+.fx-prose a {
+  color: var(--plum);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.fx-prose a:hover {
+  color: var(--plum-mid);
+}

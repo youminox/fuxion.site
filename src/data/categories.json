@@ -1,0 +1,101 @@
+[
+  {
+    "slug": "limpieza-y-detox",
+    "name": "Línea Limpieza y Detox",
+    "shortName": "Limpieza y Detox",
+    "step": "Paso 1 · Limpia y Equilibra",
+    "badge": "Limpieza",
+    "icon": "🌿",
+    "description": "Fórmulas herbales, fibras prebióticas, probióticos y extractos depurativos diseñados para limpiar el colon, regenerar la microbiota intestinal, proteger el hígado, depurar las vías urinarias y alcalinizar el organismo.",
+    "seoTitle": "Línea Limpieza y Detox FuXion Perú: Prunex1, Flora Liv, Alpha Balance y más",
+    "seoDescription": "Catálogo oficial de la Línea Limpieza Digestiva y Detox de FuXion en Perú con precios en Soles (S/). Prunex1, Flora Liv, Liquid Fiber, Alpha Balance, Berry Balance y Rexet."
+  },
+  {
+    "slug": "regeneracion-y-nutricion",
+    "name": "Línea Regeneración y Nutrición Celular",
+    "shortName": "Regeneración",
+    "step": "Paso 2 · Regenera y Nutre",
+    "badge": "Nutrición",
+    "icon": "🧬",
+    "description": "Proteínas patentadas de alto valor biológico (Bioprotein+ con Colostrum® y Biooprotein Active® 100% vegetal) y micronutrientes esenciales para regenerar tejidos, nutrir las células y fortalecer a toda la familia.",
+    "seoTitle": "Línea Regeneración y Proteínas FuXion Perú: BioPro+ Tect, Protein Active y Nutraday",
+    "seoDescription": "Conoce la línea de nutrición celular y proteínas de FuXion Perú: BioPro+ Tect con Bioferrín, Protein Active vegana y Nutraday multivitamínico. Precios oficiales en Soles."
+  },
+  {
+    "slug": "energia-y-vitalidad",
+    "name": "Línea Energía y Vitalidad",
+    "shortName": "Energía",
+    "step": "Paso 3 · Revitaliza",
+    "badge": "Vitalidad",
+    "icon": "⚡",
+    "description": "Bebidas energizantes naturales y multivitamínicos con guayusa, maca, acai berry, goji, té verde y matcha que brindan energía sostenida durante todo el día sin azúcares añadidos ni taquicardia.",
+    "seoTitle": "Línea Energía y Vitalidad FuXion Perú: Vita Xtra T+, Vitaenergía, Xpeed y Matcha",
+    "seoDescription": "Recarga tu energía física y vitalidad con Vita Xtra T+, Vitaenergía, Xpeed y Matcha Pep-T de FuXion Perú. Bebidas funcionales sin azúcar con precios en Soles."
+  },
+  {
+    "slug": "inmunologica",
+    "name": "Línea Inmunológica y Defensas",
+    "shortName": "Inmunidad",
+    "step": "Potenciador · Defensas",
+    "badge": "Inmunidad",
+    "icon": "🛡️",
+    "description": "Potenciadores inmunológicos con Aloe Vera, Wellmune WGP®, Ganoderma lucidum (Reishi), hoja de olivo y antioxidantes que multiplican la respuesta natural de tus defensas y protegen las vías respiratorias.",
+    "seoTitle": "Línea Inmunológica FuXion Perú: Vera+, Gano+ Cappuccino, Gano+ T y Café Ganomax",
+    "seoDescription": "Fortalece tus defensas y cuida tus vías respiratorias en Lima y todo el Perú con Vera+, Gano+ T, Gano+ Cappuccino y Café Ganomax de FuXion."
+  },
+  {
+    "slug": "control-de-peso",
+    "name": "Línea Control de Peso y Medidas",
+    "shortName": "Control de Peso",
+    "step": "Potenciador · Peso y Figura",
+    "badge": "Metabolismo",
+    "icon": "🔥",
+    "description": "Tés termogénicos, inhibidores de absorción de carbohidratos, batidos proteicos saciantes con Prolibra®, cafés verdes fit, sopas proteicas y programas integrales 5/14 para oxidar grasa y reducir medidas saludablemente.",
+    "seoTitle": "Línea Control de Peso FuXion Perú: Thermo T3, NoCarb-T, BioPro+ Fit y Pack 5/14",
+    "seoDescription": "Baja de peso y reduce medidas con la línea oficial FuXion Perú: Thermo T3, NoCarb-T, BioPro+ Fit, Café & Café Fit, Protein Xoup y Packs 5/14 en Soles."
+  },
+  {
+    "slug": "antiedad-y-belleza",
+    "name": "Línea Anti-Edad, Belleza y Equilibrio",
+    "shortName": "Anti-Edad y Belleza",
+    "step": "Potenciador · Juventud y Bienestar",
+    "badge": "Belleza",
+    "icon": "✨",
+    "description": "Péptidos de colágeno bioactivo optimizado, resveratrol, cúrcuma orgánica certificada TurmiPure®, fitoestrógenos naturales, jalea real y luteína para cuidar piel, articulaciones, equilibrio hormonal, vigor y visión.",
+    "seoTitle": "Línea Anti-Edad y Colágeno FuXion Perú: Beauty-In, Youth Elixir, Golden FLX y Probal",
+    "seoDescription": "Nutre tu piel, articulaciones y equilibrio hormonal con Beauty-In (colágeno bioactivo), Youth Elixir, Golden FLX, Probal, Passion y Zoom-In en Perú."
+  },
+  {
+    "slug": "vigor-mental",
+    "name": "Línea Vigor Mental, Enfoque y Descanso",
+    "shortName": "Vigor Mental",
+    "step": "Potenciador · Mente y Calma",
+    "badge": "Calma y Enfoque",
+    "icon": "🧠",
+    "description": "Nootrópicos naturales, aminoácidos, adaptógenos, GABA y L-teanina formulados para activar la concentración y memoria durante el día (On, IQ+) y reducir el estrés promoviendo un sueño reparador por la noche (No Stress, Rezzt+).",
+    "seoTitle": "Línea Vigor Mental y Anti-Estrés FuXion Perú: No Stress, On, IQ+ y Rezzt+",
+    "seoDescription": "Mejora tu concentración, reduce el estrés diario y duerme mejor con No Stress, On, IQ+ y Rezzt+ de FuXion Perú. Compra online en Soles."
+  },
+  {
+    "slug": "linea-sport",
+    "name": "Línea Sport y Rendimiento Físico",
+    "shortName": "Deporte y Fitness",
+    "step": "Potenciador · Alto Rendimiento",
+    "badge": "Deporte",
+    "icon": "🏋️",
+    "description": "Nutrición deportiva científicamente diseñada para antes, durante y después del entrenamiento: Pre Sport, Xtra Mile, Post Sport, BioPro+ Sport con Actinos® y Protein Active Sport vegana.",
+    "seoTitle": "Línea Sport FuXion Perú: BioPro+ Sport, Pre Sport, Post Sport y Xtra Mile",
+    "seoDescription": "Maximiza tu rendimiento deportivo y masa muscular con BioPro+ Sport, Protein Active Sport, Pre Sport, Post Sport y Xtra Mile de FuXion Perú."
+  },
+  {
+    "slug": "gastronomia-y-accesorios",
+    "name": "Bases Madre y Accesorios Oficiales",
+    "shortName": "Gastronomía y Shakers",
+    "step": "Complementos · Estilo de Vida",
+    "badge": "Complementos",
+    "icon": "🥤",
+    "description": "Bases culinarias saludables 100% naturales enriquecidas con nutrientes para preparar tus platos peruanos favoritos (Verde, Amarilla y Roja) y tomatodos/shakers oficiales FuXion.",
+    "seoTitle": "Bases Madre Culinarias y Tomatodos Shakers Oficiales FuXion Perú",
+    "seoDescription": "Descubre las Bases Madre Verde, Amarilla y Roja de FuXion para cocinar saludable en Perú, además de los tomatodos y shakers oficiales."
+  }
+]
