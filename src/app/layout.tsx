@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_URL } from "@/lib/data";
+import FuxionChatWidget from "@/components/FuxionChatWidget";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -80,6 +81,7 @@ export default function RootLayout({
     <html lang="es-PE" className={`${outfit.variable} ${inter.variable}`}>
       <body className="antialiased selection:bg-[#0093DD] selection:text-white">
         {children}
+        <FuxionChatWidget />
       </body>
     </html>
   );
