@@ -100,14 +100,6 @@ export default function Header() {
             </svg>
           </a>
 
-          <a
-            href={SHOP_TIENDA_URL}
-            className="btn-fx btn-fx--buy !py-2.5 !px-4 sm:!px-5 text-sm whitespace-nowrap"
-          >
-            <span>Ver Tienda Oficial</span>
-            <span aria-hidden="true">→</span>
-          </a>
-
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
