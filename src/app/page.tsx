@@ -162,25 +162,29 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 2. LOS 10 PRODUCTOS ESTRELLA DEL CATÁLOGO (CON LANDING DIRECTA) ===== */}
+        {/* ===== 2. CATÁLOGO TRANSACCIONAL COMPLETO CON BUSCADOR EN SOLES (72 SKUs) ===== */}
         <section className="py-16 sm:py-20 bg-white" id="destacados">
-          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div id="catalogo" className="mx-auto max-w-[1180px] px-4 sm:px-6">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
               <div>
                 <div className="xrule" aria-hidden="true" />
                 <p
                   className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
                   style={{ fontFamily: "var(--display)" }}
                 >
-                  Lo más pedido en Perú
+                  Catálogo Oficial Perú 2026
                 </p>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E]">
-                  Productos estrella del catálogo FuXion
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
+                  Todos los productos FuXion con precios en Soles (S/)
                 </h2>
-                <p className="text-[#5A6B78] text-base sm:text-lg mt-2 max-w-2xl">
-                  Las 10 fórmulas más vendidas en Lima y todo el Perú con acceso
-                  directo a su landing oficial de compra y su ficha nutricional
-                  detallada.
+                <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl">
+                  Filtra por línea o busca por nombre, ingrediente o beneficio.
+                  Cada producto cuenta con su ficha técnica completa y botón de
+                  compra directa hacia la tienda oficial{" "}
+                  <strong className="text-[#12232E]">
+                    shop.site.fuxion.com
+                  </strong>
+                  .
                 </p>
               </div>
               <a
@@ -191,68 +195,7 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-5">
-              {flagships.map((spot) => (
-                <article
-                  key={spot.slug}
-                  className="group rounded-2xl border border-[#D7E4EC] bg-white overflow-hidden flex flex-col justify-between transition-all duration-200 hover:-translate-y-1.5 hover:shadow-[0_18px_44px_-20px_rgba(0,147,221,0.3)]"
-                >
-                  <div>
-                    <Link
-                      href={`/productos/${spot.slug}/`}
-                      className="relative block aspect-[4/3] bg-[#EDF7FD] overflow-hidden"
-                    >
-                      <img
-                        src={spot.bodegonImage}
-                        alt={`${spot.cleanName} — ${spot.badge} FuXion Perú`}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                      <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white/95 text-[#0093DD] border border-[#D7E4EC]">
-                        {spot.badge}
-                      </span>
-                    </Link>
-
-                    <div className="p-4">
-                      <h3 className="text-lg font-extrabold text-[#12232E] group-hover:text-[#0093DD] transition-colors">
-                        <Link href={`/productos/${spot.slug}/`}>
-                          {spot.cleanName}
-                        </Link>
-                      </h3>
-                      <p className="text-xs text-[#5A6B78] mt-0.5 mb-2">
-                        {spot.pack}
-                      </p>
-                      <p className="text-xs text-[#2B3D4B] line-clamp-3 leading-relaxed">
-                        {spot.shortDescription}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="px-4 pb-4 pt-2 border-t border-[#EDF7FD] space-y-2">
-                    <div className="flex items-baseline justify-between">
-                      <span
-                        className="text-lg font-extrabold text-[#0093DD]"
-                        style={{ fontFamily: "var(--display)" }}
-                      >
-                        {spot.formattedPrice}
-                      </span>
-                      <Link
-                        href={`/productos/${spot.slug}/`}
-                        className="text-xs font-bold text-[#12232E] hover:text-[#0093DD] hover:underline"
-                      >
-                        Ficha SEO →
-                      </Link>
-                    </div>
-                    <a
-                      href={spot.shopUrl}
-                      className="btn-fx btn-fx--buy w-full !py-2 !px-3 text-xs font-bold"
-                    >
-                      Comprar en Tienda →
-                    </a>
-                  </div>
-                </article>
-              ))}
-            </div>
+            <CatalogExplorer products={allProducts} categories={categories} />
           </div>
         </section>
 
@@ -314,30 +257,6 @@ export default function HomePage() {
                 );
               })}
             </div>
-          </div>
-        </section>
-
-        {/* ===== 4. CATÁLOGO TRANSACCIONAL COMPLETO EN SOLES (72 SKUs) ===== */}
-        <section className="py-16 sm:py-20 bg-white" id="catalogo">
-          <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="xrule" aria-hidden="true" />
-            <p
-              className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
-              style={{ fontFamily: "var(--display)" }}
-            >
-              Catálogo Oficial Perú 2026
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
-              Todos los productos FuXion con precios en Soles (S/)
-            </h2>
-            <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl mb-8">
-              Filtra por línea o busca por nombre, ingrediente o beneficio. Cada
-              producto cuenta con su ficha técnica completa y botón de compra
-              directa hacia la tienda oficial{" "}
-              <strong className="text-[#12232E]">shop.site.fuxion.com</strong>.
-            </p>
-
-            <CatalogExplorer products={allProducts} categories={categories} />
           </div>
         </section>
 
