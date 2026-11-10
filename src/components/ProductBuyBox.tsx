@@ -177,23 +177,13 @@ export default function ProductBuyBox({ product }: { product: Product }) {
           </p>
 
           {/* CTA Principal directo a shop.site.fuxion.com */}
-          <div className="space-y-3">
+          <div>
             <a
               href={currentPres.shopUrl}
               className="btn-fx btn-fx--buy w-full !py-4 !px-6 text-base sm:text-lg font-bold shadow-lg"
             >
-              <span>Comprar {product.cleanName} en Tienda Oficial</span>
-              <span aria-hidden="true">→</span>
+              <span>Comprar</span>
             </a>
-
-            {currentPres.shopUrl !== currentPres.directProductUrl && (
-              <a
-                href={currentPres.directProductUrl}
-                className="btn-fx btn-fx--ghost w-full !py-2.5 !px-4 text-xs sm:text-sm"
-              >
-                Ir a Ficha Rápida de Carrito (SKU #{currentPres.sku}) →
-              </a>
-            )}
           </div>
 
           {/* Sellos de confianza bajo el botón */}
