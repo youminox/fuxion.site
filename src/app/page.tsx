@@ -130,12 +130,6 @@ export default function HomePage() {
                 >
                   Buscar Productos
                 </a>
-                <a
-                  href={SHOP_TIENDA_URL}
-                  className="btn-fx btn-fx--ghostlight text-sm sm:text-base"
-                >
-                  Explorar Tienda Oficial →
-                </a>
                 <Link
                   href="/tienda/"
                   className="btn-fx btn-fx--buy text-sm sm:text-base"
