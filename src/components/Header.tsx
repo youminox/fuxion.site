@@ -66,7 +66,7 @@ export default function Header() {
             href="/#nosotros"
             className="py-1 border-b-2 border-transparent hover:border-[#0093DD] hover:text-[#0093DD] transition-colors"
           >
-            Nosotros
+            Sobre FuXion
           </Link>
           <Link
             href="/blog/"

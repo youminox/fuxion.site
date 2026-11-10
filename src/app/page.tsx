@@ -280,10 +280,10 @@ export default function HomePage() {
               <div className="relative z-10 max-w-3xl text-[#FFFFF0]">
                 <div className="xrule xrule--light" aria-hidden="true" />
                 <p className="text-xs font-bold uppercase tracking-widest text-[#EFFBC4] mb-2">
-                  Quiénes somos
+                  Sobre FuXion
                 </p>
                 <h2 className="text-2xl sm:text-4xl font-extrabold leading-tight">
-                  Somos Fuxion Biotech SAC, una compañía multinacional
+                  Fuxion Biotech SAC es una compañía multinacional
                   establecida en 2006 en Perú que cambia la vida de las personas.
                 </h2>
               </div>
@@ -298,10 +298,10 @@ export default function HomePage() {
                   mundo desde el Perú.
                 </p>
                 <p>
-                  Nuestros productos nacen de la fusión de los conocimientos de
+                  Sus productos nacen de la fusión de los conocimientos de
                   culturas milenarias —<strong>andina, amazónica</strong>,
                   mesoamericana y asiática— con los últimos avances en biología
-                  celular y nutrición humana. A eso le llamamos{" "}
+                  celular y nutrición humana. A eso se le llama{" "}
                   <strong className="text-[#0093DD]">
                     Fusión Nutracéutica®
                   </strong>
@@ -312,7 +312,7 @@ export default function HomePage() {
                 {[
                   { b: "2006", s: "año de fundación, en Perú" },
                   { b: "+35", s: "países con presencia" },
-                  { b: "+55.000", s: "personas nos eligen" },
+                  { b: "+55.000", s: "personas la eligen" },
                   { b: "100%", s: "de origen natural" },
                 ].map((st, idx) => (
                   <div
