@@ -159,34 +159,26 @@ export default function HomePage() {
         {/* ===== 2. CATÁLOGO TRANSACCIONAL COMPLETO CON BUSCADOR ===== */}
         <section className="py-16 sm:py-20 bg-white" id="destacados">
           <div id="catalogo" className="mx-auto max-w-[1180px] px-4 sm:px-6">
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-              <div>
-                <div className="xrule" aria-hidden="true" />
-                <p
-                  className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
-                  style={{ fontFamily: "var(--display)" }}
-                >
-                  Catálogo Oficial Perú 2026
-                </p>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
-                  Todos los productos FuXion
-                </h2>
-                <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl">
-                  Filtra por línea o busca por nombre, ingrediente o beneficio.
-                  Cada producto cuenta con su ficha técnica completa y botón de
-                  compra directa hacia la tienda oficial{" "}
-                  <strong className="text-[#12232E]">
-                    shop.site.fuxion.com
-                  </strong>
-                  .
-                </p>
-              </div>
-              <a
-                href={SHOP_TIENDA_URL}
-                className="btn-fx btn-fx--ghost text-sm shrink-0 self-start md:self-auto"
+            <div className="mb-8">
+              <div className="xrule" aria-hidden="true" />
+              <p
+                className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
+                style={{ fontFamily: "var(--display)" }}
               >
-                Ir a Tienda Oficial FuXion →
-              </a>
+                Catálogo Oficial Perú 2026
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
+                Todos los productos FuXion
+              </h2>
+              <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl">
+                Filtra por línea o busca por nombre, ingrediente o beneficio.
+                Cada producto cuenta con su ficha técnica completa y botón de
+                compra directa hacia la tienda oficial{" "}
+                <strong className="text-[#12232E]">
+                  shop.site.fuxion.com
+                </strong>
+                .
+              </p>
             </div>
 
             <CatalogExplorer products={allProducts} categories={categories} />
