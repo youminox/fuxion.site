@@ -384,7 +384,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 7. HUB DE ARTÍCULOS Y GUÍAS DE SALUD NUTRACÉUTICA (+105 ARTÍCULOS) ===== */}
+        {/* ===== 7. HUB DE ARTÍCULOS Y GUÍAS DE SALUD NUTRACÉUTICA (+400 ARTÍCULOS) ===== */}
         <section
           className="py-16 sm:py-20 bg-[#EDF7FD]/40 border-t border-[#D7E4EC]"
           id="guias"
@@ -403,7 +403,7 @@ export default function HomePage() {
                   Guías de uso, beneficios y salud nutracéutica
                 </h2>
                 <p className="text-[#5A6B78] text-base mt-2 max-w-2xl">
-                  Explora más de 100 artículos especializados sobre cómo tomar
+                  Explora más de 400 artículos especializados sobre cómo tomar
                   cada producto, horarios recomendados, comparativas y planes
                   para mejorar tu salud en Perú.
                 </p>
@@ -412,7 +412,7 @@ export default function HomePage() {
                 href="/blog/"
                 className="btn-fx btn-fx--buy text-sm shrink-0 self-start md:self-auto"
               >
-                Ver los +105 Artículos →
+                Ver los +400 Artículos →
               </Link>
             </div>
 

@@ -7,9 +7,9 @@ import { getAllArticles, getArticleClusters, SITE_URL } from "@/lib/data";
 
 export const metadata: Metadata = {
   title:
-    "Blog y Guías de Salud Nutracéutica FuXion Perú (+105 Artículos Especializados)",
+    "Blog y Guías de Salud Nutracéutica FuXion Perú (+400 Artículos Especializados)",
   description:
-    "Más de 100 guías especializadas sobre productos FuXion en Perú: para qué sirven, cómo tomarlos, horarios, comparativas, limpieza digestiva, control de peso, colágeno y precios en Soles.",
+    "Más de 400 guías especializadas sobre productos FuXion en Perú: para qué sirven, cómo tomarlos, horarios, comparativas, limpieza digestiva, control de peso, colágeno y precios en Soles.",
   alternates: {
     canonical: `${SITE_URL}/blog/`,
   },
@@ -61,7 +61,7 @@ export default function BlogIndexPage() {
           <Breadcrumbs
             items={[
               { label: "Inicio", href: "/" },
-              { label: "Blog y Guías de Salud (+105 Artículos)" },
+              { label: `Blog y Guías de Salud (${articles.length} Artículos)` },
             ]}
           />
 
