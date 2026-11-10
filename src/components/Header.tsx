@@ -63,10 +63,10 @@ export default function Header() {
             Líneas FuXion
           </Link>
           <Link
-            href="/#precios"
+            href="/#nosotros"
             className="py-1 border-b-2 border-transparent hover:border-[#0093DD] hover:text-[#0093DD] transition-colors"
           >
-            Lista de Precios
+            Nosotros
           </Link>
           <Link
             href="/blog/"
@@ -139,18 +139,18 @@ export default function Header() {
               🧬 Las 7 Líneas del Sistema FuXion
             </Link>
             <Link
-              href="/#precios"
+              href="/#nosotros"
               onClick={() => setMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-[#EDF7FD]"
             >
-              🇵🇪 Lista de Precios Perú 2026
+              🌿 Sobre FuXion
             </Link>
             <Link
               href="/blog/"
               onClick={() => setMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-[#EDF7FD]"
             >
-              📚 Blog y Guías de Uso (+100 Artículos)
+              📚 Blog y Guías de Uso
             </Link>
           </div>
           <div className="pt-2 border-t border-[#D7E4EC]">
