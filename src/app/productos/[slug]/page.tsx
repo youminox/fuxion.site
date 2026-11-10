@@ -299,7 +299,7 @@ export default async function ProductDetailPage({
                     href={product.shopUrl}
                     className="btn-fx btn-fx--buy text-sm font-bold"
                   >
-                    Comprar Ahora en Soles ({product.formattedPrice}) →
+                    Comprar Ahora ({product.formattedPrice}) →
                   </a>
                 </div>
                 <div className="lg:col-span-7 flex justify-center">

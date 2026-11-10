@@ -5,9 +5,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import { LEGAL_LOCATION, LEGAL_OWNER, SHOP_TIENDA_URL, SITE_URL } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Envíos en Perú, Medios de Pago en Soles y Garantía Oficial",
+  title: "Envíos en Perú, Medios de Pago y Garantía Oficial",
   description:
-    "Conoce cómo funcionan los envíos a Lima y provincias del Perú, los medios de pago en Soles (S/) y la garantía de satisfacción al comprar en la Tienda Oficial FuXion.",
+    "Conoce cómo funcionan los envíos a Lima y provincias del Perú, los medios de pago y la garantía de satisfacción al comprar en la Tienda Oficial FuXion.",
   alternates: {
     canonical: `${SITE_URL}/envios-y-garantia/`,
   },
@@ -29,7 +29,7 @@ export default function EnviosGarantiaPage() {
           <div className="rounded-3xl border border-[#D7E4EC] bg-white p-6 sm:p-10 shadow-xs fx-prose">
             <div className="xrule" aria-hidden="true" />
             <h1 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-6">
-              Envíos en Perú, Pagos en Soles y Garantía Oficial FuXion
+              Envíos en Perú, Medios de Pago y Garantía Oficial FuXion
             </h1>
 
             <p>
@@ -60,7 +60,7 @@ export default function EnviosGarantiaPage() {
               </li>
             </ul>
 
-            <h2>2. Medios de Pago Oficiales en Soles (PEN)</h2>
+            <h2>2. Medios de Pago Oficiales</h2>
             <p>
               La pasarela oficial de FuXion Perú cuenta con encriptación
               bancaria de máxima seguridad y acepta tarjetas de crédito y débito{" "}

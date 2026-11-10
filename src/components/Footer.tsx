@@ -92,7 +92,7 @@ export default function Footer() {
                   href="/tienda/"
                   className="font-semibold text-[#EFFBC4] hover:underline"
                 >
-                  Catálogo Completo en Soles (72 SKUs) →
+                  Catálogo Completo →
                 </Link>
               </li>
               <li>

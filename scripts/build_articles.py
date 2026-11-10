@@ -27,7 +27,7 @@ ARTICLE_SPECS = [
      "guias-de-productos", "Guías de Productos FuXion", "prunex1",
      "limpieza de colon, alivio del estreñimiento y tránsito intestinal nocturno"),
     ("thermo-t3-fuxion-como-tomar-quemar-grasa-precio-peru",
-     "Thermo T3 FuXion: Cómo tomarlo para quemar grasa, beneficios y precio en soles",
+     "Thermo T3 FuXion: Cómo tomarlo para quemar grasa, beneficios y precio en Perú",
      "guias-de-productos", "Guías de Productos FuXion", "thermo-t3",
      "termogénesis natural, oxidación de grasas y aceleración del metabolismo"),
     ("vita-xtra-t-fuxion-beneficios-energizante-natural-peru",
@@ -433,9 +433,9 @@ ARTICLE_SPECS = [
      "inmunidad-deporte-y-compras-peru", "Inmunidad, Deporte y Compra en Perú", "base-madre-verde",
      "aderezos peruanos 100% naturales enriquecidos con hierro, antioxidantes y fibras prebióticas"),
     ("catalogo-fuxion-peru-2026-precios-en-soles-lista-oficial",
-     "Catálogo FuXion Perú 2026 con Precios en Soles (Lista Oficial Actualizada)",
+     "Catálogo FuXion Perú 2026: Lista Oficial de Productos y Precios",
      "inmunidad-deporte-y-compras-peru", "Inmunidad, Deporte y Compra en Perú", "prunex1",
-     "tabla completa de precios oficiales en Soles (S/), presentaciones y puntos de los 72 SKUs"),
+     "tabla completa de precios oficiales, presentaciones y puntos del catálogo FuXion Perú"),
     ("donde-comprar-productos-fuxion-originales-lima-provincias-envio",
      "¿Dónde comprar productos FuXion originales en Lima y provincias con envío a domicilio?",
      "inmunidad-deporte-y-compras-peru", "Inmunidad, Deporte y Compra en Perú", "beauty-in",
@@ -522,7 +522,7 @@ def build_article_record(idx: int, spec: tuple, prod_map: dict) -> dict:
 {combos_html}
 <p>Recuerda que al tratarse de alimentos nutracéuticos sin químicos ni interacciones medicamentosas agresivas, puedes integrar hasta 3 o 4 bebidas funcionales distintas a lo largo de tu rutina diaria (por ejemplo: energía o limpieza por la mañana, control metabólico al mediodía y regeneración o descanso por la noche).</p>
 
-<h2 id="precio-y-donde-comprar-peru">6. Precio en Soles y cómo comprar {clean_name} original en Perú</h2>
+<h2 id="precio-y-donde-comprar-peru">6. Precio oficial y cómo comprar {clean_name} original en Perú</h2>
 <p>El precio oficial vigente en el catálogo de <strong>FuXion Perú</strong> para <strong>{clean_name}</strong> ({pack_str}) es de <strong>{price_fmt}</strong> (impuestos incluidos). Evita comprar en plataformas informales o revendedores sin código donde el producto pueda estar adulterado, próximo a vencer o sin cadena de custodia.</p>
 <p>Al hacer tu pedido desde las tarjetas transaccionales de esta página, ingresas directamente al entorno oficial de compra de FuXion Biotech SAC (<code>shop.site.fuxion.com</code>), donde tu pago se procesa con encriptación bancaria (Visa, Mastercard, American Express, Diners Club) y el despacho sale directamente desde el almacén central de FuXion hacia tu domicilio en Lima Metropolitana, Callao o cualquier departamento del Perú.</p>
 """.strip()

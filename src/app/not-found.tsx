@@ -18,11 +18,11 @@ export default function NotFound() {
           </h1>
           <p className="text-[#5A6B78] mb-8">
             La dirección que buscas no existe o ha cambiado. Puedes explorar todo
-            nuestro catálogo oficial en Soles o ir directamente a la tienda.
+            nuestro catálogo oficial o ir directamente a la tienda.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link href="/tienda/" className="btn-fx btn-fx--buy w-full sm:w-auto">
-              Ver Catálogo en Soles
+              Ver Catálogo
             </Link>
             <a
               href={SHOP_TIENDA_URL}

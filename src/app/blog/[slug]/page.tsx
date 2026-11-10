@@ -253,7 +253,7 @@ export default async function BlogPostPage({
                       href="#precio-y-donde-comprar-peru"
                       className="hover:text-[#0093DD] hover:underline"
                     >
-                      6. Precio en Soles y dónde comprar en Perú
+                      6. Precio oficial y dónde comprar en Perú
                     </a>
                   </li>
                 </ol>
@@ -421,7 +421,7 @@ export default async function BlogPostPage({
                   Catálogo Oficial
                 </p>
                 <h4 className="text-lg font-extrabold text-white mb-2">
-                  Explora los 72 productos FuXion en Soles
+                  Explora todos los productos FuXion
                 </h4>
                 <p className="text-xs text-[#EAF6FD] leading-relaxed mb-4">
                   Revisa todas las líneas de limpieza, energía, control de peso,

@@ -13,9 +13,9 @@ import {
 } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Tienda y Catálogo FuXion Perú 2026: Los 72 Productos en Soles (S/)",
+  title: "Tienda y Catálogo Oficial FuXion Perú 2026",
   description:
-    "Explora la tienda y catálogo oficial de FuXion Perú con precios en Soles (S/). Compra Prunex1, Thermo T3, Vita Xtra T+, Beauty-In, Flora Liv, Alpha Balance y los 72 SKUs con envío a Lima y provincias.",
+    "Explora la tienda y catálogo oficial de FuXion Perú. Compra Prunex1, Thermo T3, Vita Xtra T+, Beauty-In, Flora Liv, Alpha Balance y todos los productos con envío a Lima y provincias.",
   alternates: {
     canonical: `${SITE_URL}/tienda/`,
   },
@@ -25,7 +25,7 @@ export default function TiendaPage() {
   const products = getAllProducts();
   const categories = getAllCategories();
 
-  // Flatten all 72 SKUs for the full SKU index table
+  // Flatten all presentations for the full directory table
   const allPresentations = products.flatMap((p) =>
     p.presentations.map((pres) => ({
       ...pres,
@@ -39,10 +39,10 @@ export default function TiendaPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Tienda y Catálogo Oficial FuXion Perú en Soles",
+    name: "Tienda y Catálogo Oficial FuXion Perú",
     url: `${SITE_URL}/tienda/`,
     description:
-      "Catálogo completo de bebidas nutracéuticas, proteínas y suplementos naturales FuXion en Perú con precios oficiales en Soles (PEN).",
+      "Catálogo completo de bebidas nutracéuticas, proteínas y suplementos naturales FuXion en Perú.",
   };
 
   return (
@@ -62,7 +62,7 @@ export default function TiendaPage() {
                 <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-semibold text-[#EFFBC4] mb-3">
                   <span>{LEGAL_OWNER} · Empresario FuXion</span>
                   <span>•</span>
-                  <span>Lima, Perú · Moneda: Soles (PEN)</span>
+                  <span>Lima, Perú</span>
                 </div>
                 <h1
                   className="text-3xl sm:text-5xl font-extrabold text-white leading-tight"
@@ -71,9 +71,9 @@ export default function TiendaPage() {
                   Tienda y Catálogo Oficial FuXion Perú
                 </h1>
                 <p className="text-base sm:text-lg text-[#EAF6FD] mt-2 max-w-2xl">
-                  Navega por los 60 productos y 72 presentaciones oficiales en
-                  Soles (S/). Revisa para qué sirve cada fórmula o haz clic en
-                  comprar para ir directo al checkout oficial.
+                  Navega por todos los productos y presentaciones oficiales.
+                  Revisa para qué sirve cada fórmula o haz clic en comprar para
+                  ir directo al checkout oficial.
                 </p>
               </div>
               <div className="shrink-0">
@@ -92,7 +92,7 @@ export default function TiendaPage() {
           <Breadcrumbs
             items={[
               { label: "Inicio", href: "/" },
-              { label: "Tienda y Catálogo en Soles" },
+              { label: "Tienda y Catálogo" },
             ]}
           />
 
@@ -101,21 +101,21 @@ export default function TiendaPage() {
             <CatalogExplorer products={products} categories={categories} />
           </section>
 
-          {/* Índice Completo de los 72 SKUs de shop.site.fuxion.com */}
+          {/* Índice Completo de productos de shop.site.fuxion.com */}
           <section className="pt-12 border-t border-[#D7E4EC]">
             <div className="xrule" aria-hidden="true" />
             <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
-              Directorio Completo por Código SKU
+              Directorio Completo de Productos
             </p>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-3">
-              Los 72 SKUs del Catálogo FuXion Perú con Enlace Directo
+              Catálogo FuXion Perú con Enlace Directo
             </h2>
             <p className="text-sm sm:text-base text-[#5A6B78] max-w-3xl mb-6">
               Cada fila corresponde exactamente a un producto o presentación de
               la tienda oficial{" "}
-              <strong className="text-[#12232E]">shop.site.fuxion.com</strong>{" "}
-              en Soles (PEN), incluyendo Doypacks de 28 sticks, Cajas Mini de 7
-              sticks, Potes de proteína, Packs y Shakers.
+              <strong className="text-[#12232E]">shop.site.fuxion.com</strong>,
+              incluyendo Doypacks de 28 sticks, Cajas Mini de 7 sticks, Potes de
+              proteína, Packs y Shakers.
             </p>
 
             <div className="overflow-x-auto rounded-2xl border border-[#D7E4EC] bg-white shadow-xs">

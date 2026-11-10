@@ -60,7 +60,7 @@ export default function CatalogExplorer({
           </div>
           <div className="text-xs sm:text-sm font-semibold text-[#12232E] px-2">
             Mostrando <span className="text-[#0093DD]">{filteredProducts.length}</span> de{" "}
-            {products.length} productos (72 SKUs en Soles)
+            {products.length} productos
           </div>
         </div>
 

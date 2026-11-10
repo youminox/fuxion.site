@@ -17,8 +17,8 @@ const HOME_FAQS = [
     a: "Te recomendamos iniciar con el Paso 1 del Sistema Base (Limpieza Digestiva con Prunex1, Flora Liv o Liquid Fiber) y sumar el producto estrella según tu meta principal: Thermo T3 y NoCarb-T para control de peso, Vita Xtra T+ para energía diaria, Beauty-In para piel y colágeno, o No Stress para descansar mejor.",
   },
   {
-    q: "¿Cómo se realiza la compra y el pago en Soles (S/)?",
-    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion Perú (shop.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura en Soles con tarjeta Visa, Mastercard, American Express o Diners.",
+    q: "¿Cómo se realiza la compra y el pago online?",
+    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion Perú (shop.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura con tarjeta Visa, Mastercard, American Express o Diners.",
   },
   {
     q: "¿Puedo tomar varios productos FuXion al mismo tiempo?",
@@ -106,7 +106,7 @@ export default function HomePage() {
                 className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#EFFBC4] mb-3"
                 style={{ fontFamily: "var(--display)" }}
               >
-                <span>Fusión Nutracéutica® · Hecho en Perú · Precios en Soles (S/)</span>
+                <span>Fusión Nutracéutica® · Hecho en Perú</span>
               </p>
 
               <h1
@@ -128,7 +128,7 @@ export default function HomePage() {
                   href="#destacados"
                   className="btn-fx btn-fx--lime text-sm sm:text-base font-bold"
                 >
-                  Ver Productos Estrella
+                  Buscar Productos
                 </a>
                 <a
                   href={SHOP_TIENDA_URL}
@@ -140,7 +140,7 @@ export default function HomePage() {
                   href="/tienda/"
                   className="btn-fx btn-fx--buy text-sm sm:text-base"
                 >
-                  Ver Catálogo en Soles (72 SKUs)
+                  Ver Catálogo
                 </Link>
               </div>
 
@@ -162,7 +162,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 2. CATÁLOGO TRANSACCIONAL COMPLETO CON BUSCADOR EN SOLES (72 SKUs) ===== */}
+        {/* ===== 2. CATÁLOGO TRANSACCIONAL COMPLETO CON BUSCADOR ===== */}
         <section className="py-16 sm:py-20 bg-white" id="destacados">
           <div id="catalogo" className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
@@ -175,7 +175,7 @@ export default function HomePage() {
                   Catálogo Oficial Perú 2026
                 </p>
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
-                  Todos los productos FuXion con precios en Soles (S/)
+                  Todos los productos FuXion
                 </h2>
                 <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl">
                   Filtra por línea o busca por nombre, ingrediente o beneficio.
@@ -271,10 +271,10 @@ export default function HomePage() {
               className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
               style={{ fontFamily: "var(--display)" }}
             >
-              Lista Oficial en Moneda Nacional (PEN)
+              Lista Oficial Actualizada
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
-              Tabla de Precios FuXion Perú 2026 en Soles
+              Tabla de Precios FuXion Perú 2026
             </h2>
             <p className="text-[#5A6B78] text-base max-w-3xl mb-8">
               Consulta de un vistazo los precios vigentes de fábrica en Perú
@@ -344,14 +344,13 @@ export default function HomePage() {
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-4 text-xs text-[#5A6B78]">
               <p>
-                * Precios oficiales expresados en Soles Peruanos (S/ - PEN)
-                sujetos al catálogo vigente de FuXion Biotech SAC en Perú.
+                * Precios oficiales vigentes del catálogo de FuXion Biotech SAC en Perú.
               </p>
               <Link
                 href="/tienda/"
                 className="font-bold text-[#0093DD] hover:underline"
               >
-                Ver los 60 productos y 72 SKUs en la vista de tienda →
+                Ver todos los productos en la vista de tienda →
               </Link>
             </div>
           </div>
@@ -610,8 +609,8 @@ export default function HomePage() {
                 ¿List@ para empezar tu cambio con FuXion Perú?
               </h2>
               <p className="text-[#5A6B78] text-base mt-1">
-                Explora el catálogo completo de 72 SKUs en Soles y recibe tu
-                pedido en Lima o provincias con garantía oficial.
+                Explora el catálogo completo y recibe tu pedido en Lima o
+                provincias con garantía oficial.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
@@ -622,7 +621,7 @@ export default function HomePage() {
                 Ir a la Tienda Oficial →
               </a>
               <Link href="/tienda/" className="btn-fx btn-fx--ghost text-base">
-                Explorar Catálogo
+                Ver Catálogo
               </Link>
             </div>
           </div>

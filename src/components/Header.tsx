@@ -15,7 +15,7 @@ export default function Header() {
           <p className="font-medium flex items-center gap-1.5">
             <span className="inline-block w-2 h-2 rounded-full bg-[#8CC63F]" />
             <span>
-              <strong>FuXion® Perú</strong> · Catálogo Oficial en Soles (S/) · Envíos a Lima y todo el Perú
+              <strong>FuXion® Perú</strong> · Catálogo Oficial · Envíos a Lima y todo el Perú
             </span>
           </p>
           <div className="hidden sm:flex items-center gap-4 text-[11px] text-[#D7E4EC]">
@@ -40,7 +40,7 @@ export default function Header() {
             height={27}
           />
           <span className="hidden xl:inline-block text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] border border-[#D7E4EC]">
-            Perú · S/
+            Perú
           </span>
         </Link>
 
@@ -51,16 +51,10 @@ export default function Header() {
           aria-label="Navegación Principal"
         >
           <Link
-            href="/#destacados"
-            className="py-1 border-b-2 border-transparent hover:border-[#0093DD] hover:text-[#0093DD] transition-colors"
-          >
-            Productos Estrella
-          </Link>
-          <Link
             href="/tienda/"
             className="py-1 border-b-2 border-transparent hover:border-[#0093DD] hover:text-[#0093DD] transition-colors"
           >
-            Catálogo (72 SKUs)
+            Catálogo
           </Link>
           <Link
             href="/#lineas"
@@ -131,18 +125,11 @@ export default function Header() {
         <div className="lg:hidden border-t border-[#D7E4EC] bg-white px-4 py-4 space-y-3 shadow-lg">
           <div className="grid gap-2 text-[15px] font-semibold text-[#12232E]">
             <Link
-              href="/#destacados"
-              onClick={() => setMenuOpen(false)}
-              className="px-3 py-2 rounded-lg hover:bg-[#EDF7FD]"
-            >
-              ⭐ Productos Estrella FuXion
-            </Link>
-            <Link
               href="/tienda/"
               onClick={() => setMenuOpen(false)}
               className="px-3 py-2 rounded-lg hover:bg-[#EDF7FD]"
             >
-              🛍️ Catálogo Completo en Soles (72 SKUs)
+              🛍️ Catálogo
             </Link>
             <Link
               href="/#lineas"
