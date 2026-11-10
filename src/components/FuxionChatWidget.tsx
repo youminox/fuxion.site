@@ -503,7 +503,7 @@ export default function FuxionChatWidget() {
                     style={{ animationDelay: "300ms" }}
                   />
                   <span className="ml-1 font-medium">
-                    Analizando el catálogo FuXion...
+                    Escribiendo...
                   </span>
                 </div>
               </div>
