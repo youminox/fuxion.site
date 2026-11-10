@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -7,7 +8,7 @@ import { getAllArticles, getArticleClusters, SITE_URL } from "@/lib/data";
 
 export const metadata: Metadata = {
   title:
-    "Blog y Guías de Salud Nutracéutica FuXion Perú (+400 Artículos Especializados)",
+    "Blog y Guías de Salud Nutracéutica (+400 Artículos Especializados)",
   description:
     "Más de 400 guías especializadas sobre productos FuXion en Perú: para qué sirven, cómo tomarlos, horarios, comparativas, limpieza digestiva, control de peso, colágeno y precios en Soles.",
   alternates: {
@@ -66,6 +67,65 @@ export default function BlogIndexPage() {
           />
 
           <BlogExplorer articles={articles} clusters={clusters} />
+
+          {/* Índice Maestro por Categoría para Rastreo SEO Completo */}
+          <section className="mt-16 pt-12 border-t border-[#D7E4EC]">
+            <div className="xrule" aria-hidden="true" />
+            <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
+              Directorio Temático Completo
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-2">
+              Índice de las {articles.length} Guías de Salud por Especialidad
+            </h2>
+            <p className="text-sm sm:text-base text-[#5A6B78] mb-6 max-w-3xl">
+              Explora el archivo completo organizado por área de bienestar. Cada
+              guía incluye modo de preparación, horario ideal y enlace directo al
+              producto oficial en Soles (S/).
+            </p>
+
+            <div className="space-y-4">
+              {clusters.map((cluster, idx) => {
+                const clusterArticles = articles.filter(
+                  (a) => a.clusterSlug === cluster.slug
+                );
+                return (
+                  <details
+                    key={cluster.slug}
+                    open={idx === 0}
+                    className="group rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/35 open:bg-white p-5 transition-all"
+                  >
+                    <summary className="flex items-center justify-between gap-4 cursor-pointer list-none font-extrabold text-base sm:text-lg text-[#12232E]">
+                      <span>
+                        {cluster.name}{" "}
+                        <span className="text-sm font-bold text-[#0093DD]">
+                          ({clusterArticles.length} artículos)
+                        </span>
+                      </span>
+                      <span className="w-7 h-7 rounded-full bg-[#EDF7FD] text-[#0093DD] grid place-items-center font-extrabold shrink-0 group-open:rotate-45 transition-transform">
+                        +
+                      </span>
+                    </summary>
+
+                    <ul className="mt-4 pt-4 border-t border-[#D7E4EC] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2.5 text-xs sm:text-sm">
+                      {clusterArticles.map((art) => (
+                        <li key={art.slug} className="flex items-start gap-2">
+                          <span className="text-[#0093DD] font-bold mt-0.5">
+                            •
+                          </span>
+                          <Link
+                            href={`/blog/${art.slug}/`}
+                            className="text-[#2B3D4B] hover:text-[#0093DD] hover:underline leading-snug"
+                          >
+                            {art.title}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </details>
+                );
+              })}
+            </div>
+          </section>
         </div>
       </main>
 

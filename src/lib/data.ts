@@ -160,15 +160,99 @@ export function getArticleBySlug(slug: string): Article | undefined {
   return articles.find((a) => a.slug === slug);
 }
 
-export function getArticlesByProduct(productSlug: string, limit = 4): Article[] {
-  const direct = articles.filter(
+export function getArticlesByProduct(productSlug: string, limit = 12): Article[] {
+  const primary = articles.filter((a) => a.primaryProductSlug === productSlug);
+  const secondary = articles.filter(
     (a) =>
-      a.primaryProductSlug === productSlug ||
+      a.primaryProductSlug !== productSlug &&
       a.secondaryProductSlugs.includes(productSlug)
   );
-  if (direct.length >= limit) return direct.slice(0, limit);
-  const rest = articles.filter((a) => !direct.some((d) => d.slug === a.slug));
-  return [...direct, ...rest].slice(0, limit);
+  const combined = [...primary, ...secondary];
+  if (combined.length >= limit) return combined.slice(0, limit);
+  const rest = articles.filter((a) => !combined.some((d) => d.slug === a.slug));
+  return [...combined, ...rest].slice(0, limit);
+}
+
+export function getArticlesByCategory(categorySlug: string, limit = 9): Article[] {
+  const catProducts = new Set(
+    products.filter((p) => p.categorySlug === categorySlug).map((p) => p.slug)
+  );
+  const matched = articles.filter((a) => catProducts.has(a.primaryProductSlug));
+  return matched.slice(0, limit);
+}
+
+export function getRelatedArticlesForArticle(article: Article, limit = 6): Article[] {
+  const sameProduct = articles.filter(
+    (a) =>
+      a.slug !== article.slug &&
+      a.primaryProductSlug === article.primaryProductSlug
+  );
+  const sameCluster = articles.filter(
+    (a) =>
+      a.slug !== article.slug &&
+      a.primaryProductSlug !== article.primaryProductSlug &&
+      a.clusterSlug === article.clusterSlug
+  );
+
+  // Rotate cluster articles deterministically based on article.id so all 405 articles get linked
+  const rotatedCluster: Article[] = [];
+  if (sameCluster.length > 0) {
+    const startIdx = (article.id * 5) % sameCluster.length;
+    for (let i = 0; i < sameCluster.length; i++) {
+      rotatedCluster.push(sameCluster[(startIdx + i) % sameCluster.length]);
+    }
+  }
+
+  return [...sameProduct, ...rotatedCluster].slice(0, limit);
+}
+
+export function cleanSeoTitle(rawTitle: string): string {
+  return rawTitle
+    .replace(/\s*\|\s*FuXion\s+Per[uú]\s*$/i, "")
+    .replace(/\s*—\s*FuXion\s+Per[uú]\s*$/i, "")
+    .trim();
+}
+
+export function getMerchantOfferExtras() {
+  return {
+    priceValidUntil: "2027-12-31",
+    shippingDetails: {
+      "@type": "OfferShippingDetails",
+      shippingRate: {
+        "@type": "MonetaryAmount",
+        value: "0.00",
+        currency: "PEN",
+      },
+      shippingDestination: {
+        "@type": "DefinedRegion",
+        addressCountry: "PE",
+      },
+      deliveryTime: {
+        "@type": "ShippingDeliveryTime",
+        handlingTime: {
+          "@type": "QuantitativeValue",
+          minValue: 0,
+          maxValue: 1,
+          unitCode: "DAY",
+        },
+        transitTime: {
+          "@type": "QuantitativeValue",
+          minValue: 1,
+          maxValue: 4,
+          unitCode: "DAY",
+        },
+      },
+    },
+    hasMerchantReturnPolicy: {
+      "@type": "MerchantReturnPolicy",
+      applicableCountry: "PE",
+      returnPolicyCategory:
+        "https://schema.org/MerchantReturnFiniteReturnWindow",
+      merchantReturnDays: 7,
+      returnMethod: "https://schema.org/ReturnByMail",
+      returnFees: "https://schema.org/FreeReturn",
+    },
+  };
 }
 
 export function getArticleClusters(): { slug: string; name: string; count: number }[] {

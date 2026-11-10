@@ -7,9 +7,12 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import TransactionalProductCard from "@/components/TransactionalProductCard";
 import ProductCard from "@/components/ProductCard";
 import {
+  cleanSeoTitle,
   getAllArticles,
   getArticleBySlug,
+  getMerchantOfferExtras,
   getProductBySlug,
+  getRelatedArticlesForArticle,
   LEGAL_LOCATION,
   LEGAL_OWNER,
   SHOP_TIENDA_URL,
@@ -29,8 +32,13 @@ export async function generateMetadata({
   const article = getArticleBySlug(slug);
   if (!article) return {};
 
+  const primaryProduct = getProductBySlug(article.primaryProductSlug);
+  const ogImage = primaryProduct
+    ? primaryProduct.bodegonImage || primaryProduct.mainImage
+    : `${SITE_URL}/img/somos-fusion-nutraceutica.webp`;
+
   return {
-    title: article.seoTitle,
+    title: cleanSeoTitle(article.seoTitle),
     description: article.seoDescription,
     alternates: {
       canonical: `${SITE_URL}/blog/${article.slug}/`,
@@ -42,6 +50,18 @@ export async function generateMetadata({
       title: article.seoTitle,
       description: article.seoDescription,
       publishedTime: article.publishedAt,
+      images: [
+        {
+          url: ogImage,
+          alt: `${article.title} — FuXion Perú`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.seoTitle,
+      description: article.seoDescription,
+      images: [ogImage],
     },
   };
 }
@@ -62,20 +82,18 @@ export default async function BlogPostPage({
     .map((s) => getProductBySlug(s))
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
-  const relatedArticles = getAllArticles()
-    .filter(
-      (a) =>
-        a.slug !== article.slug &&
-        (a.clusterSlug === article.clusterSlug ||
-          a.primaryProductSlug === article.primaryProductSlug)
-    )
-    .slice(0, 6);
+  const relatedArticles = getRelatedArticlesForArticle(article, 6);
+  const offerExtras = getMerchantOfferExtras();
+  const primaryImageUrl = primaryProduct.bodegonImage.startsWith("http")
+    ? primaryProduct.bodegonImage
+    : `${SITE_URL}${primaryProduct.bodegonImage}`;
 
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
     headline: article.title,
     description: article.seoDescription,
+    image: [primaryImageUrl, ...primaryProduct.gallery],
     datePublished: article.publishedAt,
     dateModified: article.publishedAt,
     inLanguage: "es-PE",
@@ -100,12 +118,20 @@ export default async function BlogPostPage({
       "@type": "Product",
       name: primaryProduct.cleanName,
       sku: primaryProduct.sku,
+      image: primaryImageUrl,
+      brand: {
+        "@type": "Brand",
+        name: "FuXion",
+      },
       offers: {
         "@type": "Offer",
+        sku: primaryProduct.sku,
         priceCurrency: "PEN",
         price: primaryProduct.price.toFixed(2),
         availability: "https://schema.org/InStock",
+        itemCondition: "https://schema.org/NewCondition",
         url: primaryProduct.shopUrl,
+        ...offerExtras,
       },
     },
   };

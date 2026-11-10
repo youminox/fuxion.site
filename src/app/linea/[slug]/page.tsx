@@ -6,7 +6,9 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductCard from "@/components/ProductCard";
 import {
+  cleanSeoTitle,
   getAllCategories,
+  getArticlesByCategory,
   getCategoryBySlug,
   getProductsByCategory,
   SHOP_TIENDA_URL,
@@ -27,10 +29,17 @@ export async function generateMetadata({
   if (!category) return {};
 
   return {
-    title: category.seoTitle,
+    title: cleanSeoTitle(category.seoTitle),
     description: category.seoDescription,
     alternates: {
       canonical: `${SITE_URL}/linea/${category.slug}/`,
+    },
+    openGraph: {
+      type: "website",
+      locale: "es_PE",
+      url: `${SITE_URL}/linea/${category.slug}/`,
+      title: category.seoTitle,
+      description: category.seoDescription,
     },
   };
 }
@@ -46,6 +55,7 @@ export default async function LineaPage({
 
   const products = getProductsByCategory(category.slug);
   const allCategories = getAllCategories();
+  const categoryArticles = getArticlesByCategory(category.slug, 9);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -124,6 +134,44 @@ export default async function LineaPage({
               <ProductCard key={product.slug} product={product} />
             ))}
           </div>
+
+          {/* Guías del Blog Relacionadas con la Línea */}
+          {categoryArticles.length > 0 && (
+            <section className="py-12 border-t border-[#D7E4EC] mb-8">
+              <div className="xrule" aria-hidden="true" />
+              <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
+                Aprende cómo tomarlos
+              </p>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-6">
+                Guías y artículos sobre {category.name}
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {categoryArticles.map((art) => (
+                  <Link
+                    key={art.slug}
+                    href={`/blog/${art.slug}/`}
+                    className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/35 hover:bg-white hover:border-[#0093DD] p-5 transition-all flex flex-col justify-between"
+                  >
+                    <div>
+                      <span className="text-xs font-bold text-[#0093DD]">
+                        {art.clusterName}
+                      </span>
+                      <h3 className="text-base font-extrabold text-[#12232E] mt-1 mb-2 leading-snug">
+                        {art.title}
+                      </h3>
+                      <p className="text-xs text-[#5A6B78] line-clamp-2">
+                        {art.excerpt}
+                      </p>
+                    </div>
+                    <span className="text-xs font-bold text-[#0093DD] mt-3 inline-block">
+                      Leer guía completa →
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* CTA hacia tienda oficial */}
           <div className="rounded-3xl border border-[#D7E4EC] bg-[#EDF7FD] p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">

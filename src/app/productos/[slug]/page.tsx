@@ -7,8 +7,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductBuyBox from "@/components/ProductBuyBox";
 import ProductCard from "@/components/ProductCard";
 import {
+  cleanSeoTitle,
   getAllProducts,
   getArticlesByProduct,
+  getMerchantOfferExtras,
   getProductBySlug,
   getRelatedProducts,
   SITE_URL,
@@ -28,8 +30,11 @@ export async function generateMetadata({
   const product = getProductBySlug(slug);
   if (!product) return {};
 
+  const title = cleanSeoTitle(product.seoTitle);
+  const ogImage = product.bodegonImage || product.mainImage;
+
   return {
-    title: product.seoTitle,
+    title,
     description: product.seoDescription,
     alternates: {
       canonical: `${SITE_URL}/productos/${product.slug}/`,
@@ -42,10 +47,16 @@ export async function generateMetadata({
       description: product.seoDescription,
       images: [
         {
-          url: product.bodegonImage || product.mainImage,
+          url: ogImage,
           alt: `${product.cleanName} — FuXion Perú`,
         },
       ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.seoTitle,
+      description: product.seoDescription,
+      images: [ogImage],
     },
   };
 }
@@ -60,7 +71,8 @@ export default async function ProductDetailPage({
   if (!product) notFound();
 
   const relatedProducts = getRelatedProducts(product);
-  const relatedArticles = getArticlesByProduct(product.slug, 4);
+  const relatedArticles = getArticlesByProduct(product.slug, 12);
+  const offerExtras = getMerchantOfferExtras();
 
   const productJsonLd = {
     "@context": "https://schema.org",
@@ -93,6 +105,7 @@ export default async function ProductDetailPage({
               : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",
             url: pres.shopUrl,
+            ...offerExtras,
           }))
         : {
             "@type": "Offer",
@@ -104,6 +117,7 @@ export default async function ProductDetailPage({
               : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",
             url: product.shopUrl,
+            ...offerExtras,
           },
     aggregateRating: {
       "@type": "AggregateRating",
