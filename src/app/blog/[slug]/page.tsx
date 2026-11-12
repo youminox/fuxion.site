@@ -344,12 +344,6 @@ export default async function BlogPostPage({
                       >
                         Comprar en shop.site.fuxion.com →
                       </a>
-                      <a
-                        href={primaryProduct.directProductUrl}
-                        className="text-xs font-semibold text-[#0093DD] hover:underline"
-                      >
-                        URL Producto Directo (/producto/{primaryProduct.sku}/)
-                      </a>
                     </div>
                   </div>
                 </div>
