@@ -6,6 +6,10 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TransactionalProductCard from "@/components/TransactionalProductCard";
 import ProductCard from "@/components/ProductCard";
+import ArticleBlocksRenderer, {
+  slugifyHeading,
+} from "@/components/article-blocks/ArticleBlocksRenderer";
+import AuthorBox from "@/components/article-blocks/AuthorBox";
 import {
   cleanSeoTitle,
   getAllArticles,
@@ -88,6 +92,8 @@ export default async function BlogPostPage({
     ? primaryProduct.bodegonImage
     : `${SITE_URL}${primaryProduct.bodegonImage}`;
 
+  const modifiedDate = article.updatedAt || article.publishedAt;
+
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -95,7 +101,7 @@ export default async function BlogPostPage({
     description: article.seoDescription,
     image: [primaryImageUrl, ...primaryProduct.gallery],
     datePublished: article.publishedAt,
-    dateModified: article.publishedAt,
+    dateModified: modifiedDate,
     inLanguage: "es-PE",
     mainEntityOfPage: `${SITE_URL}/blog/${article.slug}/`,
     author: {
@@ -182,7 +188,7 @@ export default async function BlogPostPage({
                     ⏱ {article.readingTime}
                   </span>
                   <span className="text-[#5A6B78]">
-                    Actualizado en Perú · {article.publishedAt}
+                    Actualizado en Perú · {modifiedDate}
                   </span>
                 </div>
 
@@ -225,129 +231,118 @@ export default async function BlogPostPage({
                 </div>
               </header>
 
-              {/* Tabla de Contenidos */}
-              <nav
-                aria-label="Tabla de contenidos"
-                className="rounded-2xl border border-[#D7E4EC] bg-white p-5 mb-8"
-              >
-                <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-2.5">
-                  Contenido de esta guía
-                </p>
-                <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm font-medium text-[#12232E]">
-                  <li>
-                    <a
-                      href="#que-es-y-como-actua"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      1. ¿Cómo funciona {primaryProduct.cleanName}?
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#beneficios-principales"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      2. Beneficios principales en el organismo
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#formulacion-nutraceutica"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      3. Ingredientes activos y sinergia
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#como-preparar-y-tomar"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      4. Cómo preparar y mejor hora para tomarlo
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#combinaciones-y-sinergia"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      5. Con qué otros productos combinarlo
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#precio-y-donde-comprar-peru"
-                      className="hover:text-[#0093DD] hover:underline"
-                    >
-                      6. Precio oficial y dónde comprar en Perú
-                    </a>
-                  </li>
-                </ol>
-              </nav>
+              {article.blocks && article.blocks.length > 0 ? (
+                <>
+                  {/* Índice dinámico generado desde los encabezados reales del artículo */}
+                  {(() => {
+                    const headings = article.blocks
+                      .map((b) => {
+                        const heading =
+                          "heading" in b && b.heading
+                            ? b.heading
+                            : b.type === "medical_notice"
+                            ? "¿Cuándo conviene consultar con un médico?"
+                            : "";
+                        if (!heading) return null;
+                        return {
+                          id: ("id" in b && b.id) || slugifyHeading(heading),
+                          label: heading,
+                        };
+                      })
+                      .filter(
+                        (h): h is { id: string; label: string } => Boolean(h)
+                      );
 
-              {/* Introducción */}
-              <div
-                className="fx-prose"
-                dangerouslySetInnerHTML={{ __html: article.introHtml }}
-              />
+                    if (headings.length < 2) return null;
 
-              {/* Secciones 1, 2 y 3 */}
-              <div
-                className="fx-prose"
-                dangerouslySetInnerHTML={{ __html: article.beforeCardHtml }}
-              />
+                    if (article.layoutVariant === "editorial") {
+                      return (
+                        <nav
+                          aria-label="En este artículo"
+                          className="mb-6 flex flex-wrap items-center gap-2 text-xs"
+                        >
+                          <span className="font-bold uppercase tracking-wider text-[#5A6B78] mr-1">
+                            En este artículo:
+                          </span>
+                          {headings.map((h) => (
+                            <a
+                              key={h.id}
+                              href={`#${h.id}`}
+                              className="px-3 py-1 rounded-full bg-[#EDF7FD] text-[#12232E] hover:bg-[#0093DD] hover:text-white font-semibold transition-colors"
+                            >
+                              {h.label}
+                            </a>
+                          ))}
+                        </nav>
+                      );
+                    }
 
-              {/* TARJETA TRANSACCIONAL EMBEBIDA EN EL CUERPO DEL ARTÍCULO */}
-              <TransactionalProductCard
-                product={primaryProduct}
-                contextLabel={`Tarjeta de Compra Directa · ${primaryProduct.cleanName} en Perú`}
-              />
+                    if (article.layoutVariant === "comparison") {
+                      return null;
+                    }
 
-              {/* Secciones 4, 5 y 6 */}
-              <div
-                className="fx-prose"
-                dangerouslySetInnerHTML={{ __html: article.afterCardHtml }}
-              />
-
-              {/* Tabla Resumen Técnica y Transaccional */}
-              <section className="my-8 rounded-2xl border border-[#D7E4EC] bg-white overflow-hidden shadow-xs">
-                <div className="bg-[#12232E] text-white px-5 py-3.5 flex items-center justify-between">
-                  <h3 className="text-sm sm:text-base font-bold">
-                    Ficha Resumen Oficial — {primaryProduct.cleanName} (Perú)
-                  </h3>
-                  <span className="text-xs text-[#EFFBC4] font-semibold">
-                    Moneda: Soles (PEN)
-                  </span>
-                </div>
-                <div className="divide-y divide-[#D7E4EC] text-sm">
-                  {article.comparisonRows.map((row, idx) => (
-                    <div
-                      key={idx}
-                      className="grid grid-cols-1 sm:grid-cols-12 px-5 py-3 hover:bg-[#EDF7FD]/40"
-                    >
-                      <span className="sm:col-span-5 font-bold text-[#12232E]">
-                        {row.label}
-                      </span>
-                      <span className="sm:col-span-7 text-[#2B3D4B]">
-                        {row.value}
-                      </span>
-                    </div>
-                  ))}
-                  <div className="grid grid-cols-1 sm:grid-cols-12 px-5 py-3.5 bg-[#EDF7FD]/60 items-center gap-2">
-                    <span className="sm:col-span-5 font-bold text-[#12232E]">
-                      Enlace Directo de Tienda
-                    </span>
-                    <div className="sm:col-span-7 flex flex-wrap items-center gap-2">
-                      <a
-                        href={primaryProduct.shopUrl}
-                        className="btn-fx btn-fx--buy !py-2 !px-4 text-xs font-bold"
+                    return (
+                      <nav
+                        aria-label="Tabla de contenidos"
+                        className="rounded-2xl border border-[#D7E4EC] bg-white p-5 mb-8"
                       >
-                        Comprar en shop.site.fuxion.com →
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </section>
+                        <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-2.5">
+                          {article.layoutVariant === "checklist"
+                            ? "Puntos clave de esta guía"
+                            : "Contenido de esta guía"}
+                        </p>
+                        <ol className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs sm:text-sm font-medium text-[#12232E]">
+                          {headings.map((h, i) => (
+                            <li key={h.id}>
+                              <a
+                                href={`#${h.id}`}
+                                className="hover:text-[#0093DD] hover:underline"
+                              >
+                                {i + 1}. {h.label}
+                              </a>
+                            </li>
+                          ))}
+                        </ol>
+                      </nav>
+                    );
+                  })()}
+
+                  {/* Bloques dinámicos del artículo con tarjeta contextual en posición variable */}
+                  <ArticleBlocksRenderer
+                    blocks={article.blocks}
+                    product={primaryProduct}
+                    cardPosition={article.cardPosition}
+                    cardContextNote={article.cardContextNote}
+                  />
+
+                  <AuthorBox updatedAt={modifiedDate} />
+                </>
+              ) : (
+                <>
+                  {/* Fallback legado durante migración */}
+                  <div
+                    className="fx-prose"
+                    dangerouslySetInnerHTML={{ __html: article.introHtml || "" }}
+                  />
+                  <div
+                    className="fx-prose"
+                    dangerouslySetInnerHTML={{
+                      __html: article.beforeCardHtml || "",
+                    }}
+                  />
+                  <TransactionalProductCard
+                    product={primaryProduct}
+                    contextLabel={`Tarjeta de Compra Directa · ${primaryProduct.cleanName} en Perú`}
+                  />
+                  <div
+                    className="fx-prose"
+                    dangerouslySetInnerHTML={{
+                      __html: article.afterCardHtml || "",
+                    }}
+                  />
+                  <AuthorBox updatedAt={modifiedDate} />
+                </>
+              )}
 
               {/* Preguntas Frecuentes del Artículo */}
               <section className="my-10 pt-8 border-t border-[#D7E4EC]">

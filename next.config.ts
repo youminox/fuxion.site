@@ -27,7 +27,7 @@ const nextConfig: NextConfig = {
       "prunex1",
       "no-stress",
     ];
-    return landings.flatMap((slug) => [
+    const landingRedirects = landings.flatMap((slug) => [
       {
         source: `/${slug}`,
         destination: `/productos/${slug}/`,
@@ -39,6 +39,30 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
     ]);
+
+    const mergedArticles = [
+      {
+        from: "como-quitar-la-ansiedad-por-comer-dulces-en-la-tarde-o-noche-con-biopro-fit-fuxion-peru",
+        to: "ansiedad-por-comer-dulces-tarde-frenar-antojos-proteina",
+      },
+      {
+        from: "cafe-verde-clorogenico-para-bajar-de-peso-en-peru-como-funciona-cafe-cafe-fit-fuxion-peru",
+        to: "cafe-verde-para-adelgazar-acido-clorogenico-cafe-fit-fuxion",
+      },
+    ].flatMap(({ from, to }) => [
+      {
+        source: `/blog/${from}`,
+        destination: `/blog/${to}/`,
+        permanent: true,
+      },
+      {
+        source: `/blog/${from}/`,
+        destination: `/blog/${to}/`,
+        permanent: true,
+      },
+    ]);
+
+    return [...landingRedirects, ...mergedArticles];
   },
 };
 

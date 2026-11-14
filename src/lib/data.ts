@@ -82,6 +82,77 @@ export interface Category {
   seoDescription: string;
 }
 
+export type ArticleBlock =
+  | {
+      type: "quick_answer";
+      label?: string;
+      summary: string;
+      keyTakeaway?: string;
+    }
+  | {
+      type: "prose";
+      id?: string;
+      heading: string;
+      paragraphs: string[];
+      highlight?: string;
+    }
+  | {
+      type: "steps";
+      id?: string;
+      heading: string;
+      intro?: string;
+      steps: { title: string; detail: string }[];
+    }
+  | {
+      type: "checklist";
+      id?: string;
+      heading: string;
+      intro?: string;
+      items: { label: string; detail?: string }[];
+    }
+  | {
+      type: "myths";
+      id?: string;
+      heading: string;
+      pairs: { myth: string; reality: string }[];
+    }
+  | {
+      type: "comparison";
+      id?: string;
+      heading: string;
+      intro?: string;
+      headers: string[];
+      rows: string[][];
+    }
+  | {
+      type: "menu_or_recipe";
+      id?: string;
+      heading: string;
+      intro?: string;
+      entries: { label: string; description: string }[];
+    }
+  | {
+      type: "timeline";
+      id?: string;
+      heading: string;
+      intro?: string;
+      phases: { phase: string; focus: string }[];
+    }
+  | {
+      type: "callout";
+      tone?: "info" | "tip" | "caution";
+      title: string;
+      body: string;
+    }
+  | {
+      type: "medical_notice";
+      id?: string;
+      heading?: string;
+      intro?: string;
+      warningSigns: string[];
+      disclaimer?: string;
+    };
+
 export interface Article {
   id: number;
   slug: string;
@@ -92,6 +163,7 @@ export interface Article {
   clusterSlug: string;
   clusterName: string;
   publishedAt: string;
+  updatedAt?: string;
   readingTime: string;
   primaryProductSlug: string;
   primaryProductSku: string;
@@ -99,10 +171,14 @@ export interface Article {
   primaryProductDirectUrl: string;
   secondaryProductSlugs: string[];
   focusTopic: string;
-  introHtml: string;
-  beforeCardHtml: string;
-  afterCardHtml: string;
-  comparisonRows: { label: string; value: string }[];
+  layoutVariant?: "guide" | "editorial" | "checklist" | "comparison";
+  cardPosition?: number;
+  cardContextNote?: string;
+  blocks?: ArticleBlock[];
+  introHtml?: string;
+  beforeCardHtml?: string;
+  afterCardHtml?: string;
+  comparisonRows?: { label: string; value: string }[];
   faqs: { question: string; answer: string }[];
 }
 

@@ -4,11 +4,13 @@ import type { Product } from "@/lib/data";
 interface TransactionalProductCardProps {
   product: Product;
   contextLabel?: string;
+  uniqueNote?: string;
 }
 
 export default function TransactionalProductCard({
   product,
   contextLabel = "Producto Oficial Recomendado en Perú",
+  uniqueNote,
 }: TransactionalProductCardProps) {
   return (
     <aside
@@ -65,19 +67,27 @@ export default function TransactionalProductCard({
             </h3>
           </div>
 
-          <p className="text-sm sm:text-[15px] text-[#2B3D4B] leading-relaxed">
-            {product.description}
-          </p>
+          {uniqueNote ? (
+            <p className="text-sm sm:text-[15px] text-[#2B3D4B] leading-relaxed">
+              {uniqueNote}
+            </p>
+          ) : (
+            <>
+              <p className="text-sm sm:text-[15px] text-[#2B3D4B] leading-relaxed">
+                {product.description}
+              </p>
 
-          {/* Puntos clave */}
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs sm:text-sm text-[#12232E]">
-            {product.benefits.slice(0, 4).map((b, i) => (
-              <li key={i} className="flex items-start gap-1.5">
-                <span className="text-[#4E7A16] font-extrabold mt-0.5">✓</span>
-                <span className="line-clamp-2">{b}</span>
-              </li>
-            ))}
-          </ul>
+              {/* Puntos clave */}
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-xs sm:text-sm text-[#12232E]">
+                {product.benefits.slice(0, 4).map((b, i) => (
+                  <li key={i} className="flex items-start gap-1.5">
+                    <span className="text-[#4E7A16] font-extrabold mt-0.5">✓</span>
+                    <span className="line-clamp-2">{b}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
 
           {/* Bloque de Precio en Soles y Botones */}
           <div className="pt-3 border-t border-[#D7E4EC] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
