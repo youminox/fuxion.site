@@ -1,6 +1,7 @@
 import productsData from "@/data/products.json";
 import categoriesData from "@/data/categories.json";
 import articlesData from "@/data/articles.json";
+import blogCategoriesData from "@/data/blogCategories.json";
 
 export const SITE_URL = "https://fuxion.site";
 export const SITE_NAME = "FuXion Perú";
@@ -153,6 +154,33 @@ export type ArticleBlock =
       disclaimer?: string;
     };
 
+export interface BlogCategoryHub {
+  slug: string;
+  name: string;
+  clusterSlug: string;
+  clusterName: string;
+  seoTitle: string;
+  seoDescription: string;
+  headline: string;
+  intro: string;
+}
+
+export interface ArticleSummary {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  clusterSlug: string;
+  clusterName: string;
+  categorySlug?: string;
+  readingTime: string;
+  focusTopic: string;
+  primaryProductSku: string;
+  primaryProductShopUrl: string;
+  heroImage?: string;
+  heroAlt?: string;
+}
+
 export interface Article {
   id: number;
   slug: string;
@@ -162,6 +190,10 @@ export interface Article {
   excerpt: string;
   clusterSlug: string;
   clusterName: string;
+  categorySlug?: string;
+  primaryKeyword?: string;
+  heroImage?: string;
+  heroAlt?: string;
   publishedAt: string;
   updatedAt?: string;
   readingTime: string;
@@ -185,6 +217,7 @@ export interface Article {
 const products: Product[] = productsData as Product[];
 const categories: Category[] = categoriesData as Category[];
 const articles: Article[] = articlesData as Article[];
+const blogCategories: BlogCategoryHub[] = blogCategoriesData as BlogCategoryHub[];
 
 export function getAllProducts(): Product[] {
   return products;
@@ -257,20 +290,69 @@ export function getArticlesByCategory(categorySlug: string, limit = 9): Article[
   return matched.slice(0, limit);
 }
 
+export function getAllBlogCategories(): BlogCategoryHub[] {
+  return blogCategories;
+}
+
+export function getBlogCategoryBySlug(slug: string): BlogCategoryHub | undefined {
+  return blogCategories.find((c) => c.slug === slug);
+}
+
+export function getArticlesByBlogCategory(categorySlug: string): Article[] {
+  return articles.filter((a) => a.categorySlug === categorySlug);
+}
+
+export function toArticleSummary(a: Article): ArticleSummary {
+  return {
+    id: a.id,
+    slug: a.slug,
+    title: a.title,
+    excerpt: a.excerpt,
+    clusterSlug: a.clusterSlug,
+    clusterName: a.clusterName,
+    categorySlug: a.categorySlug,
+    readingTime: a.readingTime,
+    focusTopic: a.focusTopic,
+    primaryProductSku: a.primaryProductSku,
+    primaryProductShopUrl: a.primaryProductShopUrl,
+    heroImage: a.heroImage,
+    heroAlt: a.heroAlt,
+  };
+}
+
+export function getArticleSummaries(): ArticleSummary[] {
+  return articles.map(toArticleSummary);
+}
+
 export function getRelatedArticlesForArticle(article: Article, limit = 6): Article[] {
+  const sameBlogCategory = article.categorySlug
+    ? articles.filter(
+        (a) => a.slug !== article.slug && a.categorySlug === article.categorySlug
+      )
+    : [];
+  const rotatedCategory: Article[] = [];
+  if (sameBlogCategory.length > 0) {
+    const startCat = (article.id * 3) % sameBlogCategory.length;
+    for (let i = 0; i < sameBlogCategory.length; i++) {
+      rotatedCategory.push(sameBlogCategory[(startCat + i) % sameBlogCategory.length]);
+    }
+  }
+
   const sameProduct = articles.filter(
     (a) =>
       a.slug !== article.slug &&
-      a.primaryProductSlug === article.primaryProductSlug
+      a.primaryProductSlug === article.primaryProductSlug &&
+      !rotatedCategory.some((c) => c.slug === a.slug)
   );
   const sameCluster = articles.filter(
     (a) =>
       a.slug !== article.slug &&
       a.primaryProductSlug !== article.primaryProductSlug &&
-      a.clusterSlug === article.clusterSlug
+      a.clusterSlug === article.clusterSlug &&
+      !rotatedCategory.some((c) => c.slug === a.slug)
   );
 
-  // Rotate cluster articles deterministically based on article.id so all 405 articles get linked
+  // Rotate cluster articles deterministically based on article.id so all articles get linked
   const rotatedCluster: Article[] = [];
   if (sameCluster.length > 0) {
     const startIdx = (article.id * 5) % sameCluster.length;
@@ -279,7 +361,7 @@ export function getRelatedArticlesForArticle(article: Article, limit = 6): Artic
     }
   }
 
-  return [...sameProduct, ...rotatedCluster].slice(0, limit);
+  return [...rotatedCategory.slice(0, 3), ...sameProduct, ...rotatedCluster].slice(0, limit);
 }
 
 export function cleanSeoTitle(rawTitle: string): string {

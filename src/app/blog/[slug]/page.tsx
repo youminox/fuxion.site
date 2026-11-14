@@ -14,6 +14,7 @@ import {
   cleanSeoTitle,
   getAllArticles,
   getArticleBySlug,
+  getBlogCategoryBySlug,
   getMerchantOfferExtras,
   getProductBySlug,
   getRelatedArticlesForArticle,
@@ -37,9 +38,16 @@ export async function generateMetadata({
   if (!article) return {};
 
   const primaryProduct = getProductBySlug(article.primaryProductSlug);
-  const ogImage = primaryProduct
-    ? primaryProduct.bodegonImage || primaryProduct.mainImage
-    : `${SITE_URL}/img/somos-fusion-nutraceutica.webp`;
+  const articleHeroImage = article.heroImage
+    ? article.heroImage.startsWith("http")
+      ? article.heroImage
+      : `${SITE_URL}${article.heroImage}`
+    : null;
+  const ogImage =
+    articleHeroImage ||
+    (primaryProduct
+      ? primaryProduct.bodegonImage || primaryProduct.mainImage
+      : `${SITE_URL}/img/somos-fusion-nutraceutica.webp`);
 
   return {
     title: cleanSeoTitle(article.seoTitle),
@@ -57,7 +65,7 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
-          alt: `${article.title} — FuXion Perú`,
+          alt: article.heroAlt || `${article.title} — FuXion Perú`,
         },
       ],
     },
@@ -87,10 +95,18 @@ export default async function BlogPostPage({
     .filter((p): p is NonNullable<typeof p> => Boolean(p));
 
   const relatedArticles = getRelatedArticlesForArticle(article, 6);
+  const blogCategory = article.categorySlug
+    ? getBlogCategoryBySlug(article.categorySlug)
+    : undefined;
   const offerExtras = getMerchantOfferExtras();
   const primaryImageUrl = primaryProduct.bodegonImage.startsWith("http")
     ? primaryProduct.bodegonImage
     : `${SITE_URL}${primaryProduct.bodegonImage}`;
+  const articleLeadImage = article.heroImage
+    ? article.heroImage.startsWith("http")
+      ? article.heroImage
+      : `${SITE_URL}${article.heroImage}`
+    : null;
 
   const modifiedDate = article.updatedAt || article.publishedAt;
 
@@ -99,7 +115,9 @@ export default async function BlogPostPage({
     "@type": "Article",
     headline: article.title,
     description: article.seoDescription,
-    image: [primaryImageUrl, ...primaryProduct.gallery],
+    image: articleLeadImage
+      ? [articleLeadImage, primaryImageUrl, ...primaryProduct.gallery]
+      : [primaryImageUrl, ...primaryProduct.gallery],
     datePublished: article.publishedAt,
     dateModified: modifiedDate,
     inLanguage: "es-PE",
@@ -155,12 +173,54 @@ export default async function BlogPostPage({
     })),
   };
 
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inicio",
+        item: `${SITE_URL}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Guías de Salud",
+        item: `${SITE_URL}/blog/`,
+      },
+      ...(blogCategory
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: blogCategory.name,
+              item: `${SITE_URL}/blog/categoria/${blogCategory.slug}/`,
+            },
+            {
+              "@type": "ListItem",
+              position: 4,
+              name: article.title,
+              item: `${SITE_URL}/blog/${article.slug}/`,
+            },
+          ]
+        : [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: article.title,
+              item: `${SITE_URL}/blog/${article.slug}/`,
+            },
+          ]),
+    ],
+  };
+
   return (
     <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify([articleJsonLd, faqJsonLd]),
+          __html: JSON.stringify([articleJsonLd, faqJsonLd, breadcrumbJsonLd]),
         }}
       />
       <Header />
@@ -171,6 +231,14 @@ export default async function BlogPostPage({
             items={[
               { label: "Inicio", href: "/" },
               { label: "Guías de Salud", href: "/blog/" },
+              ...(blogCategory
+                ? [
+                    {
+                      label: blogCategory.name,
+                      href: `/blog/categoria/${blogCategory.slug}/`,
+                    },
+                  ]
+                : []),
               { label: article.title },
             ]}
           />
@@ -230,6 +298,21 @@ export default async function BlogPostPage({
                   </a>
                 </div>
               </header>
+
+              {article.heroImage && (
+                <figure className="mb-8 overflow-hidden rounded-3xl border border-[#D7E4EC] bg-[#EDF7FD]">
+                  <img
+                    src={article.heroImage}
+                    alt={article.heroAlt || article.title}
+                    className="w-full aspect-[16/9] object-cover"
+                  />
+                  {article.heroAlt && (
+                    <figcaption className="px-4 py-2.5 text-xs text-[#5A6B78] bg-white border-t border-[#D7E4EC]">
+                      {article.heroAlt}
+                    </figcaption>
+                  )}
+                </figure>
+              )}
 
               {article.blocks && article.blocks.length > 0 ? (
                 <>

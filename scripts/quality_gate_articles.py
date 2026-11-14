@@ -21,6 +21,8 @@ BASE_DIR = "/Users/charlie/Documents/Google Antigravity/fuxion.site"
 ARTICLES_PATH = os.path.join(BASE_DIR, "src", "data", "articles.json")
 PRODUCTS_PATH = os.path.join(BASE_DIR, "src", "data", "products.json")
 CATEGORIES_PATH = os.path.join(BASE_DIR, "src", "data", "categories.json")
+BLOG_CATEGORIES_PATH = os.path.join(BASE_DIR, "src", "data", "blogCategories.json")
+KEYWORD_MAP_PATH = os.path.join(BASE_DIR, "src", "data", "keyword_map.json")
 BATCH_GLOB = "/tmp/rewritten_batches/*.json"
 
 VALID_LAYOUTS = {"guide", "editorial", "checklist", "comparison"}
@@ -133,8 +135,10 @@ def validate_article(
     art: dict[str, Any],
     valid_product_slugs: set[str],
     valid_category_slugs: set[str],
+    valid_blog_category_slugs: set[str],
     valid_article_slugs: set[str],
     prod_12grams: set[str],
+    min_words: int = 850,
 ) -> list[str]:
     errors: list[str] = []
     slug = art.get("slug", "<missing>")
@@ -167,8 +171,8 @@ def validate_article(
 
     full_text = extract_article_full_text(art)
     words = norm_words(full_text)
-    if len(words) < 850:
-        errors.append(f"{slug}: word count too low ({len(words)} < 850)")
+    if len(words) < min_words:
+        errors.append(f"{slug}: word count too low ({len(words)} < {min_words})")
 
     # Check 12-gram copy from product catalog
     art_12grams = {" ".join(words[i : i + 12]) for i in range(max(0, len(words) - 11))}
@@ -192,6 +196,10 @@ def validate_article(
             pslug = url.strip("/").split("/")[-1]
             if pslug not in valid_product_slugs:
                 errors.append(f"{slug}: invalid product link '{url}'")
+        elif url.startswith("/blog/categoria/"):
+            bcslug = url.strip("/").split("/")[-1]
+            if bcslug not in valid_blog_category_slugs:
+                errors.append(f"{slug}: invalid blog category link '{url}'")
         elif url.startswith("/blog/"):
             bslug = url.strip("/").split("/")[-1]
             if bslug not in valid_article_slugs:
@@ -213,15 +221,24 @@ def main():
     parser.add_argument("--glob", default=BATCH_GLOB)
     parser.add_argument("--merge", action="store_true")
     parser.add_argument("--strict-all", action="store_true", help="Require all articles in articles.json to be rewritten")
+    parser.add_argument("--allow-new", action="store_true", help="Allow and validate new articles defined in keyword_map.json")
+    parser.add_argument("--min-words", type=int, default=850)
     args = parser.parse_args()
 
     articles = json.load(open(ARTICLES_PATH, encoding="utf-8"))
     products = json.load(open(PRODUCTS_PATH, encoding="utf-8"))
     categories = json.load(open(CATEGORIES_PATH, encoding="utf-8"))
+    blog_categories = json.load(open(BLOG_CATEGORIES_PATH, encoding="utf-8")) if os.path.exists(BLOG_CATEGORIES_PATH) else []
+    kw_map = json.load(open(KEYWORD_MAP_PATH, encoding="utf-8")) if (args.allow_new and os.path.exists(KEYWORD_MAP_PATH)) else []
 
-    valid_product_slugs = {p["slug"] for p in products}
+    products_by_slug = {p["slug"]: p for p in products}
+    blog_cats_by_slug = {c["slug"]: c for c in blog_categories}
+    kw_by_slug = {k["slug"]: k for k in kw_map}
+
+    valid_product_slugs = set(products_by_slug.keys())
     valid_category_slugs = {c["slug"] for c in categories}
-    valid_article_slugs = {a["slug"] for a in articles}
+    valid_blog_category_slugs = set(blog_cats_by_slug.keys())
+    valid_article_slugs = {a["slug"] for a in articles} | set(kw_by_slug.keys())
     prod_12grams = build_product_12grams(products)
 
     rewritten_by_slug: dict[str, dict[str, Any]] = {}
@@ -230,27 +247,44 @@ def main():
         if a.get("blocks"):
             rewritten_by_slug[a["slug"]] = a
 
+    new_by_slug: dict[str, dict[str, Any]] = {}
     batch_files = sorted(glob.glob(args.glob))
     for bf in batch_files:
         data = json.load(open(bf, encoding="utf-8"))
         if not isinstance(data, list):
             raise SystemExit(f"Batch {bf} is not a JSON list")
         for item in data:
-            if item.get("slug") in valid_article_slugs:
-                rewritten_by_slug[item["slug"]] = item
+            slug = item.get("slug")
+            if slug in {a["slug"] for a in articles}:
+                rewritten_by_slug[slug] = item
+            elif args.allow_new and slug in kw_by_slug:
+                new_by_slug[slug] = item
 
-    print(f"Batch files found: {len(batch_files)} | Total rewritten articles loaded: {len(rewritten_by_slug)} / {len(articles)}")
+    print(
+        f"Batch files found: {len(batch_files)} | Existing modular: {len(rewritten_by_slug)} / {len(articles)}"
+        + (f" | New articles loaded: {len(new_by_slug)}" if args.allow_new else "")
+    )
 
     all_errors: list[str] = []
     shingles_by_slug: dict[str, set[str]] = {}
 
-    for slug, art in rewritten_by_slug.items():
-        errs = validate_article(art, valid_product_slugs, valid_category_slugs, valid_article_slugs, prod_12grams)
+    combined_for_check = {**rewritten_by_slug, **new_by_slug}
+    for slug, art in combined_for_check.items():
+        min_w = args.min_words if slug in new_by_slug else 850
+        errs = validate_article(
+            art,
+            valid_product_slugs,
+            valid_category_slugs,
+            valid_blog_category_slugs,
+            valid_article_slugs,
+            prod_12grams,
+            min_words=min_w,
+        )
         all_errors.extend(errs)
         words = norm_words(extract_article_full_text(art))
         shingles_by_slug[slug] = make_shingles(words, 8)
 
-    # Check pairwise 8-word shingle similarity across rewritten articles
+    # Check pairwise 8-word shingle similarity across all articles
     slugs_list = list(shingles_by_slug.keys())
     high_sim: list[tuple[float, str, str]] = []
     for i in range(len(slugs_list)):
@@ -275,8 +309,9 @@ def main():
             print("  -", e)
         raise SystemExit(1)
 
+    existing_slug_set = {a["slug"] for a in articles}
     if args.strict_all and len(rewritten_by_slug) != len(articles):
-        missing = sorted(valid_article_slugs - set(rewritten_by_slug.keys()))
+        missing = sorted(existing_slug_set - set(rewritten_by_slug.keys()))
         print(f"Missing {len(missing)} articles:", missing[:20])
         raise SystemExit(1)
 
@@ -284,43 +319,78 @@ def main():
 
     if args.merge:
         merged = []
+        seen_slugs = set()
         for orig in articles:
             slug = orig["slug"]
+            seen_slugs.add(slug)
             if slug in rewritten_by_slug:
                 rw = rewritten_by_slug[slug]
                 words = norm_words(extract_article_full_text(rw))
-                read_mins = max(4, min(12, round(len(words) / 180)))
+                read_mins = max(4, min(14, round(len(words) / 180)))
                 updated_art = {
-                    "id": orig["id"],
-                    "slug": slug,
+                    **orig,
                     "title": rw["title"],
                     "seoTitle": rw["seoTitle"],
                     "seoDescription": rw["seoDescription"],
                     "excerpt": rw["excerpt"],
-                    "clusterSlug": orig["clusterSlug"],
-                    "clusterName": orig["clusterName"],
-                    "publishedAt": orig["publishedAt"],
                     "updatedAt": "2026-11-13",
                     "readingTime": f"{read_mins} min de lectura",
-                    "primaryProductSlug": orig["primaryProductSlug"],
-                    "primaryProductSku": orig["primaryProductSku"],
-                    "primaryProductShopUrl": orig["primaryProductShopUrl"],
-                    "primaryProductDirectUrl": orig["primaryProductDirectUrl"],
-                    "secondaryProductSlugs": orig["secondaryProductSlugs"],
-                    "focusTopic": orig["focusTopic"],
                     "layoutVariant": rw["layoutVariant"],
                     "cardPosition": rw.get("cardPosition", 2),
                     "cardContextNote": rw["cardContextNote"],
                     "blocks": rw["blocks"],
                     "faqs": rw["faqs"],
                 }
+                for legacy_key in ("introHtml", "beforeCardHtml", "afterCardHtml", "comparisonRows"):
+                    updated_art.pop(legacy_key, None)
                 merged.append(updated_art)
             else:
                 merged.append(orig)
 
+        if args.allow_new and new_by_slug:
+            for slug, nw in new_by_slug.items():
+                if slug in seen_slugs:
+                    continue
+                km = kw_by_slug[slug]
+                prod = products_by_slug[km["primaryProductSlug"]]
+                bcat = blog_cats_by_slug[km["categorySlug"]]
+                words = norm_words(extract_article_full_text(nw))
+                read_mins = max(5, min(14, round(len(words) / 180)))
+                webp_disk = os.path.join(BASE_DIR, "public", "img", "blog", f"{slug}.webp")
+                new_entry = {
+                    "id": km["id"],
+                    "slug": slug,
+                    "title": nw["title"],
+                    "seoTitle": nw["seoTitle"],
+                    "seoDescription": nw["seoDescription"],
+                    "excerpt": nw["excerpt"],
+                    "clusterSlug": bcat["clusterSlug"],
+                    "clusterName": bcat["clusterName"],
+                    "categorySlug": km["categorySlug"],
+                    "primaryKeyword": km["primaryKeyword"],
+                    "heroAlt": km.get("heroAlt", nw["title"]),
+                    "publishedAt": "2026-11-13",
+                    "updatedAt": "2026-11-13",
+                    "readingTime": f"{read_mins} min de lectura",
+                    "primaryProductSlug": prod["slug"],
+                    "primaryProductSku": prod["sku"],
+                    "primaryProductShopUrl": prod["shopUrl"],
+                    "primaryProductDirectUrl": prod["directProductUrl"],
+                    "secondaryProductSlugs": km["secondaryProductSlugs"],
+                    "focusTopic": km["focusTopic"],
+                    "layoutVariant": nw["layoutVariant"],
+                    "cardPosition": nw.get("cardPosition", 2),
+                    "cardContextNote": nw["cardContextNote"],
+                    "blocks": nw["blocks"],
+                    "faqs": nw["faqs"],
+                }
+                if os.path.exists(webp_disk):
+                    new_entry["heroImage"] = f"/img/blog/{slug}.webp"
+                merged.append(new_entry)
+
         with open(ARTICLES_PATH, "w", encoding="utf-8") as f:
             json.dump(merged, f, ensure_ascii=False, indent=2)
-        print(f"Merged {len(rewritten_by_slug)} rewritten articles into {ARTICLES_PATH}.")
+        print(f"Merged {len(merged)} total articles into {ARTICLES_PATH} (+{len(new_by_slug)} new).")
 
 
 if __name__ == "__main__":

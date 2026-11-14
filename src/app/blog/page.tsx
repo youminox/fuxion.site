@@ -4,7 +4,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import BlogExplorer from "@/components/BlogExplorer";
-import { getAllArticles, getArticleClusters, SITE_URL } from "@/lib/data";
+import {
+  getAllArticles,
+  getAllBlogCategories,
+  getArticleClusters,
+  getArticleSummaries,
+  SITE_URL,
+} from "@/lib/data";
 
 export const metadata: Metadata = {
   title:
@@ -18,7 +24,9 @@ export const metadata: Metadata = {
 
 export default function BlogIndexPage() {
   const articles = getAllArticles();
+  const articleSummaries = getArticleSummaries();
   const clusters = getArticleClusters();
+  const blogCategories = getAllBlogCategories();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -66,7 +74,48 @@ export default function BlogIndexPage() {
             ]}
           />
 
-          <BlogExplorer articles={articles} clusters={clusters} />
+          <BlogExplorer articles={articleSummaries} clusters={clusters} />
+
+          {/* Hubs por Problema o Objetivo de Salud */}
+          <section className="mt-14 pt-10 border-t border-[#D7E4EC]">
+            <div className="xrule" aria-hidden="true" />
+            <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
+              Especialidades y Hábitos
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-2">
+              Explora por tema o necesidad de bienestar
+            </h2>
+            <p className="text-sm sm:text-base text-[#5A6B78] mb-6 max-w-3xl">
+              Accede a nuestras 20 áreas temáticas dedicadas con hábitos cotidianos,
+              nutrición peruana y orientación preventiva.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+              {blogCategories.map((cat) => {
+                const count = articles.filter(
+                  (a) => a.categorySlug === cat.slug
+                ).length;
+                return (
+                  <Link
+                    key={cat.slug}
+                    href={`/blog/categoria/${cat.slug}/`}
+                    className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/35 hover:bg-white hover:border-[#0093DD] p-4 transition-all flex flex-col justify-between"
+                  >
+                    <div>
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#0093DD]">
+                        {cat.clusterName}
+                      </span>
+                      <h3 className="text-base font-extrabold text-[#12232E] mt-1">
+                        {cat.name}
+                      </h3>
+                    </div>
+                    <span className="text-xs font-semibold text-[#5A6B78] mt-2">
+                      {count > 0 ? `${count} guías publicadas →` : "Ver especialidad →"}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
 
           {/* Índice Maestro por Categoría para Rastreo SEO Completo */}
           <section className="mt-16 pt-12 border-t border-[#D7E4EC]">

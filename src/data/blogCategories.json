@@ -1,0 +1,202 @@
+[
+  {
+    "slug": "bajar-de-peso",
+    "name": "Bajar de peso",
+    "clusterSlug": "control-de-peso-y-metabolismo",
+    "clusterName": "Control de Peso y Metabolismo",
+    "seoTitle": "Guías para Bajar de Peso en Perú de Forma Saludable",
+    "seoDescription": "Estrategias prácticas, alimentación peruana, gasto calórico y complementos nutricionales FuXion para bajar de peso sin efecto rebote.",
+    "headline": "Bajar de peso sin efecto rebote en Perú",
+    "intro": "Bajar de peso de forma sostenible exige ordenar tu alimentación diaria con ingredientes accesibles en Perú, mejorar la saciedad proteica y mantener un déficit calórico moderado que proteja tu masa muscular. En este hub reunimos guías prácticas enfocadas en hábitos reales y el uso complementario de bebidas funcionales FuXion."
+  },
+  {
+    "slug": "grasa-abdominal-y-cintura",
+    "name": "Grasa abdominal y cintura",
+    "clusterSlug": "control-de-peso-y-metabolismo",
+    "clusterName": "Control de Peso y Metabolismo",
+    "seoTitle": "Cómo Reducir Grasa Abdominal y Medidas de Cintura",
+    "seoDescription": "Aprende a diferenciar grasa visceral de inflamación, mejorar la sensibilidad metabólica y reducir cintura con hábitos diarios y soporte nutricional.",
+    "headline": "Grasa abdominal, cintura y metabolismo",
+    "intro": "El volumen en la cintura no siempre responde solo a grasa subcutánea; muchas veces combina grasa visceral, picos de insulina y distensión digestiva. Estas guías abordan cómo estructurar comidas, descanso y actividad física en tu rutina diaria junto con complementos termogénicos y de fibra."
+  },
+  {
+    "slug": "ansiedad-por-comer-y-antojos",
+    "name": "Ansiedad por comer y antojos",
+    "clusterSlug": "control-de-peso-y-metabolismo",
+    "clusterName": "Control de Peso y Metabolismo",
+    "seoTitle": "Controlar Antojos y Ansiedad por Comer en Perú",
+    "seoDescription": "Técnicas prácticas para frenar el hambre emocional, los antojos nocturnos de dulce y el picoteo entre comidas con proteínas y fibra funcional.",
+    "headline": "Ansiedad por comer, dulces y hambre emocional",
+    "intro": "Los antojos de tarde o noche suelen aparecer por desayunos bajos en proteína, picos de glucosa o agotamiento laboral. Aquí encontrarás protocolos de saciedad, colaciones inteligentes y cómo apoyar tu control del apetito de forma natural."
+  },
+  {
+    "slug": "dolor-de-estomago-y-gastritis",
+    "name": "Dolor de estómago y gastritis",
+    "clusterSlug": "digestion-y-limpieza-detox",
+    "clusterName": "Digestión y Limpieza Detox",
+    "seoTitle": "Hábitos Digestivos para Ardor Estomacal y Gastritis",
+    "seoDescription": "Guías informativas sobre alimentación suave, horarios de comida, señales de alerta médica y apoyo prebiótico para cuidar la mucosa gástrica.",
+    "headline": "Cuidado del estómago, acidez y digestión pesada",
+    "intro": "El ardor estomacal, la pesadez después de almorzar y la sensibilidad gástrica son consultas frecuentes en Perú por horarios irregulares y comidas muy condimentadas. Estas guías explican ajustes de alimentación y señales para acudir al gastroenterólogo."
+  },
+  {
+    "slug": "hinchazon-gases-y-colon",
+    "name": "Hinchazón, gases y colon",
+    "clusterSlug": "digestion-y-limpieza-detox",
+    "clusterName": "Digestión y Limpieza Detox",
+    "seoTitle": "Guías para Hinchazón Abdominal, Gases y Colon Sensible",
+    "seoDescription": "Descubre causas comunes de distensión abdominal y gases diarios, ajustes de fibra y probióticos funcionales para favorecer el confort intestinal.",
+    "headline": "Hinchazón abdominal, gases y microbiota",
+    "intro": "Terminar el día con el abdomen distendido suele relacionarse con fermentación intestinal, masticación rápida o desequilibrio de la flora benéfica. Explora estrategias de higiene digestiva y nutrición simbiótica diaria."
+  },
+  {
+    "slug": "estrenimiento",
+    "name": "Estreñimiento",
+    "clusterSlug": "digestion-y-limpieza-detox",
+    "clusterName": "Digestión y Limpieza Detox",
+    "seoTitle": "Cómo Aliviar el Estreñimiento Ocasional con Hábitos",
+    "seoDescription": "Soluciones prácticas para tránsito lento en oficina, viajes o cambios de rutina mediante hidratación, fibra soluble e infusiones herbales.",
+    "headline": "Tránsito intestinal lento y estreñimiento",
+    "intro": "El estreñimiento ocasional por sedentarismo, viajes en bus o bajo consumo de fibra afecta el bienestar diario y la energía. Estas guías detallan pasos claros de hidratación, postura, fibra gradual y cuándo consultar al médico."
+  },
+  {
+    "slug": "dolor-de-cabeza-y-tension",
+    "name": "Dolor de cabeza y tensión",
+    "clusterSlug": "energia-mente-y-descanso",
+    "clusterName": "Energía, Mente y Descanso",
+    "seoTitle": "Dolor de Cabeza Tensional, Estrés e Hidratación",
+    "seoDescription": "Guías preventivas para cefaleas por pantallas, deshidratación, tensión cervical y sobrecarga laboral, con pautas claras de alarma médica.",
+    "headline": "Tensión cefálica, fatiga visual e hidratación",
+    "intro": "Gran parte de las molestias de cabeza cotidianas se vinculan a deshidratación leve, postura prolongada frente al monitor y tensión acumulada en cuello y hombros. Revisa hábitos preventivos y signos que requieren evaluación médica oportuna."
+  },
+  {
+    "slug": "estres-y-ansiedad-diaria",
+    "name": "Estrés y ansiedad diaria",
+    "clusterSlug": "energia-mente-y-descanso",
+    "clusterName": "Energía, Mente y Descanso",
+    "seoTitle": "Manejo del Estrés Diario y Sobrecarga Laboral",
+    "seoDescription": "Herramientas prácticas contra el estrés laboral, nerviosismo y agotamiento mental con respiración, pausas activas y adaptógenos naturales.",
+    "headline": "Estrés cotidiano, calma y equilibrio nervioso",
+    "intro": "El tráfico urbano, la carga laboral y las jornadas extendidas mantienen elevado el estado de alerta fisiológica. Reunimos rutinas aplicables de descanso nervioso, higiene digital y apoyo nutricional con magnesio y L-teanina."
+  },
+  {
+    "slug": "insomnio-y-sueno",
+    "name": "Insomnio y sueño",
+    "clusterSlug": "energia-mente-y-descanso",
+    "clusterName": "Energía, Mente y Descanso",
+    "seoTitle": "Guías para Conciliar el Sueño y Descansar Mejor",
+    "seoDescription": "Aprende a ordenar tu reloj biológico, reducir despertares nocturnos y diseñar una rutina nocturna reparadora en casa.",
+    "headline": "Higiene del sueño y descanso nocturno profundo",
+    "intro": "Dormir mal repercute en el apetito, el ánimo y la concentración del día siguiente. Estas guías cubren ajustes de luz, temperatura, horario de cenas e infusiones nocturnas sin sedantes agresivos."
+  },
+  {
+    "slug": "cansancio-y-falta-de-energia",
+    "name": "Cansancio y falta de energía",
+    "clusterSlug": "energia-mente-y-descanso",
+    "clusterName": "Energía, Mente y Descanso",
+    "seoTitle": "Cómo Combatir el Cansancio Diario y la Fatiga",
+    "seoDescription": "Identifica por qué pierdes energía a media tarde o al despertar y cómo sostener tu vitalidad sin depender de bebidas azucaradas.",
+    "headline": "Fatiga diaria y energía sostenida sin azúcar",
+    "intro": "Despertar sin impulso o sufrir bajones después del almuerzo suele deberse a hidratación insuficiente, sueño fragmentado o exceso de carbohidratos simples. Conoce rutinas prácticas para mantener un ritmo estable."
+  },
+  {
+    "slug": "concentracion-y-memoria",
+    "name": "Concentración y memoria",
+    "clusterSlug": "energia-mente-y-descanso",
+    "clusterName": "Energía, Mente y Descanso",
+    "seoTitle": "Guías para Mejorar Concentración, Enfoque y Memoria",
+    "seoDescription": "Métodos de estudio y trabajo profundo para reducir la niebla mental, proteger el foco cognitivo y apoyar la memoria en cada etapa.",
+    "headline": "Enfoque mental, estudio y memoria cotidiana",
+    "intro": "Sostener la atención en jornadas de lectura, programación o estudio exige bloques de descanso, hidratación constante y micronutrientes clave para el sistema nervioso."
+  },
+  {
+    "slug": "piel-cabello-y-unas",
+    "name": "Piel, cabello y uñas",
+    "clusterSlug": "colageno-belleza-y-articulaciones",
+    "clusterName": "Colágeno, Belleza y Articulaciones",
+    "seoTitle": "Cuidado de Piel, Cabello y Uñas desde la Nutrición",
+    "seoDescription": "Hábitos contra resequedad, caída estacional del cabello, uñas frágiles y fotoenvejecimiento urbano con péptidos de colágeno y antioxidantes.",
+    "headline": "Nutrición para piel firme, cabello y uñas",
+    "intro": "La calidad de la piel, el folículo capilar y las uñas refleja la hidratación diaria, el descanso nocturno y el aporte constante de aminoácidos y antioxidantes como la vitamina C y la biotina."
+  },
+  {
+    "slug": "articulaciones-y-dolor-muscular",
+    "name": "Articulaciones y dolor muscular",
+    "clusterSlug": "colageno-belleza-y-articulaciones",
+    "clusterName": "Colágeno, Belleza y Articulaciones",
+    "seoTitle": "Cuidado de Rodillas, Articulaciones y Movilidad",
+    "seoDescription": "Guías prácticas para proteger cartílagos, aliviar rigidez matutina y cuidar espalda y rodillas con ejercicio de bajo impacto y cúrcuma biodisponible.",
+    "headline": "Movilidad articular, rodillas y confort muscular",
+    "intro": "Subir escaleras, permanecer sentado ocho horas o retomar caminatas exige cuidar el tejido conectivo y controlar la inflamación cotidiana mediante movilidad progresiva y nutrición específica."
+  },
+  {
+    "slug": "defensas-resfrios-y-alergias",
+    "name": "Defensas, resfríos y alergias",
+    "clusterSlug": "inmunidad-deporte-y-compras-peru",
+    "clusterName": "Inmunidad, Deporte y Compra en Perú",
+    "seoTitle": "Reforzar Defensas ante Cambios de Clima en Perú",
+    "seoDescription": "Consejos de bienestar respiratorio e inmunológico frente a la humedad costera, heladas andinas y cambios estacionales en niños y adultos.",
+    "headline": "Sistema inmune, clima húmedo y bienestar respiratorio",
+    "intro": "La humedad de Lima y los cambios bruscos de temperatura en la sierra ponen a prueba las vías respiratorias. Aquí reunimos hábitos preventivos de descanso, ventilación y nutrición inmunológica."
+  },
+  {
+    "slug": "higado-resaca-y-excesos",
+    "name": "Hígado, resaca y excesos",
+    "clusterSlug": "digestion-y-limpieza-detox",
+    "clusterName": "Digestión y Limpieza Detox",
+    "seoTitle": "Cuidado Hepático y Recuperación tras Comidas Copiosas",
+    "seoDescription": "Cómo apoyar la recuperación digestiva tras celebraciones, comidas altas en grasa y jornadas exigentes con hidratación y fitonutrientes.",
+    "headline": "Bienestar hepático y recuperación tras excesos",
+    "intro": "Después de celebraciones, parrillas o periodos de comidas pesadas, el organismo agradece hidratación abundante, descanso y platos ligeros ricos en antioxidantes."
+  },
+  {
+    "slug": "vias-urinarias-y-retencion",
+    "name": "Vías urinarias y retención",
+    "clusterSlug": "digestion-y-limpieza-detox",
+    "clusterName": "Digestión y Limpieza Detox",
+    "seoTitle": "Bienestar Urinario y Manejo de Retención de Líquidos",
+    "seoDescription": "Guías de hidratación inteligente, reducción de sodio oculto y arándanos concentrados para aliviar sensación de pesadez e hinchazón en piernas.",
+    "headline": "Confort urinario y equilibrio de líquidos",
+    "intro": "Pasar muchas horas de pie o sentado y consumir exceso de sal favorece la sensación de pesadez en tobillos y piernas. Explora rutinas diarias de hidratación y extractos de berries."
+  },
+  {
+    "slug": "salud-femenina",
+    "name": "Salud femenina",
+    "clusterSlug": "colageno-belleza-y-articulaciones",
+    "clusterName": "Colágeno, Belleza y Articulaciones",
+    "seoTitle": "Bienestar Femenino: Ciclo, Climaterio y Energía",
+    "seoDescription": "Guías prácticas sobre hábitos en días premenstruales, perimenopausia, bochornos, cuidado óseo y nutrición femenina en cada etapa.",
+    "headline": "Bienestar integral en cada etapa femenina",
+    "intro": "Los cambios hormonales mensuales y de transición hacia la madurez influyen en el descanso, la retención de líquidos y el ánimo. Revisa rutinas de alimentación y acompañamiento médico preventivo."
+  },
+  {
+    "slug": "vitalidad-masculina",
+    "name": "Vitalidad masculina",
+    "clusterSlug": "inmunidad-deporte-y-compras-peru",
+    "clusterName": "Inmunidad, Deporte y Compra en Perú",
+    "seoTitle": "Vitalidad Masculina, Circulación y Rendimiento Diario",
+    "seoDescription": "Cómo mantener fuerza, resistencia cardiovascular, buena circulación y energía después de los 35 y 40 años con hábitos sostenibles.",
+    "headline": "Energía, fuerza y circulación masculina",
+    "intro": "A partir de los 35 años, el estrés laboral y el sedentarismo reducen el vigor diario y la recuperación muscular. Estas guías cubren descanso, entrenamiento de fuerza y aminoácidos clave."
+  },
+  {
+    "slug": "deporte-calambres-y-recuperacion",
+    "name": "Deporte, calambres y recuperación",
+    "clusterSlug": "inmunidad-deporte-y-compras-peru",
+    "clusterName": "Inmunidad, Deporte y Compra en Perú",
+    "seoTitle": "Nutrición Deportiva: Calambres, Hidratación y Recuperación",
+    "seoDescription": "Protocolos para corredores, futbolistas, ciclistas y gimnasio en Perú: prevenir calambres, elegir pre-entreno y recuperar masa muscular.",
+    "headline": "Rendimiento deportivo, hidratación y recuperación",
+    "intro": "Entrenar en costa, altura andina o climas cálidos exige ajustar sales minerales, timing de proteínas y recuperación post-esfuerzo para rendir mejor sin lesiones."
+  },
+  {
+    "slug": "glucosa-nutricion-y-familia",
+    "name": "Glucosa, nutrición y familia",
+    "clusterSlug": "guias-de-productos",
+    "clusterName": "Guías de Productos FuXion",
+    "seoTitle": "Control de Glucosa y Nutrición Familiar en Perú",
+    "seoDescription": "Guías sobre orden de comidas para evitar picos de glucosa, loncheras escolares equilibradas, cocina criolla ligera y cuidado en adultos mayores.",
+    "headline": "Glucosa estable, cocina peruana y familia",
+    "intro": "Desde evitar la somnolencia tras un plato criollo hasta mejorar el aporte de hierro y vitaminas en niños o adultos mayores, aquí agrupamos soluciones cotidianas para toda la casa."
+  }
+]

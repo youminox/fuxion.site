@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import {
   getAllArticles,
+  getAllBlogCategories,
   getAllCategories,
   getAllProducts,
   SITE_URL,
@@ -74,6 +75,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: p.isFlagship ? 0.95 : 0.85,
   }));
 
+  const blogCategoryRoutes: MetadataRoute.Sitemap = getAllBlogCategories().map(
+    (bc) => ({
+      url: `${SITE_URL}/blog/categoria/${bc.slug}/`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.85,
+    })
+  );
+
   const articleRoutes: MetadataRoute.Sitemap = getAllArticles().map((a) => ({
     url: `${SITE_URL}/blog/${a.slug}/`,
     lastModified: new Date(a.updatedAt || a.publishedAt),
@@ -85,6 +95,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...staticRoutes,
     ...categoryRoutes,
     ...productRoutes,
+    ...blogCategoryRoutes,
     ...articleRoutes,
   ];
 }

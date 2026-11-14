@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import type { Article } from "@/lib/data";
+import type { ArticleSummary } from "@/lib/data";
 
 interface BlogExplorerProps {
-  articles: Article[];
+  articles: ArticleSummary[];
   clusters: { slug: string; name: string; count: number }[];
 }
 
@@ -113,38 +113,50 @@ export default function BlogExplorer({
         {visibleArticles.map((art) => (
           <article
             key={art.slug}
-            className="rounded-2xl border border-[#D7E4EC] bg-white p-5 flex flex-col justify-between hover:border-[#0093DD] hover:shadow-[0_18px_44px_-20px_rgba(0,147,221,0.25)] transition-all"
+            className="rounded-2xl border border-[#D7E4EC] bg-white overflow-hidden flex flex-col justify-between hover:border-[#0093DD] hover:shadow-[0_18px_44px_-20px_rgba(0,147,221,0.25)] transition-all"
           >
-            <div>
-              <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
-                  {art.clusterName}
-                </span>
-                <span>{art.readingTime}</span>
+            {art.heroImage && (
+              <Link href={`/blog/${art.slug}/`} className="block aspect-[16/9] bg-[#EDF7FD] overflow-hidden">
+                <img
+                  src={art.heroImage}
+                  alt={art.heroAlt || art.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover"
+                />
+              </Link>
+            )}
+            <div className="p-5 flex-1 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
+                    {art.clusterName}
+                  </span>
+                  <span>{art.readingTime}</span>
+                </div>
+
+                <h2 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2.5 hover:text-[#0093DD] transition-colors">
+                  <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
+                </h2>
+
+                <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
+                  {art.excerpt}
+                </p>
               </div>
 
-              <h2 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2.5 hover:text-[#0093DD] transition-colors">
-                <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
-              </h2>
-
-              <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
-                {art.excerpt}
-              </p>
-            </div>
-
-            <div className="mt-4 pt-3.5 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
-              <Link
-                href={`/blog/${art.slug}/`}
-                className="text-[#0093DD] hover:underline"
-              >
-                Leer artículo →
-              </Link>
-              <a
-                href={art.primaryProductShopUrl}
-                className="px-2.5 py-1 rounded-full bg-[#E8F6D5] text-[#2F5207] hover:bg-[#8CC63F] hover:text-[#1F3105] transition-colors"
-              >
-                Comprar SKU #{art.primaryProductSku} →
-              </a>
+              <div className="mt-4 pt-3.5 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
+                <Link
+                  href={`/blog/${art.slug}/`}
+                  className="text-[#0093DD] hover:underline"
+                >
+                  Leer artículo →
+                </Link>
+                <a
+                  href={art.primaryProductShopUrl}
+                  className="px-2.5 py-1 rounded-full bg-[#E8F6D5] text-[#2F5207] hover:bg-[#8CC63F] hover:text-[#1F3105] transition-colors"
+                >
+                  Comprar SKU #{art.primaryProductSku} →
+                </a>
+              </div>
             </div>
           </article>
         ))}
