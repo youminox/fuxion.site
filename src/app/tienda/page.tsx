@@ -54,7 +54,7 @@ export default function TiendaPage() {
       <Header />
 
       <main className="min-h-screen bg-white pb-20">
-        {/* Cabecera estilo /tienda/ de shop.site.fuxion.com */}
+        {/* Cabecera estilo /tienda/ de carlos-lingan.site.fuxion.com */}
         <section className="bg-[#0093DD] text-[#FFFFF0] py-12 sm:py-16 border-b border-[#D7E4EC]">
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -101,7 +101,7 @@ export default function TiendaPage() {
             <CatalogExplorer products={products} categories={categories} />
           </section>
 
-          {/* Índice Completo de productos de shop.site.fuxion.com */}
+          {/* Índice Completo de productos de carlos-lingan.site.fuxion.com */}
           <section className="pt-12 border-t border-[#D7E4EC]">
             <div className="xrule" aria-hidden="true" />
             <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
@@ -113,7 +113,7 @@ export default function TiendaPage() {
             <p className="text-sm sm:text-base text-[#5A6B78] max-w-3xl mb-6">
               Cada fila corresponde exactamente a un producto o presentación de
               la tienda oficial{" "}
-              <strong className="text-[#12232E]">shop.site.fuxion.com</strong>,
+              <strong className="text-[#12232E]">carlos-lingan.site.fuxion.com</strong>,
               incluyendo Doypacks de 28 sticks, Cajas Mini de 7 sticks, Potes de
               proteína, Packs y Shakers.
             </p>

@@ -2,7 +2,7 @@
 """
 Generates 105 high-value SEO articles for fuxion.site (Peru market, PEN / S/)
 in src/data/articles.json. Every article embeds a Transactional Product Card
-linking directly to the official product URL on https://shop.site.fuxion.com/.
+linking directly to the official product URL on https://carlos-lingan.site.fuxion.com/.
 """
 import json
 import os
@@ -524,7 +524,7 @@ def build_article_record(idx: int, spec: tuple, prod_map: dict) -> dict:
 
 <h2 id="precio-y-donde-comprar-peru">6. Precio oficial y cómo comprar {clean_name} original en Perú</h2>
 <p>El precio oficial vigente en el catálogo de <strong>FuXion Perú</strong> para <strong>{clean_name}</strong> ({pack_str}) es de <strong>{price_fmt}</strong> (impuestos incluidos). Evita comprar en plataformas informales o revendedores sin código donde el producto pueda estar adulterado, próximo a vencer o sin cadena de custodia.</p>
-<p>Al hacer tu pedido desde las tarjetas transaccionales de esta página, ingresas directamente al entorno oficial de compra de FuXion Biotech SAC (<code>shop.site.fuxion.com</code>), donde tu pago se procesa con encriptación bancaria (Visa, Mastercard, American Express, Diners Club) y el despacho sale directamente desde el almacén central de FuXion hacia tu domicilio en Lima Metropolitana, Callao o cualquier departamento del Perú.</p>
+<p>Al hacer tu pedido desde las tarjetas transaccionales de esta página, ingresas directamente al entorno oficial de compra de FuXion Biotech SAC (<code>carlos-lingan.site.fuxion.com</code>), donde tu pago se procesa con encriptación bancaria (Visa, Mastercard, American Express, Diners Club) y el despacho sale directamente desde el almacén central de FuXion hacia tu domicilio en Lima Metropolitana, Callao o cualquier departamento del Perú.</p>
 """.strip()
 
     comparison_rows = [
@@ -549,7 +549,7 @@ def build_article_record(idx: int, spec: tuple, prod_map: dict) -> dict:
         },
         {
             "question": f"¿Cómo llega mi pedido de {clean_name} en Lima y provincias?",
-            "answer": f"Al finalizar tu compra en la pasarela oficial de FuXion (shop.site.fuxion.com), el sistema coordina el envío directo a la dirección que indiques en Lima o provincias con entrega rápida garantizada."
+            "answer": f"Al finalizar tu compra en la pasarela oficial de FuXion (carlos-lingan.site.fuxion.com), el sistema coordina el envío directo a la dirección que indiques en Lima o provincias con entrega rápida garantizada."
         }
     ]
 

@@ -24,7 +24,7 @@ export default function ProductBuyBox({ product }: { product: Product }) {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Galería (estilo landing-pdp.css de shop.site.fuxion.com) */}
+        {/* Galería (estilo landing-pdp.css de carlos-lingan.site.fuxion.com) */}
         <div className="lg:col-span-6">
           <div className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/55 p-4 sm:p-6">
             <div className="relative aspect-square rounded-xl bg-white border border-[#D7E4EC] grid place-items-center p-4 overflow-hidden">
@@ -176,7 +176,7 @@ export default function ProductBuyBox({ product }: { product: Product }) {
             {product.description}
           </p>
 
-          {/* CTA Principal directo a shop.site.fuxion.com */}
+          {/* CTA Principal directo a carlos-lingan.site.fuxion.com */}
           <div>
             <a
               href={currentPres.shopUrl}
@@ -204,7 +204,7 @@ export default function ProductBuyBox({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Barra Flotante Inferior en Móvil idéntica a shop.site.fuxion.com */}
+      {/* Barra Flotante Inferior en Móvil idéntica a carlos-lingan.site.fuxion.com */}
       <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t border-[#D7E4EC] px-4 py-3 shadow-[0_-8px_24px_rgba(18,35,46,0.1)]">
         <div className="mx-auto max-w-[600px] flex items-center justify-between gap-3">
           <div>

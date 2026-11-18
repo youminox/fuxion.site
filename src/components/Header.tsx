@@ -25,7 +25,7 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Main Header idéntico a shop.site.fuxion.com */}
+      {/* Main Header idéntico a carlos-lingan.site.fuxion.com */}
       <div className="mx-auto max-w-[1180px] px-4 sm:px-6 min-h-[68px] flex items-center justify-between gap-4">
         <Link
           href="/"

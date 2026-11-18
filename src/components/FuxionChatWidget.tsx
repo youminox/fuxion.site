@@ -192,7 +192,7 @@ export default function FuxionChatWidget() {
         role: "assistant",
         content:
           data.reply ||
-          "Te recomiendo revisar estas opciones en nuestra [Tienda Oficial FuXion Perú](https://shop.site.fuxion.com/tienda/).",
+          "Te recomiendo revisar estas opciones en nuestra [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
         recommendedProducts: Array.isArray(data.recommended_products)
           ? data.recommended_products
           : [],
@@ -208,7 +208,7 @@ export default function FuxionChatWidget() {
         id: "a-err-" + Date.now(),
         role: "assistant",
         content:
-          "En este momento hubo una demora en la conexión. Puedes explorar y comprar directamente en la [Tienda Oficial FuXion Perú](https://shop.site.fuxion.com/tienda/).",
+          "En este momento hubo una demora en la conexión. Puedes explorar y comprar directamente en la [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
         suggestedOptions: ["Intentar de nuevo"],
         createdAt: new Date().toISOString(),
       };

@@ -190,7 +190,7 @@ def validate_article(
     # Check links inside markdown [label](url)
     for m in re.finditer(r"\[[^\]]+\]\(([^)]+)\)", full_text):
         url = m.group(1).strip()
-        if url.startswith("https://shop.site.fuxion.com/"):
+        if url.startswith("https://carlos-lingan.site.fuxion.com/"):
             continue
         elif url.startswith("/productos/"):
             pslug = url.strip("/").split("/")[-1]

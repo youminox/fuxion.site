@@ -65,13 +65,13 @@ export default function AvisoLegalPage() {
               expresados en moneda nacional (Soles Peruanos — PEN / S/), así
               como facilitar a los usuarios el acceso directo a las páginas de
               compra oficiales alojadas en{" "}
-              <strong>https://shop.site.fuxion.com</strong>.
+              <strong>https://carlos-lingan.site.fuxion.com</strong>.
             </p>
             <p>
               Todas las operaciones de pago, facturación electrónica y logística
               de despacho se procesan de manera íntegra y directa dentro del
               entorno seguro oficial de{" "}
-              <strong>https://shop.site.fuxion.com</strong> operado bajo el
+              <strong>https://carlos-lingan.site.fuxion.com</strong> operado bajo el
               respaldo de FuXion Biotech SAC.
             </p>
 

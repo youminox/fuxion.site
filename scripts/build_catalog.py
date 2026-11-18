@@ -2,7 +2,7 @@
 """
 Builds src/data/categories.json and src/data/products.json from src/data/raw_skus.json,
 mapping all 72 SKUs into 60 canonical SEO product pages (with presentation selectors for multi-SKU products)
-and also indexing all 72 SKUs so every single SKU and product has full Peruvian SEO content and direct links to shop.site.fuxion.com.
+and also indexing all 72 SKUs so every single SKU and product has full Peruvian SEO content and direct links to carlos-lingan.site.fuxion.com.
 """
 import json
 import os
@@ -832,7 +832,7 @@ def build_faqs(clean_name: str, price_fmt: str, pack: str, ideal_time: str, ingr
         },
         {
             "question": f"¿Cuál es el precio oficial de {clean_name} en Perú?",
-            "answer": f"El precio oficial de catálogo de {clean_name} en su presentación principal ({pack}) es de {price_fmt} (Soles peruanos, IGV incluido). Al comprar a través del enlace directo hacia la Tienda Oficial FuXion Perú (shop.site.fuxion.com), accedes al precio oficial sin intermediarios y con garantía de autenticidad."
+            "answer": f"El precio oficial de catálogo de {clean_name} en su presentación principal ({pack}) es de {price_fmt} (Soles peruanos, IGV incluido). Al comprar a través del enlace directo hacia la Tienda Oficial FuXion Perú (carlos-lingan.site.fuxion.com), accedes al precio oficial sin intermediarios y con garantía de autenticidad."
         },
         {
             "question": f"¿Cómo se prepara y a qué hora es mejor tomar {clean_name}?",
@@ -844,7 +844,7 @@ def build_faqs(clean_name: str, price_fmt: str, pack: str, ideal_time: str, ingr
         },
         {
             "question": f"¿Cómo comprar {clean_name} original en Lima y provincias del Perú?",
-            "answer": f"Solo debes hacer clic en el botón «Comprar en Tienda Oficial» de esta página. Serás dirigido directamente a la ficha oficial de {clean_name} en shop.site.fuxion.com, donde podrás pagar de forma 100% segura con tarjeta Visa, Mastercard, Amex, Diners o medios locales y recibir tu pedido en la puerta de tu casa en Lima o cualquier provincia del Perú."
+            "answer": f"Solo debes hacer clic en el botón «Comprar en Tienda Oficial» de esta página. Serás dirigido directamente a la ficha oficial de {clean_name} en carlos-lingan.site.fuxion.com, donde podrás pagar de forma 100% segura con tarjeta Visa, Mastercard, Amex, Diners o medios locales y recibir tu pedido en la puerta de tu casa en Lima o cualquier provincia del Perú."
         }
     ]
 

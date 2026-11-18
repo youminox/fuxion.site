@@ -53,11 +53,11 @@ export default function PoliticaCookiesPage() {
                 navegación fluida a través de las secciones del catálogo, el
                 filtrado instantáneo por líneas de productos y el correcto
                 direccionamiento hacia la tienda oficial{" "}
-                <code>https://shop.site.fuxion.com</code>.
+                <code>https://carlos-lingan.site.fuxion.com</code>.
               </li>
               <li>
                 <strong>Cookies de atribución de tienda:</strong> Al pasar a{" "}
-                <code>https://shop.site.fuxion.com</code>, la plataforma oficial
+                <code>https://carlos-lingan.site.fuxion.com</code>, la plataforma oficial
                 de FuXion utiliza cookies de sesión de carrito (WooCommerce)
                 para conservar los productos seleccionados durante el proceso de
                 pago en Soles.

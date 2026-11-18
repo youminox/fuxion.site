@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Extract all 72 FuXion Peru SKUs from shop.WordPress.2026-11-10.xml and https://shop.site.fuxion.com/,
+Extract all 72 FuXion Peru SKUs from shop.WordPress.2026-11-10.xml and https://carlos-lingan.site.fuxion.com/,
 download official theme assets into public/img/, and build rich structured JSON data in src/data/.
 """
 import concurrent.futures
@@ -70,8 +70,8 @@ def main():
             }
     print(f"   Found {len(xml_meta_by_sku)} products in XML.")
 
-    print("2. Fetching https://shop.site.fuxion.com/tienda/ ...")
-    tienda_html = fetch_text("https://shop.site.fuxion.com/tienda/")
+    print("2. Fetching https://carlos-lingan.site.fuxion.com/tienda/ ...")
+    tienda_html = fetch_text("https://carlos-lingan.site.fuxion.com/tienda/")
     m_prods = re.search(r"window\.FX_PRODUCTS=(\[.*?\]);", tienda_html, re.S)
     m_store = re.search(r"window\.FX_STORE=(\{.*?\});", tienda_html, re.S)
     fx_products = json.loads(m_prods.group(1)) if m_prods else []
@@ -81,7 +81,7 @@ def main():
     def fetch_sku_detail(p):
         sku = str(p["sku"])
         # Fetch from /producto/{sku}/ (or p['url'])
-        target_url = f"https://shop.site.fuxion.com/producto/{sku}/"
+        target_url = f"https://carlos-lingan.site.fuxion.com/producto/{sku}/"
         try:
             html = fetch_text(target_url)
             m = re.search(r"window\.FX_PRODUCT=(\{.*?\});", html, re.S)
@@ -118,9 +118,9 @@ def main():
             "pack": p.get("pack") or detail.get("pack") or xml_m.get("empaque") or "",
             "points": fx_store.get("points", {}).get(sku, xml_m.get("puntos", 0)),
             "in_stock": p.get("in_stock", True),
-            "shop_url": p.get("url") or f"https://shop.site.fuxion.com/producto/{sku}/",
-            "direct_product_url": f"https://shop.site.fuxion.com/producto/{sku}/",
-            "is_landing": not (p.get("url") or "").startswith("https://shop.site.fuxion.com/producto/"),
+            "shop_url": p.get("url") or f"https://carlos-lingan.site.fuxion.com/producto/{sku}/",
+            "direct_product_url": f"https://carlos-lingan.site.fuxion.com/producto/{sku}/",
+            "is_landing": not (p.get("url") or "").startswith("https://carlos-lingan.site.fuxion.com/producto/"),
             "short": detail.get("short") or p.get("desc") or "",
             "tabs": detail.get("tabs") or {},
             "sticks": detail.get("sticks") or 0,
@@ -136,7 +136,7 @@ def main():
         json.dump(raw_combined, f, ensure_ascii=False, indent=2)
     print(f"4. Saved {len(raw_combined)} raw SKUs to {raw_path}")
 
-    # Download theme assets from shop.site.fuxion.com
+    # Download theme assets from carlos-lingan.site.fuxion.com
     theme_assets = [
         "logo-fuxion-azul.webp",
         "logo-fuxion-blanco.webp",
@@ -182,7 +182,7 @@ def main():
     ]
     print("5. Downloading official theme images...")
     for asset in theme_assets:
-        url = f"https://shop.site.fuxion.com/wp-content/themes/fuxion-theme/assets/img/{asset}"
+        url = f"https://carlos-lingan.site.fuxion.com/wp-content/themes/fuxion-theme/assets/img/{asset}"
         dest = os.path.join(PUBLIC_IMG_DIR, asset)
         download_file(url, dest)
     print("Done!")

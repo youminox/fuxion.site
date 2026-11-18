@@ -37,7 +37,7 @@ export default function EnviosGarantiaPage() {
               administrado por <strong>{LEGAL_OWNER}</strong>, domiciliado en{" "}
               <strong>{LEGAL_LOCATION}</strong>), tus compras se procesan de
               manera directa en la tienda oficial{" "}
-              <strong>https://shop.site.fuxion.com</strong>.
+              <strong>https://carlos-lingan.site.fuxion.com</strong>.
             </p>
 
             <h2>1. Cobertura y Tiempos de Envío en el Perú</h2>
@@ -56,7 +56,7 @@ export default function EnviosGarantiaPage() {
               <li>
                 <strong>Cálculo del envío:</strong> Se calcula automáticamente
                 en Soles al ingresar tu dirección exacta en el checkout de{" "}
-                <code>shop.site.fuxion.com</code>.
+                <code>carlos-lingan.site.fuxion.com</code>.
               </li>
             </ul>
 

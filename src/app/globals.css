@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-/* ========= TOKENS OFICIALES DE SHOP.SITE.FUXION.COM ========= */
+/* ========= TOKENS OFICIALES DE CARLOS-LINGAN.SITE.FUXION.COM ========= */
 :root {
   --plum: #0093DD;            /* azul Fuxion oficial */
   --plum-mid: #007CBC;
@@ -64,7 +64,7 @@ h1, h2, h3, h4 {
   background: var(--ft-accent);
 }
 
-/* Botones idénticos a shop.site.fuxion.com */
+/* Botones idénticos a carlos-lingan.site.fuxion.com */
 .btn-fx {
   display: inline-flex;
   align-items: center;

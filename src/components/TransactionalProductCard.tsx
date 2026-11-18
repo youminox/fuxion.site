@@ -53,7 +53,7 @@ export default function TransactionalProductCard({
           </a>
         </div>
 
-        {/* Información + Beneficios + CTA directo a shop.site.fuxion.com */}
+        {/* Información + Beneficios + CTA directo a carlos-lingan.site.fuxion.com */}
         <div className="md:col-span-8 space-y-3.5">
           <div>
             <p className="text-xs font-semibold text-[#5A6B78] uppercase tracking-wide">

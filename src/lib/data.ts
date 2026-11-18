@@ -5,8 +5,8 @@ import blogCategoriesData from "@/data/blogCategories.json";
 
 export const SITE_URL = "https://fuxion.site";
 export const SITE_NAME = "FuXion Perú";
-export const SHOP_BASE_URL = "https://shop.site.fuxion.com";
-export const SHOP_TIENDA_URL = "https://shop.site.fuxion.com/tienda/";
+export const SHOP_BASE_URL = "https://carlos-lingan.site.fuxion.com";
+export const SHOP_TIENDA_URL = "https://carlos-lingan.site.fuxion.com/tienda/";
 export const LEGAL_OWNER = "CARLOS EDEN LINGAN BORJA";
 export const LEGAL_LOCATION = "Lima, Perú";
 

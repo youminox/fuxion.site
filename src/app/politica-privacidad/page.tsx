@@ -59,14 +59,14 @@ export default function PoliticaPrivacidadPage() {
             <p>
               El sitio web <strong>fuxion.site</strong> actúa como catálogo
               informativo y puente transaccional hacia la tienda oficial{" "}
-              <strong>https://shop.site.fuxion.com</strong>. En{" "}
+              <strong>https://carlos-lingan.site.fuxion.com</strong>. En{" "}
               <code>fuxion.site</code> no almacenamos datos de tarjetas de
               crédito, débito ni contraseñas bancarias.
             </p>
             <p>
               Cuando el usuario hace clic en cualquiera de los botones de compra
               y pasa al proceso de checkout en{" "}
-              <strong>https://shop.site.fuxion.com</strong>, los datos de envío
+              <strong>https://carlos-lingan.site.fuxion.com</strong>, los datos de envío
               y facturación son gestionados directamente por la plataforma
               oficial de comercio electrónico de{" "}
               <strong>FuXion Biotech SAC</strong> bajo protocolos de cifrado SSL

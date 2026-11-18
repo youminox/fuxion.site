@@ -118,7 +118,7 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Cierre de Footer igual a shop.site.fuxion.com */}
+        {/* Cierre de Footer igual a carlos-lingan.site.fuxion.com */}
         <div className="border-t border-white/35 mt-7 pt-5 flex flex-wrap items-baseline justify-between gap-4">
           <p
             className="text-xl sm:text-2xl font-bold tracking-tight text-[#FFFFF0]"
@@ -138,7 +138,7 @@ export default function Footer() {
           si estás embarazada, en periodo de lactancia o bajo tratamiento médico.
           Mantener fuera del alcance de los niños. Los resultados varían según
           cada organismo. Todas las transacciones se procesan de manera directa y
-          segura en la tienda oficial de FuXion Biotech SAC (shop.site.fuxion.com).
+          segura en la tienda oficial de FuXion Biotech SAC (carlos-lingan.site.fuxion.com).
         </p>
       </div>
     </footer>

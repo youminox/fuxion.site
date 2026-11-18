@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "shop.site.fuxion.com",
+        hostname: "carlos-lingan.site.fuxion.com",
       },
     ],
   },

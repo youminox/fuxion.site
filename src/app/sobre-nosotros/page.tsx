@@ -60,7 +60,7 @@ export default function SobreNosotrosPage() {
               <li>
                 <strong>Compra 100% directa y segura:</strong> Cada enlace de
                 compra dirige sin intermediarios al entorno oficial{" "}
-                <code>https://shop.site.fuxion.com</code>.
+                <code>https://carlos-lingan.site.fuxion.com</code>.
               </li>
               <li>
                 <strong>Educación en salud preventiva:</strong> Más de 100

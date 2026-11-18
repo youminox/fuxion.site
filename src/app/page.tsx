@@ -18,7 +18,7 @@ const HOME_FAQS = [
   },
   {
     q: "¿Cómo se realiza la compra y el pago online?",
-    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion Perú (shop.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura con tarjeta Visa, Mastercard, American Express o Diners.",
+    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion Perú (carlos-lingan.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura con tarjeta Visa, Mastercard, American Express o Diners.",
   },
   {
     q: "¿Puedo tomar varios productos FuXion al mismo tiempo?",
@@ -82,7 +82,7 @@ export default function HomePage() {
       <Header />
 
       <main id="top">
-        {/* ===== 1. HERO OFICIAL CLONADO DE SHOP.SITE.FUXION.COM ===== */}
+        {/* ===== 1. HERO OFICIAL CLONADO DE CARLOS-LINGAN.SITE.FUXION.COM ===== */}
         <section className="relative bg-[#0093DD] text-[#FFFFF0] overflow-hidden min-h-[540px] lg:min-h-[660px] flex items-end">
           <div className="absolute inset-0" aria-hidden="true">
             <img
@@ -175,7 +175,7 @@ export default function HomePage() {
                 Cada producto cuenta con su ficha técnica completa y botón de
                 compra directa hacia la tienda oficial{" "}
                 <strong className="text-[#12232E]">
-                  shop.site.fuxion.com
+                  carlos-lingan.site.fuxion.com
                 </strong>
                 .
               </p>
@@ -246,7 +246,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 4. NOSOTROS Y CALIDAD (CLONADO DE SHOP.SITE.FUXION.COM) ===== */}
+        {/* ===== 4. NOSOTROS Y CALIDAD (CLONADO DE CARLOS-LINGAN.SITE.FUXION.COM) ===== */}
         <section className="py-16 sm:py-20 bg-white" id="nosotros">
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="relative rounded-3xl overflow-hidden min-h-[320px] flex items-end p-6 sm:p-10 mb-10">

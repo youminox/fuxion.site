@@ -508,7 +508,7 @@ export default async function BlogPostPage({
                 </div>
 
                 <p className="text-[11px] text-[#5A6B78] text-center mt-3">
-                  🔒 Pago seguro en Soles en shop.site.fuxion.com · Envíos a
+                  🔒 Pago seguro en Soles en carlos-lingan.site.fuxion.com · Envíos a
                   Lima y provincias.
                 </p>
               </div>

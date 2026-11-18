@@ -2,7 +2,7 @@
 """
 Expands scripts/build_articles.py and generates 405 SEO articles (105 original + 300 new)
 in src/data/articles.json. Every article references a specific FuXion Peru product and embeds
-its TransactionalProductCard pointing directly to https://shop.site.fuxion.com/.
+its TransactionalProductCard pointing directly to https://carlos-lingan.site.fuxion.com/.
 """
 import json
 import os
@@ -342,10 +342,10 @@ IMMUNITY_SPORT_TOPICS = [
     ("base-madre-roja", "Cómo hacer estofados, adobos y carapulcra saludables en casa con Base Madre Roja", "sofrito natural de ají panca, tomate y especias listo para usar"),
     ("tomatodo-azul", "Hidratación diaria en el trabajo y gimnasio con el Tomatodo Oficial FuXion Azul", "material libre de BPA con medidas exactas para preparar tus sticks de 180 a 500 ml"),
     ("tomatodo-sport-pro-edition", "Tomatodo Sport Pro Edition FuXion: el shaker de alta resistencia para tus proteínas y pre-entrenos", "cierre hermético antiderrames y rejilla mezcladora para batidos sin grumos"),
-    ("prunex1", "Dónde comprar productos FuXion originales en Arequipa, Trujillo y Chiclayo con envío a domicilio", "compra online segura en shop.site.fuxion.com con despacho directo a provincias"),
+    ("prunex1", "Dónde comprar productos FuXion originales en Arequipa, Trujillo y Chiclayo con envío a domicilio", "compra online segura en carlos-lingan.site.fuxion.com con despacho directo a provincias"),
     ("thermo-t3", "Dónde comprar FuXion en Cusco, Piura, Huancayo e Iquitos a precio oficial de catálogo", "cobertura nacional de envíos y pago seguro con tarjetas en Soles"),
     ("beauty-in", "Guía para comprar FuXion en Lima Metropolitana (Miraflores, Surco, San Isidro, Los Olivos, San Juan)", "entrega rápida a domicilio desde el centro de distribución oficial"),
-    ("vita-xtra-t", "Cómo verificar que tus productos FuXion sean 100% originales y con fecha de vencimiento vigente", "importancia de comprar directamente en la plataforma oficial shop.site.fuxion.com"),
+    ("vita-xtra-t", "Cómo verificar que tus productos FuXion sean 100% originales y con fecha de vencimiento vigente", "importancia de comprar directamente en la plataforma oficial carlos-lingan.site.fuxion.com"),
     ("biopro-sport", "El Pack Deportivo Completo FuXion: cómo combinar Pre Sport, Xtra Mile, Post Sport y BioPro+ Sport", "protocolo antes, durante y después del entrenamiento para atletas en Perú"),
     ("vera-plus", "Pack Inmunológico FuXion para el invierno en Perú: Vera+ + BioPro+ Tect + Gano+ T", "blindaje respiratorio y celular para niños y adultos"),
     ("flora-liv", "Qué productos FuXion pueden tomar los niños según su edad: Flora Liv, Nutraday, Vitaenergía y BioPro+ Tect", "guía completa de nutrición pediátrica funcional para padres en Perú"),
@@ -451,7 +451,7 @@ def build_rich_article(idx: int, spec: tuple, prod_map: dict) -> dict:
     elif variant == 1:
         intro_html = f"""
 <p>Lograr resultados sostenibles en <strong>{focus_topic}</strong> requiere combinar buenos hábitos diarios con una nutrición funcional específica. En el mercado peruano, <strong><a href="/productos/{prod['slug']}/">{clean_name}</a></strong> (perteneciente a la <em>{prod['categoryName']}</em> de FuXion) fue diseñado científicamente para cubrir esta necesidad de forma práctica y 100% natural.</p>
-<p>En este artículo revisaremos paso a paso su mecanismo de acción, su protocolo de consumo recomendado por semanas y el enlace directo para adquirir tu <strong>{clean_name}</strong> original ({price_fmt}) en la plataforma oficial <code>shop.site.fuxion.com</code>.</p>
+<p>En este artículo revisaremos paso a paso su mecanismo de acción, su protocolo de consumo recomendado por semanas y el enlace directo para adquirir tu <strong>{clean_name}</strong> original ({price_fmt}) en la plataforma oficial <code>carlos-lingan.site.fuxion.com</code>.</p>
 """.strip()
 
         before_card_html = f"""
