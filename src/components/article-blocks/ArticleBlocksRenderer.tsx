@@ -45,6 +45,7 @@ function RichInline({ text }: { text: string }) {
           <a
             key={key++}
             href={href}
+            rel={href.includes("matchapep-t.com") ? "noopener" : undefined}
             className="text-[#0093DD] font-semibold underline underline-offset-3 hover:text-[#007CBC]"
           >
             {label}

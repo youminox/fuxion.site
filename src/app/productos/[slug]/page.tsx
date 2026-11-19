@@ -223,8 +223,9 @@ export default async function ProductDetailPage({
                 Ingredientes principales de {product.cleanName}
               </h2>
               <p className="text-sm text-[#5A6B78] mb-5">
-                Principios activos naturales concentrados, sin azúcar añadida,
-                libres de octógonos y endulzados con stevia natural:
+                {product.slug === "matcha-pep-t"
+                  ? "Ingredientes de la etiqueta oficial, libres de octógonos y endulzados con estevia (solo 0.9 g de azúcares añadidos por porción):"
+                  : "Principios activos naturales concentrados, sin azúcar añadida, libres de octógonos y endulzados con stevia natural:"}
               </p>
 
               <div className="flex flex-wrap gap-2 mb-5">
@@ -287,6 +288,51 @@ export default async function ProductDetailPage({
               </div>
             </div>
           </section>
+
+          {/* 3b. GUÍA ESPECIALIZADA EXTERNA (SOLO MATCHA PEP-T) */}
+          {product.slug === "matcha-pep-t" && (
+            <section
+              id="guia-matcha-pep-t"
+              className="py-12 border-t border-[#D7E4EC]"
+            >
+              <div className="rounded-3xl border border-[#CBE79E] bg-gradient-to-br from-[#F4FBE8] via-white to-[#EDF7FD] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-8">
+                  <div className="xrule" aria-hidden="true" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#4E7A16] mb-1">
+                    Recurso recomendado
+                  </p>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-3">
+                    Guía completa de Matcha Pep-T
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#2B3D4B] leading-relaxed">
+                    ¿Quieres profundizar más allá de esta ficha? Consulta la{" "}
+                    <a
+                      href="https://matchapep-t.com/"
+                      rel="noopener"
+                      className="text-[#0093DD] font-semibold underline underline-offset-3 hover:text-[#007CBC]"
+                    >
+                      Guía especializada de Matcha Pep-T: preparación,
+                      ingredientes y ciencia
+                    </a>
+                    , con recetas paso a paso, la etiqueta nutricional
+                    explicada ingrediente por ingrediente y lo que dice la
+                    evidencia sobre el matcha y los péptidos Nextida® GC.
+                  </p>
+                </div>
+                <ul className="lg:col-span-4 grid grid-cols-1 gap-2.5 text-sm font-semibold text-[#12232E]">
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    🍵 Preparación fría y caliente
+                  </li>
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    🌿 Ingredientes de la etiqueta oficial
+                  </li>
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    🔬 Ciencia de los péptidos y el matcha
+                  </li>
+                </ul>
+              </div>
+            </section>
+          )}
 
           {/* 4. TABLA DE INFORMACIÓN NUTRICIONAL OFICIAL (SI EXISTE) */}
           {product.nutritionalImage && (
