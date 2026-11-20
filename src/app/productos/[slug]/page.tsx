@@ -334,6 +334,51 @@ export default async function ProductDetailPage({
             </section>
           )}
 
+          {/* 3c. GUÍA ESPECIALIZADA EXTERNA (SOLO PRUNEX1) */}
+          {product.slug === "prunex1" && (
+            <section
+              id="guia-prunex1"
+              className="py-12 border-t border-[#D7E4EC]"
+            >
+              <div className="rounded-3xl border border-[#CBE79E] bg-gradient-to-br from-[#F4FBE8] via-white to-[#EDF7FD] p-6 sm:p-10 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                <div className="lg:col-span-8">
+                  <div className="xrule" aria-hidden="true" />
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#4E7A16] mb-1">
+                    Recurso recomendado
+                  </p>
+                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-3">
+                    Guía completa de Prunex1
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#2B3D4B] leading-relaxed">
+                    ¿Quieres conocer el producto a fondo? Consulta la{" "}
+                    <a
+                      href="https://prunex1.com/"
+                      rel="noopener"
+                      className="text-[#0093DD] font-semibold underline underline-offset-3 hover:text-[#007CBC]"
+                    >
+                      guía especializada de Prunex1: etiqueta, ingredientes y
+                      preparación
+                    </a>
+                    , con los 16 ingredientes explicados uno por uno, la tabla
+                    nutricional oficial, el video de preparación y respuestas
+                    honestas a las preguntas más frecuentes.
+                  </p>
+                </div>
+                <ul className="lg:col-span-4 grid grid-cols-1 gap-2.5 text-sm font-semibold text-[#12232E]">
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    🏷️ La etiqueta explicada
+                  </li>
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    🌿 Ingredientes uno por uno
+                  </li>
+                  <li className="rounded-xl bg-white/80 border border-[#D7E4EC] px-4 py-2.5">
+                    ☕ Preparación paso a paso
+                  </li>
+                </ul>
+              </div>
+            </section>
+          )}
+
           {/* 4. TABLA DE INFORMACIÓN NUTRICIONAL OFICIAL (SI EXISTE) */}
           {product.nutritionalImage && (
             <section
