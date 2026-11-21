@@ -317,18 +317,18 @@ export default function FuxionChatWidget() {
                 />
               </div>
               <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <h3
                     className="font-extrabold text-[15px] leading-tight truncate text-white"
                     style={{ fontFamily: "var(--display)" }}
                   >
                     Asesor IA FuXion Perú
                   </h3>
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[#EFFBC4] text-[#142600]">
+                  <span className="inline-flex items-center whitespace-nowrap shrink-0 leading-none text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-[#EFFBC4] text-[#142600]">
                     En línea
                   </span>
                 </div>
-                <p className="text-xs text-[#E4F5FE] truncate">
+                <p className="text-xs text-[#E4F5FE] truncate mt-0.5">
                   Recomendación personalizada y compra directa
                 </p>
               </div>
