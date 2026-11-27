@@ -2,35 +2,37 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CatalogExplorer from "@/components/CatalogExplorer";
+import ProductInlineCta from "@/components/ProductInlineCta";
 import {
   getAllArticles,
   getAllCategories,
+  getAllCountries,
   getAllProducts,
   getFlagshipProducts,
-  SHOP_TIENDA_URL,
+  getProductBySlug,
   SITE_URL,
 } from "@/lib/data";
 
 const HOME_FAQS = [
   {
-    q: "¿Por dónde empiezo si nunca he tomado productos FuXion en Perú?",
-    a: "Te recomendamos iniciar con el Paso 1 del Sistema Base (Limpieza Digestiva con Prunex1, Flora Liv o Liquid Fiber) y sumar el producto estrella según tu meta principal: Thermo T3 y NoCarb-T para control de peso, Vita Xtra T+ para energía diaria, Beauty-In para piel y colágeno, o No Stress para descansar mejor.",
+    q: "¿Por dónde empiezo si nunca he tomado productos FuXion?",
+    a: "Te recomendamos iniciar con el Paso 1 del Sistema Base (Limpieza Digestiva con Prunex1 / Guindon X / Prunex, Flora Liv o Liquid Fiber) y sumar el producto estrella según tu meta principal: Thermo T3 (T T3) y NoCarb-T para control de peso, Vita Xtra T+ para energía diaria, Beauty-In (Cool Age / Bell In) para piel y colágeno, o No Stress (Off) para descansar mejor.",
+  },
+  {
+    q: "¿En qué países y monedas puedo comprar online en la Tienda Oficial?",
+    a: "Actualmente nuestra tienda oficial vende y despacha directamente en 6 países con su moneda local: Perú (Soles · PEN), Colombia (Pesos Colombianos · COP), Estados Unidos (Dólares · USD), México (Pesos Mexicanos · MXN), Ecuador (Dólares · USD) y Guatemala (Quetzales · GTQ). Nuestra web detecta tu ubicación automáticamente o puedes cambiar de país con las banderas de la barra superior.",
   },
   {
     q: "¿Cómo se realiza la compra y el pago online?",
-    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion Perú (carlos-lingan.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura con tarjeta Visa, Mastercard, American Express o Diners.",
+    a: "En cada ficha de producto y tarjeta de nuestra web encontrarás botones directos («Comprar en Tienda Oficial») que te llevan sin intermediarios a la plataforma oficial de FuXion de tu país (carlos-lingan.site.fuxion.com). Allí agregas tus productos al carrito y pagas de forma 100% segura en tu moneda local con tarjeta Visa, Mastercard, American Express, Diners o medios locales.",
   },
   {
     q: "¿Puedo tomar varios productos FuXion al mismo tiempo?",
     a: "Sí. Al ser alimentos nutracéuticos 100% naturales con certificación Clean Label (sin químicos ni azúcares añadidos), puedes combinar de 2 a 4 bebidas funcionales en distintos momentos del día: por ejemplo, Vita Xtra T+ por la mañana, Thermo T3 o NoCarb-T después del almuerzo y Prunex1, Beauty-In o Youth Elixir por la noche.",
   },
   {
-    q: "¿Los productos FuXion son medicamentos o tienen octógonos?",
-    a: "No son medicamentos: son alimentos nutracéuticos elaborados con principios activos concentrados de la Amazonía, los Andes y biotecnología celular. No contienen azúcar (están endulzados con stevia natural) y son libres de octógonos, colorantes y preservantes artificiales.",
-  },
-  {
-    q: "¿Cuánto demora el envío en Lima y a provincias del Perú?",
-    a: "Todos los pedidos realizados en la tienda oficial son despachados directamente desde los almacenes de FuXion Biotech SAC en Perú. El tiempo de entrega habitual es de 24 a 48 horas hábiles en Lima Metropolitana y Callao, y de 2 a 4 días hábiles en capitales de provincia.",
+    q: "¿Cuánto demora el envío a mi domicilio?",
+    a: "Todos los pedidos realizados en la tienda oficial son despachados directamente desde los centros logísticos oficiales de FuXion Biotech en cada país (Perú, Colombia, EE. UU., México, Ecuador y Guatemala), con entrega a domicilio entre 1 y 5 días hábiles según tu ciudad.",
   },
 ];
 
@@ -38,20 +40,21 @@ export default function HomePage() {
   const flagships = getFlagshipProducts();
   const allProducts = getAllProducts();
   const categories = getAllCategories();
+  const countries = getAllCountries();
   const featuredArticles = getAllArticles().slice(0, 12);
 
   const jsonLd = [
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
-      name: "FuXion Perú — Catálogo Oficial y Tienda Transaccional",
+      name: "FuXion Oficial — Catálogo y Tienda Transaccional en 6 Países",
       url: `${SITE_URL}/`,
-      inLanguage: "es-PE",
+      inLanguage: "es",
     },
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
-      name: "Productos Estrella FuXion Perú",
+      name: "Productos Estrella FuXion",
       itemListElement: flagships.map((p, idx) => ({
         "@type": "ListItem",
         position: idx + 1,
@@ -87,7 +90,7 @@ export default function HomePage() {
           <div className="absolute inset-0" aria-hidden="true">
             <img
               src="/img/somos-fusion-nutraceutica.webp"
-              alt="Somos Fusión Nutracéutica — FuXion Perú"
+              alt="Somos Fusión Nutracéutica — FuXion Oficial"
               className="w-full h-full object-cover object-[50%_40%]"
               fetchPriority="high"
             />
@@ -103,10 +106,13 @@ export default function HomePage() {
           <div className="relative z-10 mx-auto max-w-[1180px] w-full px-4 sm:px-6 py-12 sm:py-16 lg:py-20">
             <div className="max-w-2xl">
               <p
-                className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#EFFBC4] mb-3"
+                className="inline-flex flex-wrap items-center gap-2 text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#EFFBC4] mb-3"
                 style={{ fontFamily: "var(--display)" }}
               >
-                <span>Fusión Nutracéutica® · Hecho en Perú</span>
+                <span>Fusión Nutracéutica® · Tienda Oficial en 6 Países</span>
+                <span>
+                  ({countries.map((c) => `${c.flag} ${c.currencyCode}`).join(" · ")})
+                </span>
               </p>
 
               <h1
@@ -120,7 +126,8 @@ export default function HomePage() {
               <p className="text-base sm:text-lg text-[#EAF6FD] max-w-xl leading-relaxed mb-7">
                 Bebidas funcionales 100% naturales que trabajan sobre una función
                 concreta del organismo: limpieza digestiva, energía, control de
-                peso, colágeno, inmunidad, enfoque mental y deporte.
+                peso, colágeno, inmunidad, enfoque mental y deporte. Compra en
+                la moneda oficial de tu país.
               </p>
 
               <div className="flex flex-wrap gap-3">
@@ -134,19 +141,19 @@ export default function HomePage() {
                   href="/tienda/"
                   className="btn-fx btn-fx--buy text-sm sm:text-base"
                 >
-                  Ver Catálogo
+                  Ver Catálogo de mi País
                 </Link>
               </div>
 
               <div className="flex flex-wrap gap-2 mt-6">
                 <span className="bg-white/15 border border-white/25 px-3 py-1 rounded-full text-xs text-[#F0FAFF]">
+                  <b className="text-[#EFFBC4]">6 Países</b> · Moneda Local
+                </span>
+                <span className="bg-white/15 border border-white/25 px-3 py-1 rounded-full text-xs text-[#F0FAFF]">
                   <b className="text-[#EFFBC4]">4,9/5</b> · 2.300+ reseñas
                 </span>
                 <span className="bg-white/15 border border-white/25 px-3 py-1 rounded-full text-xs text-[#F0FAFF]">
-                  <b className="text-[#EFFBC4]">+55.000</b> personas en Perú
-                </span>
-                <span className="bg-white/15 border border-white/25 px-3 py-1 rounded-full text-xs text-[#F0FAFF]">
-                  Más de <b className="text-[#EFFBC4]">35 países</b>
+                  <b className="text-[#EFFBC4]">+55.000</b> clientes activos
                 </span>
                 <span className="bg-white/15 border border-white/25 px-3 py-1 rounded-full text-xs text-[#F0FAFF]">
                   <b className="text-[#EFFBC4]">Clean Label</b> garantizado
@@ -156,7 +163,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 2. CATÁLOGO TRANSACCIONAL COMPLETO CON BUSCADOR ===== */}
+        {/* ===== 2. CATÁLOGO TRANSACCIONAL MULTI-PAÍS CON BUSCADOR ===== */}
         <section className="py-16 sm:py-20 bg-white" id="destacados">
           <div id="catalogo" className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="mb-8">
@@ -165,15 +172,15 @@ export default function HomePage() {
                 className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
                 style={{ fontFamily: "var(--display)" }}
               >
-                Catálogo Oficial Perú 2026
+                Catálogo Oficial Internacional 2026
               </p>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-3">
-                Todos los productos FuXion
+                Todos los productos FuXion en tu moneda local
               </h2>
               <p className="text-[#5A6B78] text-base sm:text-lg max-w-3xl">
-                Filtra por línea o busca por nombre, ingrediente o beneficio.
-                Cada producto cuenta con su ficha técnica completa y botón de
-                compra directa hacia la tienda oficial{" "}
+                Detectamos tu país automáticamente (o cámbialo con las banderas)
+                para mostrarte los productos disponibles, su precio en tu moneda
+                local y el enlace directo a tu tienda oficial{" "}
                 <strong className="text-[#12232E]">
                   carlos-lingan.site.fuxion.com
                 </strong>
@@ -185,7 +192,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 3. LAS LÍNEAS DEL SISTEMA FUXION PERÚ ===== */}
+        {/* ===== 3. LAS LÍNEAS DEL SISTEMA FUXION ===== */}
         <section
           className="py-16 sm:py-20 bg-[#EDF7FD]/60 border-y border-[#D7E4EC]"
           id="lineas"
@@ -204,7 +211,7 @@ export default function HomePage() {
             <p className="text-[#5A6B78] text-base sm:text-lg max-w-2xl mb-10">
               Explora nuestras líneas especializadas y encuentra la bebida
               funcional exacta para tu meta de salud, energía o composición
-              corporal en Perú.
+              corporal.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -234,7 +241,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="pt-3 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold text-[#0093DD]">
-                      <span>{catProds.length} productos disponibles</span>
+                      <span>{catProds.length} fórmulas en la línea</span>
                       <span className="group-hover:translate-x-1 transition-transform">
                         Explorar línea →
                       </span>
@@ -246,13 +253,13 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ===== 4. NOSOTROS Y CALIDAD (CLONADO DE CARLOS-LINGAN.SITE.FUXION.COM) ===== */}
+        {/* ===== 4. NOSOTROS Y CALIDAD ===== */}
         <section className="py-16 sm:py-20 bg-white" id="nosotros">
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <div className="relative rounded-3xl overflow-hidden min-h-[320px] flex items-end p-6 sm:p-10 mb-10">
               <img
                 src="/img/prunex1-hero.webp"
-                alt="Naturaleza y laboratorio FuXion en Perú"
+                alt="Naturaleza y laboratorio FuXion"
                 className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
@@ -269,8 +276,9 @@ export default function HomePage() {
                   Sobre FuXion
                 </p>
                 <h2 className="text-2xl sm:text-4xl font-extrabold leading-tight">
-                  Fuxion Biotech SAC es una compañía multinacional
-                  establecida en 2006 en Perú que cambia la vida de las personas.
+                  Fuxion Biotech es una compañía multinacional establecida en
+                  2006 que transforma la salud y bienestar en las Américas y el
+                  mundo.
                 </h2>
               </div>
             </div>
@@ -280,8 +288,12 @@ export default function HomePage() {
                 <p>
                   <strong>FuXion®</strong> investiga, desarrolla y produce
                   alimentos nutracéuticos únicos que ayudan a alcanzar el máximo
-                  potencial de salud del organismo, comercializándolos hacia el
-                  mundo desde el Perú.
+                  potencial de salud del organismo, con distribución oficial y
+                  despacho directo en{" "}
+                  <strong>
+                    Perú, Colombia, Estados Unidos, México, Ecuador y Guatemala
+                  </strong>
+                  .
                 </p>
                 <p>
                   Sus productos nacen de la fusión de los conocimientos de
@@ -296,8 +308,8 @@ export default function HomePage() {
               </div>
               <div className="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {[
-                  { b: "2006", s: "año de fundación, en Perú" },
-                  { b: "+35", s: "países con presencia" },
+                  { b: "2006", s: "año de fundación" },
+                  { b: "6 Países", s: "tienda directa online" },
                   { b: "+55.000", s: "personas la eligen" },
                   { b: "100%", s: "de origen natural" },
                 ].map((st, idx) => (
@@ -340,8 +352,8 @@ export default function HomePage() {
                     Quién avala lo que tomas
                   </h2>
                   <p className="text-sm sm:text-base text-[#5A6B78] mt-1">
-                    Producto del Perú, elaborado bajo estándares internacionales
-                    certificados y con etiqueta limpia (Clean Label).
+                    Elaborado bajo estándares internacionales certificados y con
+                    etiqueta limpia (Clean Label).
                   </p>
                 </div>
               </div>
@@ -357,14 +369,14 @@ export default function HomePage() {
                     title: "Baltic Control",
                     desc: "Certificadora internacional",
                   },
-                  { title: "INACAL", desc: "Laboratorio acreditado en Perú" },
+                  { title: "INACAL", desc: "Laboratorio acreditado" },
                   {
                     title: "Clean Label",
                     desc: "Etiqueta limpia, sin químicos",
                   },
                   {
-                    title: "Empresa Peruana",
-                    desc: "Reconocimiento a la excelencia",
+                    title: "Patentes Bio",
+                    desc: "Ingredientes patentados",
                   },
                 ].map((s, i) => (
                   <div
@@ -397,15 +409,15 @@ export default function HomePage() {
                   className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
                   style={{ fontFamily: "var(--display)" }}
                 >
-                  Biblioteca de Bienestar FuXion Perú
+                  Biblioteca de Bienestar FuXion
                 </p>
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E]">
                   Guías de uso, beneficios y salud nutracéutica
                 </h2>
                 <p className="text-[#5A6B78] text-base mt-2 max-w-2xl">
                   Explora más de 400 artículos especializados sobre cómo tomar
-                  cada producto, horarios recomendados, comparativas y planes
-                  para mejorar tu salud en Perú.
+                  cada producto, horarios recomendados y planes de salud con
+                  enlaces adaptados a tu país y moneda.
                 </p>
               </div>
               <Link
@@ -417,54 +429,55 @@ export default function HomePage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {featuredArticles.map((art) => (
-                <article
-                  key={art.slug}
-                  className="rounded-2xl border border-[#D7E4EC] bg-white p-5 flex flex-col justify-between hover:border-[#0093DD] hover:shadow-md transition-all"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
-                        {art.clusterName}
-                      </span>
-                      <span>{art.readingTime}</span>
+              {featuredArticles.map((art) => {
+                const artProd = getProductBySlug(art.primaryProductSlug);
+                return (
+                  <article
+                    key={art.slug}
+                    className="rounded-2xl border border-[#D7E4EC] bg-white p-5 flex flex-col justify-between hover:border-[#0093DD] hover:shadow-md transition-all"
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
+                          {art.clusterName}
+                        </span>
+                        <span>{art.readingTime}</span>
+                      </div>
+                      <h3 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2 hover:text-[#0093DD] transition-colors">
+                        <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
+                      </h3>
+                      <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
+                        {art.excerpt}
+                      </p>
                     </div>
-                    <h3 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2 hover:text-[#0093DD] transition-colors">
-                      <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
-                    </h3>
-                    <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
-                      {art.excerpt}
-                    </p>
-                  </div>
-                  <div className="mt-4 pt-3 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
-                    <Link
-                      href={`/blog/${art.slug}/`}
-                      className="text-[#0093DD] hover:underline"
-                    >
-                      Leer guía completa →
-                    </Link>
-                    <a
-                      href={art.primaryProductShopUrl}
-                      className="text-[#4E7A16] hover:underline"
-                    >
-                      Ver producto en tienda →
-                    </a>
-                  </div>
-                </article>
-              ))}
+                    <div className="mt-4 pt-3 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
+                      <Link
+                        href={`/blog/${art.slug}/`}
+                        className="text-[#0093DD] hover:underline"
+                      >
+                        Leer guía completa →
+                      </Link>
+                      <ProductInlineCta product={artProd} variant="text" />
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
 
         {/* ===== 8. PREGUNTAS FRECUENTES (FAQ) ===== */}
-        <section className="py-16 sm:py-20 bg-white border-t border-[#D7E4EC]" id="ayuda">
+        <section
+          className="py-16 sm:py-20 bg-white border-t border-[#D7E4EC]"
+          id="ayuda"
+        >
           <div className="mx-auto max-w-[920px] px-4 sm:px-6">
             <div className="xrule" aria-hidden="true" />
             <p
               className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#0093DD] mb-1.5"
               style={{ fontFamily: "var(--display)" }}
             >
-              Preguntas frecuentes en Perú
+              Preguntas frecuentes
             </p>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#12232E] mb-8">
               Lo que más nos preguntan antes de comprar
@@ -496,20 +509,15 @@ export default function HomePage() {
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E]">
-                ¿List@ para empezar tu cambio con FuXion Perú?
+                ¿List@ para empezar tu cambio con FuXion?
               </h2>
               <p className="text-[#5A6B78] text-base mt-1">
-                Explora el catálogo completo y recibe tu pedido en Lima o
-                provincias con garantía oficial.
+                Explora el catálogo completo en tu moneda local y recibe tu
+                pedido en casa con garantía oficial.
               </p>
             </div>
             <div className="flex flex-wrap gap-3 shrink-0">
-              <a
-                href={SHOP_TIENDA_URL}
-                className="btn-fx btn-fx--buy text-base font-bold"
-              >
-                Ir a la Tienda Oficial →
-              </a>
+              <ProductInlineCta className="btn-fx btn-fx--buy text-base font-bold" />
               <Link href="/tienda/" className="btn-fx btn-fx--ghost text-base">
                 Ver Catálogo
               </Link>

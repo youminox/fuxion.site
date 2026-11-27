@@ -1,12 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Product } from "@/lib/data";
+import { useCountry } from "@/context/CountryContext";
 
 export default function ProductBuyBox({ product }: { product: Product }) {
+  const { country, countries, countryCode, setCountryCode, localize } =
+    useCountry();
+  const loc = localize(product);
+
   const [selectedPresIdx, setSelectedPresIdx] = useState(0);
+
+  // Reset selected presentation index when country changes
+  useEffect(() => {
+    setSelectedPresIdx(0);
+  }, [countryCode, product.slug]);
+
   const currentPres =
-    product.presentations[selectedPresIdx] || product.presentations[0];
+    loc.presentations[selectedPresIdx] ||
+    loc.presentations[0] || {
+      sku: loc.sku,
+      name: loc.localName,
+      pack: loc.pack,
+      price: loc.price,
+      formattedPrice: loc.formattedPrice,
+      points: loc.points,
+      sticks: loc.sticks,
+      perStickFormatted: loc.perStickFormatted,
+      inStock: loc.inStock,
+      shopUrl: loc.shopUrl,
+      directProductUrl: loc.directProductUrl,
+      isLanding: true,
+      gallery: product.gallery,
+    };
 
   const allImages = Array.from(
     new Set(
@@ -24,20 +50,20 @@ export default function ProductBuyBox({ product }: { product: Product }) {
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Galería (estilo landing-pdp.css de carlos-lingan.site.fuxion.com) */}
+        {/* Galería */}
         <div className="lg:col-span-6">
           <div className="rounded-2xl border border-[#D7E4EC] bg-[#EDF7FD]/55 p-4 sm:p-6">
             <div className="relative aspect-square rounded-xl bg-white border border-[#D7E4EC] grid place-items-center p-4 overflow-hidden">
               <img
                 src={activeImage}
-                alt={`${product.cleanName} — ${currentPres.pack} FuXion Perú`}
+                alt={`${loc.localName} — ${currentPres.pack} FuXion ${country.name}`}
                 className="max-h-[380px] w-auto object-contain transition-all duration-200"
               />
               <span className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-[#0093DD] text-white shadow-xs">
                 {product.badge}
               </span>
               <span className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-bold bg-[#E8F6D5] text-[#2F5207]">
-                ✓ Original FuXion Perú
+                {country.flag} Original FuXion {country.shortName}
               </span>
             </div>
 
@@ -60,7 +86,7 @@ export default function ProductBuyBox({ product }: { product: Product }) {
                   >
                     <img
                       src={imgUrl}
-                      alt={`${product.cleanName} vista ${idx + 1}`}
+                      alt={`${loc.localName} vista ${idx + 1}`}
                       className="w-full h-full object-contain"
                     />
                   </button>
@@ -68,106 +94,169 @@ export default function ProductBuyBox({ product }: { product: Product }) {
               </div>
             )}
             <p className="text-xs text-[#5A6B78] mt-3">
-              Toca una miniatura para ver el producto y el empaque oficial de FuXion Perú.
+              Toca una miniatura para ver el producto y el empaque oficial de
+              FuXion.
             </p>
           </div>
         </div>
 
-        {/* Caja de Compra Transaccional */}
+        {/* Caja de Compra Transaccional Multi-País */}
         <div className="lg:col-span-6 rounded-2xl border border-[#D7E4EC] bg-white p-6 sm:p-8 shadow-[0_18px_44px_-20px_rgba(0,147,221,0.22)]">
+          {/* Selector rápido de País y Moneda dentro del BuyBox */}
+          <div className="mb-4 pb-3.5 border-b border-[#EDF7FD]">
+            <p className="text-[11px] font-bold uppercase tracking-wider text-[#5A6B78] mb-2">
+              País de entrega y moneda local:
+            </p>
+            <div className="flex flex-wrap gap-1.5">
+              {countries.map((c) => {
+                const isSelected = c.code === countryCode;
+                const hasOffer = Boolean(
+                  product.countryOffers?.[c.code]?.available
+                );
+                return (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => setCountryCode(c.code)}
+                    className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+                      isSelected
+                        ? "bg-[#0093DD] text-white border-[#0093DD] shadow-2xs"
+                        : hasOffer
+                        ? "bg-[#F6FBFE] text-[#12232E] border-[#D7E4EC] hover:border-[#0093DD]"
+                        : "bg-gray-50 text-[#5A6B78] border-gray-200 opacity-75"
+                    }`}
+                  >
+                    <span>{c.flag}</span>
+                    <span>{c.shortName}</span>
+                    <span className="text-[10px] opacity-90">
+                      ({c.currencyCode})
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-[#0093DD]">
               {product.categoryName}
             </span>
-            <span className="text-xs font-semibold text-[#5A6B78]">
-              Código SKU: <strong className="text-[#12232E]">#{currentPres.sku}</strong>
-            </span>
+            {loc.availableInCountry && (
+              <span className="text-xs font-semibold text-[#5A6B78]">
+                Código SKU:{" "}
+                <strong className="text-[#12232E]">#{currentPres.sku}</strong>
+              </span>
+            )}
           </div>
 
           <h1
             className="text-3xl sm:text-4xl font-extrabold text-[#12232E] leading-tight mb-2"
             style={{ fontFamily: "var(--display)" }}
           >
-            {product.cleanName}
+            {loc.localName}
           </h1>
 
-          <p className="text-sm font-medium text-[#5A6B78] mb-3">
-            Presentación seleccionada:{" "}
-            <strong className="text-[#12232E]">{currentPres.pack}</strong>
-          </p>
-
-          {/* Puntos y Stock */}
-          <div className="flex flex-wrap items-center gap-2 mb-4">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EDF7FD] text-[#0093DD] border border-[#D7E4EC]">
-              ⭐ Acumula {currentPres.points} puntos FuXion
-            </span>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#E8F6D5] text-[#2F5207]">
-              ● Disponible para envío en Perú
-            </span>
-          </div>
-
-          {/* Precio en Soles */}
-          <div className="rounded-xl bg-[#EDF7FD]/80 border border-[#D7E4EC] p-4 mb-5">
-            <div className="flex items-baseline gap-2.5">
-              <span
-                className="text-3xl sm:text-4xl font-extrabold text-[#0093DD]"
-                style={{ fontFamily: "var(--display)" }}
-              >
-                {currentPres.formattedPrice}
-              </span>
-              <span className="text-xs font-bold uppercase text-[#5A6B78]">
-                Soles (PEN · IGV Incluido)
-              </span>
-            </div>
-            {currentPres.perStickFormatted && (
-              <p className="text-xs sm:text-sm font-medium text-[#12232E] mt-1">
-                {currentPres.sticks > 0
-                  ? `${currentPres.sticks} sobres · ${currentPres.perStickFormatted} por sobre`
-                  : `${currentPres.perStickFormatted} por porción`}
+          {loc.availableInCountry ? (
+            <>
+              <p className="text-sm font-medium text-[#5A6B78] mb-3">
+                Presentación seleccionada:{" "}
+                <strong className="text-[#12232E]">{currentPres.pack}</strong>
               </p>
-            )}
-          </div>
 
-          {/* Selector de Presentación cuando hay más de 1 SKU */}
-          {product.presentations.length > 1 && (
-            <div className="mb-6">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#12232E] mb-2.5">
-                Elige tu presentación oficial:
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {product.presentations.map((pres, idx) => {
-                  const isSelected = idx === selectedPresIdx;
-                  return (
-                    <button
-                      key={pres.sku}
-                      type="button"
-                      onClick={() => {
-                        setSelectedPresIdx(idx);
-                        if (pres.gallery?.[0]) {
-                          setActiveImage(pres.gallery[0]);
-                        }
-                      }}
-                      className={`text-left rounded-xl p-3 border-2 transition-all ${
-                        isSelected
-                          ? "border-[#0093DD] bg-[#EDF7FD]/60 shadow-xs"
-                          : "border-[#D7E4EC] bg-white hover:border-[#0093DD]/60"
-                      }`}
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-xs font-bold text-[#12232E]">
-                          {pres.pack}
-                        </span>
-                        <span className="text-sm font-extrabold text-[#0093DD]">
-                          {pres.formattedPrice}
-                        </span>
-                      </div>
-                      <span className="block text-[11px] text-[#5A6B78] mt-0.5">
-                        SKU #{pres.sku} · {pres.points} pts
-                      </span>
-                    </button>
-                  );
-                })}
+              {/* Puntos y Stock */}
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#EDF7FD] text-[#0093DD] border border-[#D7E4EC]">
+                  ⭐ Acumula {currentPres.points} puntos FuXion
+                </span>
+                {currentPres.inStock ? (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#E8F6D5] text-[#2F5207]">
+                    ● Disponible para envío en {country.name}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900">
+                    ● Sin stock temporal en {country.name}
+                  </span>
+                )}
               </div>
+
+              {/* Precio en la Moneda del País Activo */}
+              <div className="rounded-xl bg-[#EDF7FD]/80 border border-[#D7E4EC] p-4 mb-5">
+                <div className="flex flex-wrap items-baseline gap-2.5">
+                  <span
+                    className="text-3xl sm:text-4xl font-extrabold text-[#0093DD]"
+                    style={{ fontFamily: "var(--display)" }}
+                  >
+                    {currentPres.formattedPrice}
+                  </span>
+                  <span className="text-xs font-bold uppercase text-[#5A6B78]">
+                    {country.currencyLabel} · {country.taxLabel}
+                  </span>
+                </div>
+                {currentPres.perStickFormatted && (
+                  <p className="text-xs sm:text-sm font-medium text-[#12232E] mt-1">
+                    {currentPres.sticks > 0
+                      ? `${currentPres.sticks} sobres · ${currentPres.perStickFormatted} por sobre`
+                      : `${currentPres.perStickFormatted} por porción`}
+                  </p>
+                )}
+              </div>
+
+              {/* Selector de Presentación cuando hay más de 1 SKU en ese país */}
+              {loc.presentations.length > 1 && (
+                <div className="mb-6">
+                  <p className="text-xs font-bold uppercase tracking-wider text-[#12232E] mb-2.5">
+                    Elige tu presentación oficial en {country.name}:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {loc.presentations.map((pres, idx) => {
+                      const isSelected = idx === selectedPresIdx;
+                      return (
+                        <button
+                          key={pres.sku}
+                          type="button"
+                          onClick={() => {
+                            setSelectedPresIdx(idx);
+                            if (pres.gallery?.[0]) {
+                              setActiveImage(pres.gallery[0]);
+                            }
+                          }}
+                          className={`text-left rounded-xl p-3 border-2 transition-all cursor-pointer ${
+                            isSelected
+                              ? "border-[#0093DD] bg-[#EDF7FD]/60 shadow-xs"
+                              : "border-[#D7E4EC] bg-white hover:border-[#0093DD]/60"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span className="text-xs font-bold text-[#12232E]">
+                              {pres.pack}
+                            </span>
+                            <span className="text-sm font-extrabold text-[#0093DD]">
+                              {pres.formattedPrice}
+                            </span>
+                          </div>
+                          <span className="block text-[11px] text-[#5A6B78] mt-0.5">
+                            SKU #{pres.sku} · {pres.points} pts
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="rounded-xl bg-amber-50 border border-amber-200 p-4 mb-5">
+              <p className="text-sm font-bold text-amber-950">
+                Este producto específico no se encuentra actualmente en el
+                catálogo de FuXion {country.name}.
+              </p>
+              <p className="text-xs text-amber-900 mt-1">
+                Puedes explorar las bebidas equivalentes disponibles en{" "}
+                <strong>
+                  {country.name} ({country.currencyLabel})
+                </strong>{" "}
+                en la tienda oficial o seleccionar otro país de entrega arriba.
+              </p>
             </div>
           )}
 
@@ -176,13 +265,17 @@ export default function ProductBuyBox({ product }: { product: Product }) {
             {product.description}
           </p>
 
-          {/* CTA Principal directo a carlos-lingan.site.fuxion.com */}
+          {/* CTA Principal directo a carlos-lingan.site.fuxion.com/{country}/ */}
           <div>
             <a
               href={currentPres.shopUrl}
               className="btn-fx btn-fx--buy w-full !py-4 !px-6 text-base sm:text-lg font-bold shadow-lg"
             >
-              <span>Comprar</span>
+              <span>
+                {loc.availableInCountry
+                  ? `Comprar en Tienda Oficial ${country.name} (${currentPres.formattedPrice})`
+                  : `Ver Catálogo Oficial FuXion ${country.name} →`}
+              </span>
             </a>
           </div>
 
@@ -190,11 +283,13 @@ export default function ProductBuyBox({ product }: { product: Product }) {
           <div className="mt-6 pt-5 border-t border-[#D7E4EC] grid grid-cols-3 gap-2 text-center text-xs text-[#5A6B78]">
             <div className="rounded-lg bg-[#EDF7FD]/50 p-2">
               <strong className="block text-[#12232E]">🔒 Pago Seguro</strong>
-              <span>Checkout Oficial FuXion</span>
+              <span>Checkout Oficial {country.currencyCode}</span>
             </div>
             <div className="rounded-lg bg-[#EDF7FD]/50 p-2">
-              <strong className="block text-[#12232E]">🚚 Envíos Perú</strong>
-              <span>Lima y Provincias</span>
+              <strong className="block text-[#12232E]">
+                🚚 Envíos {country.shortName}
+              </strong>
+              <span>Entrega Oficial</span>
             </div>
             <div className="rounded-lg bg-[#EDF7FD]/50 p-2">
               <strong className="block text-[#12232E]">🌿 Clean Label</strong>
@@ -204,15 +299,17 @@ export default function ProductBuyBox({ product }: { product: Product }) {
         </div>
       </div>
 
-      {/* Barra Flotante Inferior en Móvil idéntica a carlos-lingan.site.fuxion.com */}
+      {/* Barra Flotante Inferior en Móvil */}
       <div className="fixed bottom-0 inset-x-0 z-40 lg:hidden bg-white/95 backdrop-blur-md border-t border-[#D7E4EC] px-4 py-3 shadow-[0_-8px_24px_rgba(18,35,46,0.1)]">
         <div className="mx-auto max-w-[600px] flex items-center justify-between gap-3">
           <div>
             <p className="text-sm font-extrabold text-[#0093DD] leading-none">
-              {currentPres.formattedPrice}
+              {loc.availableInCountry
+                ? `${currentPres.formattedPrice} ${country.currencyCode}`
+                : `${country.flag} Tienda ${country.shortName}`}
             </p>
             <p className="text-[11px] font-medium text-[#5A6B78] truncate max-w-[170px] mt-0.5">
-              {product.cleanName} · {currentPres.pack}
+              {loc.localName} · {currentPres.pack}
             </p>
           </div>
           <a

@@ -1,48 +1,48 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import CatalogExplorer from "@/components/CatalogExplorer";
+import CountryDirectoryTable from "@/components/CountryDirectoryTable";
+import ProductInlineCta from "@/components/ProductInlineCta";
 import {
   getAllCategories,
+  getAllCountries,
   getAllProducts,
   LEGAL_OWNER,
-  SHOP_TIENDA_URL,
   SITE_URL,
 } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Tienda y Catálogo Oficial FuXion Perú 2026",
+  title:
+    "Tienda y Catálogo Oficial FuXion 2026 (Perú, Colombia, EE. UU., México, Ecuador y Guatemala)",
   description:
-    "Explora la tienda y catálogo oficial de FuXion Perú. Compra Prunex1, Thermo T3, Vita Xtra T+, Beauty-In, Flora Liv, Alpha Balance y todos los productos con envío a Lima y provincias.",
+    "Explora la tienda y catálogo oficial de FuXion en 6 países con precios en tu moneda local: Perú (S/), Colombia (COP), Estados Unidos (USD), México (MXN), Ecuador (USD) y Guatemala (GTQ).",
   alternates: {
     canonical: `${SITE_URL}/tienda/`,
+    languages: {
+      "es-PE": `${SITE_URL}/tienda/?pais=pe`,
+      "es-CO": `${SITE_URL}/tienda/?pais=co`,
+      "es-US": `${SITE_URL}/tienda/?pais=us`,
+      "es-MX": `${SITE_URL}/tienda/?pais=mx`,
+      "es-EC": `${SITE_URL}/tienda/?pais=ec`,
+      "es-GT": `${SITE_URL}/tienda/?pais=gt`,
+    },
   },
 };
 
 export default function TiendaPage() {
   const products = getAllProducts();
   const categories = getAllCategories();
-
-  // Flatten all presentations for the full directory table
-  const allPresentations = products.flatMap((p) =>
-    p.presentations.map((pres) => ({
-      ...pres,
-      productSlug: p.slug,
-      cleanName: p.cleanName,
-      categoryName: p.categoryShortName,
-      badge: p.badge,
-    }))
-  );
+  const countries = getAllCountries();
 
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "Tienda y Catálogo Oficial FuXion Perú",
+    name: "Tienda y Catálogo Oficial FuXion Multi-País",
     url: `${SITE_URL}/tienda/`,
     description:
-      "Catálogo completo de bebidas nutracéuticas, proteínas y suplementos naturales FuXion en Perú.",
+      "Catálogo completo de bebidas nutracéuticas, proteínas y suplementos naturales FuXion con precios oficiales en Perú, Colombia, Estados Unidos, México, Ecuador y Guatemala.",
   };
 
   return (
@@ -62,27 +62,27 @@ export default function TiendaPage() {
                 <div className="inline-flex flex-wrap items-center gap-2 px-3.5 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-semibold text-[#EFFBC4] mb-3">
                   <span>{LEGAL_OWNER} · Empresario FuXion</span>
                   <span>•</span>
-                  <span>Lima, Perú</span>
+                  <span>
+                    {countries.map((c) => c.flag).join(" ")} 6 Países Oficiales
+                  </span>
                 </div>
                 <h1
                   className="text-3xl sm:text-5xl font-extrabold text-white leading-tight"
                   style={{ fontFamily: "var(--display)" }}
                 >
-                  Tienda y Catálogo Oficial FuXion Perú
+                  Tienda y Catálogo Oficial FuXion
                 </h1>
                 <p className="text-base sm:text-lg text-[#EAF6FD] mt-2 max-w-2xl">
-                  Navega por todos los productos y presentaciones oficiales.
-                  Revisa para qué sirve cada fórmula o haz clic en comprar para
-                  ir directo al checkout oficial.
+                  Detectamos tu país automáticamente para mostrarte los
+                  productos, presentaciones y precios oficiales en tu moneda
+                  local (Perú, Colombia, EE. UU., México, Ecuador y Guatemala).
                 </p>
               </div>
               <div className="shrink-0">
-                <a
-                  href={SHOP_TIENDA_URL}
+                <ProductInlineCta
+                  variant="lime"
                   className="btn-fx btn-fx--lime text-base font-bold shadow-lg"
-                >
-                  Abrir Carrito en Tienda Oficial →
-                </a>
+                />
               </div>
             </div>
           </div>
@@ -92,87 +92,17 @@ export default function TiendaPage() {
           <Breadcrumbs
             items={[
               { label: "Inicio", href: "/" },
-              { label: "Tienda y Catálogo" },
+              { label: "Tienda y Catálogo Oficial" },
             ]}
           />
 
-          {/* Explorador Interactivo */}
+          {/* Explorador Interactivo Multi-País */}
           <section className="mt-4 mb-16">
             <CatalogExplorer products={products} categories={categories} />
           </section>
 
-          {/* Índice Completo de productos de carlos-lingan.site.fuxion.com */}
-          <section className="pt-12 border-t border-[#D7E4EC]">
-            <div className="xrule" aria-hidden="true" />
-            <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
-              Directorio Completo de Productos
-            </p>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-3">
-              Catálogo FuXion Perú con Enlace Directo
-            </h2>
-            <p className="text-sm sm:text-base text-[#5A6B78] max-w-3xl mb-6">
-              Cada fila corresponde exactamente a un producto o presentación de
-              la tienda oficial{" "}
-              <strong className="text-[#12232E]">carlos-lingan.site.fuxion.com</strong>,
-              incluyendo Doypacks de 28 sticks, Cajas Mini de 7 sticks, Potes de
-              proteína, Packs y Shakers.
-            </p>
-
-            <div className="overflow-x-auto rounded-2xl border border-[#D7E4EC] bg-white shadow-xs">
-              <table className="w-full text-left border-collapse text-sm">
-                <thead>
-                  <tr className="bg-[#12232E] text-white text-xs uppercase tracking-wider">
-                    <th className="py-3 px-4 font-bold">SKU</th>
-                    <th className="py-3 px-4 font-bold">Producto</th>
-                    <th className="py-3 px-4 font-bold">Presentación</th>
-                    <th className="py-3 px-4 font-bold">Puntos</th>
-                    <th className="py-3 px-4 font-bold">Precio (S/)</th>
-                    <th className="py-3 px-4 font-bold text-right">
-                      Enlace Directo Tienda
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#D7E4EC]">
-                  {allPresentations.map((item) => (
-                    <tr
-                      key={item.sku}
-                      className="hover:bg-[#EDF7FD]/60 transition-colors"
-                    >
-                      <td className="py-2.5 px-4 font-mono text-xs font-bold text-[#0093DD]">
-                        #{item.sku}
-                      </td>
-                      <td className="py-2.5 px-4 font-bold text-[#12232E]">
-                        <Link
-                          href={`/productos/${item.productSlug}/`}
-                          className="hover:text-[#0093DD] hover:underline"
-                        >
-                          {item.cleanName}
-                        </Link>
-                      </td>
-                      <td className="py-2.5 px-4 text-xs text-[#5A6B78]">
-                        {item.pack}
-                      </td>
-                      <td className="py-2.5 px-4 text-xs font-semibold text-[#4E7A16]">
-                        {item.points} pts
-                      </td>
-                      <td className="py-2.5 px-4 font-extrabold text-[#12232E]">
-                        {item.formattedPrice}
-                      </td>
-                      <td className="py-2.5 px-4 text-right">
-                        <a
-                          href={item.shopUrl}
-                          className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[#0093DD] hover:bg-[#007CBC] text-white text-xs font-bold transition-colors"
-                        >
-                          <span>Comprar SKU #{item.sku}</span>
-                          <span aria-hidden="true">→</span>
-                        </a>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          {/* Índice Completo de productos de carlos-lingan.site.fuxion.com por país */}
+          <CountryDirectoryTable />
         </div>
       </main>
 

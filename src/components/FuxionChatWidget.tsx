@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, type FormEvent } from "react";
+import { useCountry } from "@/context/CountryContext";
+import { getProductBySlug } from "@/lib/data";
 
 const CHAT_ENDPOINT =
   "https://ehwjvuhbimqakvzqbvvg.supabase.co/functions/v1/fuxion-chat";
@@ -42,16 +44,14 @@ const INITIAL_QUICK_OPTIONS = [
   "🛡️ Subir mis defensas e inmunidad",
 ];
 
-const DEFAULT_WELCOME =
-  "¡Hola! 👋 Soy tu Asesor Nutracéutico IA de FuXion Perú. Cuéntame qué objetivo de salud o bienestar buscas hoy (o elige una opción abajo) y te recomendaré el producto ideal con su enlace directo de compra.";
-
 export default function FuxionChatWidget() {
+  const { country, countryCode, countries, setCountryCode, localize } =
+    useCountry();
   const [isOpen, setIsOpen] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
   const [showTeaser, setShowTeaser] = useState(true);
   const [visitorId, setVisitorId] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [welcomeMessage, setWelcomeMessage] = useState(DEFAULT_WELCOME);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -59,12 +59,40 @@ export default function FuxionChatWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  const dynamicWelcome = `¡Hola! 👋 Soy tu Asesor Nutracéutico IA de FuXion ${country.name} ${country.flag}. Cuéntame qué objetivo de salud o bienestar buscas hoy y te recomendaré el producto ideal con su precio en ${country.currencyName} (${country.currencySymbol} ${country.currencyCode}) y enlace directo de compra.`;
+
+  // Localize a ChatProductCard to the visitor's currently selected country
+  const localizeChatCard = (card: ChatProductCard): ChatProductCard => {
+    const canon = getProductBySlug(card.slug);
+    if (!canon) return card;
+    const loc = localize(canon);
+    if (!loc.availableInCountry) {
+      return {
+        ...card,
+        shopUrl: country.shopTiendaUrl,
+      };
+    }
+    return {
+      ...card,
+      sku: loc.sku,
+      name: loc.localName,
+      price: loc.price,
+      formattedPrice: loc.formattedPrice,
+      pack: loc.pack,
+      shopUrl: loc.shopUrl,
+    };
+  };
+
   // Initialize visitor & restore conversation
   useEffect(() => {
     try {
       let vid = localStorage.getItem(STORAGE_VISITOR_KEY);
       if (!vid) {
-        vid = "fx-" + Math.random().toString(36).slice(2, 10) + "-" + Date.now().toString(36);
+        vid =
+          "fx-" +
+          Math.random().toString(36).slice(2, 10) +
+          "-" +
+          Date.now().toString(36);
         localStorage.setItem(STORAGE_VISITOR_KEY, vid);
       }
       setVisitorId(vid);
@@ -83,15 +111,11 @@ export default function FuxionChatWidget() {
       // ignore storage errors
     }
 
-    // Fetch live config
     fetch(CHAT_ENDPOINT, { method: "GET" })
       .then((r) => r.json())
       .then((data) => {
         if (typeof data?.is_enabled === "boolean") {
           setIsEnabled(data.is_enabled);
-        }
-        if (data?.welcome_message) {
-          setWelcomeMessage(data.welcome_message);
         }
       })
       .catch(() => {
@@ -99,7 +123,6 @@ export default function FuxionChatWidget() {
       });
   }, []);
 
-  // Scroll to bottom when messages change or chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
@@ -108,10 +131,16 @@ export default function FuxionChatWidget() {
     }
   }, [messages, isOpen, isLoading]);
 
-  const persistMessages = (nextMessages: ChatMessage[], nextSessionId?: string | null) => {
+  const persistMessages = (
+    nextMessages: ChatMessage[],
+    nextSessionId?: string | null
+  ) => {
     setMessages(nextMessages);
     try {
-      localStorage.setItem(STORAGE_MESSAGES_KEY, JSON.stringify(nextMessages.slice(-24)));
+      localStorage.setItem(
+        STORAGE_MESSAGES_KEY,
+        JSON.stringify(nextMessages.slice(-24))
+      );
       if (nextSessionId) {
         localStorage.setItem(STORAGE_SESSION_KEY, nextSessionId);
       }
@@ -132,11 +161,15 @@ export default function FuxionChatWidget() {
           mode: "track_click",
           session_id: sessionId,
           visitor_id: visitorId,
+          country: countryCode,
           product_slug: product?.slug || null,
           product_name: product?.name || null,
           shop_url: shopUrl,
           price_pen: product?.price || null,
-          page_url: typeof window !== "undefined" ? window.location.href : "https://fuxion.site/",
+          page_url:
+            typeof window !== "undefined"
+              ? window.location.href
+              : "https://fuxion.site/",
         }),
         keepalive: true,
       }).catch(() => {});
@@ -172,12 +205,17 @@ export default function FuxionChatWidget() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           mode: "chat",
+          country: countryCode,
           session_id: sessionId,
           visitor_id: visitorId,
           message: trimmed,
           history: historyPayload.slice(0, -1),
-          page_url: typeof window !== "undefined" ? window.location.href : "https://fuxion.site/",
-          user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+          page_url:
+            typeof window !== "undefined"
+              ? window.location.href
+              : "https://fuxion.site/",
+          user_agent:
+            typeof navigator !== "undefined" ? navigator.userAgent : "",
         }),
       });
 
@@ -187,15 +225,19 @@ export default function FuxionChatWidget() {
         setSessionId(newSessId);
       }
 
+      const rawRecs: ChatProductCard[] = Array.isArray(
+        data.recommended_products
+      )
+        ? data.recommended_products
+        : [];
+
       const assistantMsg: ChatMessage = {
         id: "a-" + Date.now(),
         role: "assistant",
         content:
           data.reply ||
-          "Te recomiendo revisar estas opciones en nuestra [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
-        recommendedProducts: Array.isArray(data.recommended_products)
-          ? data.recommended_products
-          : [],
+          `Te recomiendo revisar estas opciones en nuestra [Tienda Oficial FuXion ${country.name}](${country.shopTiendaUrl}).`,
+        recommendedProducts: rawRecs.map(localizeChatCard),
         suggestedOptions: Array.isArray(data.suggested_options)
           ? data.suggested_options
           : [],
@@ -207,8 +249,7 @@ export default function FuxionChatWidget() {
       const fallbackMsg: ChatMessage = {
         id: "a-err-" + Date.now(),
         role: "assistant",
-        content:
-          "En este momento hubo una demora en la conexión. Puedes explorar y comprar directamente en la [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
+        content: `En este momento hubo una demora en la conexión. Puedes explorar y comprar directamente en la [Tienda Oficial FuXion ${country.name}](${country.shopTiendaUrl}).`,
         suggestedOptions: ["Intentar de nuevo"],
         createdAt: new Date().toISOString(),
       };
@@ -234,7 +275,23 @@ export default function FuxionChatWidget() {
     }
   };
 
-  // Helper to format markdown links [text](url) and bold **text**
+  // Rewrite any carlos-lingan.site.fuxion.com link in markdown text to ensure it points to the active country store if needed
+  const localizeShopUrlInText = (url: string): string => {
+    if (!url.includes("carlos-lingan.site.fuxion.com")) return url;
+    if (url.includes(`carlos-lingan.site.fuxion.com/${countryCode}/`)) {
+      return url;
+    }
+    // Extract slug if it's a product link
+    const clean = url.replace(/\/$/, "");
+    const lastSeg = clean.split("/").pop() || "";
+    if (lastSeg === "tienda") return country.shopTiendaUrl;
+    const canon = getProductBySlug(lastSeg);
+    if (canon) {
+      return localize(canon).shopUrl;
+    }
+    return country.shopTiendaUrl;
+  };
+
   const renderFormattedContent = (text: string) => {
     const lines = text.split("\n");
     return lines.map((line, lineIdx) => {
@@ -242,16 +299,18 @@ export default function FuxionChatWidget() {
         return <div key={lineIdx} className="h-2" />;
       }
 
-      // Parse links and bold inside each line
       const tokenRegex = /(\[[^\]]+\]\(https?:\/\/[^\s)]+\)|\*\*[^*]+\*\*)/g;
       const parts = line.split(tokenRegex);
 
       return (
         <p key={lineIdx} className="leading-relaxed mb-1.5 last:mb-0">
           {parts.map((part, i) => {
-            const linkMatch = part.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
+            const linkMatch = part.match(
+              /^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/
+            );
             if (linkMatch) {
-              const [, label, url] = linkMatch;
+              const [, label, rawUrl] = linkMatch;
+              const url = localizeShopUrlInText(rawUrl);
               return (
                 <a
                   key={i}
@@ -295,65 +354,91 @@ export default function FuxionChatWidget() {
       {/* Chat Window */}
       {isOpen && (
         <div
-          className="mb-3 w-[calc(100vw-2rem)] sm:w-[410px] h-[580px] max-h-[82vh] rounded-3xl bg-white border border-[#D7E4EC] shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
+          className="mb-3 w-[calc(100vw-2rem)] sm:w-[410px] h-[590px] max-h-[82vh] rounded-3xl bg-white border border-[#D7E4EC] shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-200"
           role="dialog"
-          aria-label="Asesor Nutracéutico IA FuXion Perú"
+          aria-label={`Asesor Nutracéutico IA FuXion ${country.name}`}
         >
           {/* Header */}
           <div
-            className="px-4 py-3.5 text-white flex items-center justify-between gap-3 shrink-0"
+            className="px-4 py-3 text-white flex flex-col gap-2 shrink-0"
             style={{
               background: "linear-gradient(135deg, #0093DD 0%, #006CA5 100%)",
             }}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="relative w-10 h-10 rounded-full bg-white/15 border border-white/30 grid place-items-center shrink-0">
-                <span className="text-xl" aria-hidden="true">
-                  🧬
-                </span>
-                <span
-                  className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#8CC63F] border-2 border-[#007CBC]"
-                  title="En línea"
-                />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3
-                    className="font-extrabold text-[15px] leading-tight truncate text-white"
-                    style={{ fontFamily: "var(--display)" }}
-                  >
-                    Asesor IA FuXion Perú
-                  </h3>
-                  <span className="inline-flex items-center whitespace-nowrap shrink-0 leading-none text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-[#EFFBC4] text-[#142600]">
-                    En línea
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="relative w-10 h-10 rounded-full bg-white/15 border border-white/30 grid place-items-center shrink-0">
+                  <span className="text-xl" aria-hidden="true">
+                    {country.flag}
                   </span>
+                  <span
+                    className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-[#8CC63F] border-2 border-[#007CBC]"
+                    title="En línea"
+                  />
                 </div>
-                <p className="text-xs text-[#E4F5FE] truncate mt-0.5">
-                  Recomendación personalizada y compra directa
-                </p>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3
+                      className="font-extrabold text-[15px] leading-tight truncate text-white"
+                      style={{ fontFamily: "var(--display)" }}
+                    >
+                      Asesor IA FuXion {country.shortName}
+                    </h3>
+                    <span className="inline-flex items-center whitespace-nowrap shrink-0 leading-none text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-full bg-[#EFFBC4] text-[#142600]">
+                      {country.currencyCode}
+                    </span>
+                  </div>
+                  <p className="text-xs text-[#E4F5FE] truncate mt-0.5">
+                    Precios en {country.currencyName} y compra directa
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0">
+                {messages.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleResetChat}
+                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center text-xs text-white transition-colors"
+                    title="Reiniciar conversación"
+                    aria-label="Reiniciar conversación"
+                  >
+                    ↺
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center text-sm font-bold text-white transition-colors"
+                  aria-label="Cerrar chat"
+                >
+                  ✕
+                </button>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 shrink-0">
-              {messages.length > 0 && (
-                <button
-                  type="button"
-                  onClick={handleResetChat}
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center text-xs text-white transition-colors"
-                  title="Reiniciar conversación"
-                  aria-label="Reiniciar conversación"
-                >
-                  ↺
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 grid place-items-center text-sm font-bold text-white transition-colors"
-                aria-label="Cerrar chat"
-              >
-                ✕
-              </button>
+            {/* Selector rápido de bandera dentro del Chat */}
+            <div className="flex items-center justify-between gap-1 pt-1.5 border-t border-white/15">
+              <span className="text-[10px] text-[#E4F5FE] font-semibold">
+                Tu país:
+              </span>
+              <div className="flex items-center gap-1">
+                {countries.map((c) => (
+                  <button
+                    key={c.code}
+                    type="button"
+                    onClick={() => setCountryCode(c.code)}
+                    title={`${c.name} (${c.currencyCode})`}
+                    className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
+                      c.code === countryCode
+                        ? "bg-[#EFFBC4] text-[#142600]"
+                        : "bg-white/10 text-white hover:bg-white/25"
+                    }`}
+                  >
+                    {c.flag} {c.code.toUpperCase()}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -365,11 +450,11 @@ export default function FuxionChatWidget() {
                 FX
               </div>
               <div className="rounded-2xl rounded-tl-sm bg-white border border-[#D7E4EC] p-3.5 text-[13.5px] text-[#12232E] shadow-2xs max-w-[88%]">
-                <p className="leading-relaxed">{welcomeMessage}</p>
+                <p className="leading-relaxed">{dynamicWelcome}</p>
               </div>
             </div>
 
-            {/* Initial Quick Goal Pills (shown when conversation hasn't started) */}
+            {/* Initial Quick Goal Pills */}
             {messages.length === 0 && !isLoading && (
               <div className="pl-9 space-y-2">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-[#5A6B78]">
@@ -409,58 +494,67 @@ export default function FuxionChatWidget() {
                         {renderFormattedContent(msg.content)}
                       </div>
 
-                      {/* Recommended Product Cards */}
-                      {msg.recommendedProducts && msg.recommendedProducts.length > 0 && (
-                        <div className="space-y-2">
-                          {msg.recommendedProducts.map((prod) => (
-                            <div
-                              key={prod.slug}
-                              className="rounded-2xl bg-white border border-[#B9D9EB] p-3 shadow-xs hover:border-[#0093DD] transition-all"
-                            >
-                              <div className="flex items-center gap-3">
-                                <img
-                                  src={prod.image}
-                                  alt={prod.name}
-                                  className="w-14 h-14 rounded-xl object-contain bg-[#EDF7FD] p-1 shrink-0 border border-[#D7E4EC]"
-                                  loading="lazy"
-                                />
-                                <div className="min-w-0 flex-1">
-                                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#0093DD] block">
-                                    {prod.category}
-                                  </span>
-                                  <h4 className="font-extrabold text-sm text-[#12232E] truncate">
-                                    {prod.name}
-                                  </h4>
-                                  <div className="flex items-baseline gap-2 mt-0.5">
-                                    <span className="font-extrabold text-sm text-[#007CBC]">
-                                      {prod.formattedPrice}
-                                    </span>
-                                    <span className="text-[11px] text-[#5A6B78] truncate">
-                                      · {prod.pack}
-                                    </span>
+                      {/* Recommended Product Cards localized to the active country */}
+                      {msg.recommendedProducts &&
+                        msg.recommendedProducts.length > 0 && (
+                          <div className="space-y-2">
+                            {msg.recommendedProducts.map((rawProd) => {
+                              const prod = localizeChatCard(rawProd);
+                              return (
+                                <div
+                                  key={prod.slug}
+                                  className="rounded-2xl bg-white border border-[#B9D9EB] p-3 shadow-xs hover:border-[#0093DD] transition-all"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <img
+                                      src={prod.image}
+                                      alt={prod.name}
+                                      className="w-14 h-14 rounded-xl object-contain bg-[#EDF7FD] p-1 shrink-0 border border-[#D7E4EC]"
+                                      loading="lazy"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#0093DD] block">
+                                        {prod.category} · {country.flag}{" "}
+                                        {country.shortName}
+                                      </span>
+                                      <h4 className="font-extrabold text-sm text-[#12232E] truncate">
+                                        {prod.name}
+                                      </h4>
+                                      <div className="flex items-baseline gap-2 mt-0.5">
+                                        <span className="font-extrabold text-sm text-[#007CBC]">
+                                          {prod.formattedPrice}{" "}
+                                          {country.currencyCode}
+                                        </span>
+                                        <span className="text-[11px] text-[#5A6B78] truncate">
+                                          · {prod.pack}
+                                        </span>
+                                      </div>
+                                    </div>
                                   </div>
+                                  <a
+                                    href={prod.shopUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() =>
+                                      trackProductClick(prod.shopUrl, {
+                                        slug: prod.slug,
+                                        name: prod.name,
+                                        price: prod.price,
+                                      })
+                                    }
+                                    className="mt-2.5 w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#8CC63F] hover:bg-[#7BB32E] text-[#142600] font-extrabold text-xs py-2 px-3 transition-colors shadow-2xs"
+                                  >
+                                    <span>
+                                      Comprar en Tienda {country.shortName} (
+                                      {prod.formattedPrice})
+                                    </span>
+                                    <span aria-hidden="true">→</span>
+                                  </a>
                                 </div>
-                              </div>
-                              <a
-                                href={prod.shopUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                onClick={() =>
-                                  trackProductClick(prod.shopUrl, {
-                                    slug: prod.slug,
-                                    name: prod.name,
-                                    price: prod.price,
-                                  })
-                                }
-                                className="mt-2.5 w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#8CC63F] hover:bg-[#7BB32E] text-[#142600] font-extrabold text-xs py-2 px-3 transition-colors shadow-2xs"
-                              >
-                                <span>Comprar {prod.name} en Tienda Oficial</span>
-                                <span aria-hidden="true">→</span>
-                              </a>
-                            </div>
-                          ))}
-                        </div>
-                      )}
+                              );
+                            })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 )}
@@ -502,9 +596,7 @@ export default function FuxionChatWidget() {
                     className="inline-block w-2 h-2 rounded-full bg-[#8CC63F] animate-bounce"
                     style={{ animationDelay: "300ms" }}
                   />
-                  <span className="ml-1 font-medium">
-                    Escribiendo...
-                  </span>
+                  <span className="ml-1 font-medium">Escribiendo...</span>
                 </div>
               </div>
             )}
@@ -522,7 +614,7 @@ export default function FuxionChatWidget() {
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribe qué necesitas (ej. bajar de peso, energía)..."
+              placeholder={`Escribe qué necesitas en ${country.shortName} (ej. bajar de peso)...`}
               disabled={isLoading}
               className="flex-1 rounded-full border border-[#D7E4EC] bg-[#F6FBFE] px-4 py-2.5 text-[13.5px] text-[#12232E] placeholder:text-[#5A6B78] focus:outline-none focus:border-[#0093DD]"
             />
@@ -564,7 +656,7 @@ export default function FuxionChatWidget() {
             >
               <span className="inline-block w-2 h-2 rounded-full bg-[#8CC63F] animate-pulse" />
               <span>
-                ¿No sabes cuál elegir?{" "}
+                {country.flag} ¿No sabes cuál elegir?{" "}
                 <strong className="text-[#0093DD]">Pregúntale a la IA →</strong>
               </span>
             </button>
@@ -590,14 +682,18 @@ export default function FuxionChatWidget() {
             background: "linear-gradient(135deg, #0093DD 0%, #006CA5 100%)",
             boxShadow: "0 12px 28px -6px rgba(0, 147, 221, 0.55)",
           }}
-          aria-label={isOpen ? "Cerrar Asesor IA FuXion" : "Abrir Asesor IA FuXion"}
+          aria-label={
+            isOpen ? "Cerrar Asesor IA FuXion" : "Abrir Asesor IA FuXion"
+          }
         >
           <span className="relative flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#8CC63F] opacity-75" />
             <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8CC63F]" />
           </span>
           <span style={{ fontFamily: "var(--display)" }}>
-            {isOpen ? "Cerrar Asesor IA" : "Asesor IA FuXion"}
+            {isOpen
+              ? "Cerrar Asesor IA"
+              : `Asesor IA ${country.flag} ${country.code.toUpperCase()}`}
           </span>
           <span className="text-base" aria-hidden="true">
             💬

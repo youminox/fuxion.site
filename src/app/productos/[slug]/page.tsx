@@ -6,14 +6,17 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductBuyBox from "@/components/ProductBuyBox";
 import ProductCard from "@/components/ProductCard";
+import ProductInlineCta from "@/components/ProductInlineCta";
 import {
   cleanSeoTitle,
+  getAllCountries,
   getAllProducts,
   getArticlesByProduct,
   getMerchantOfferExtras,
   getProductBySlug,
   getRelatedProducts,
   SITE_URL,
+  type CountryCode,
 } from "@/lib/data";
 
 export async function generateStaticParams() {
@@ -38,6 +41,14 @@ export async function generateMetadata({
     description: product.seoDescription,
     alternates: {
       canonical: `${SITE_URL}/productos/${product.slug}/`,
+      languages: {
+        "es-PE": `${SITE_URL}/productos/${product.slug}/?pais=pe`,
+        "es-CO": `${SITE_URL}/productos/${product.slug}/?pais=co`,
+        "es-US": `${SITE_URL}/productos/${product.slug}/?pais=us`,
+        "es-MX": `${SITE_URL}/productos/${product.slug}/?pais=mx`,
+        "es-EC": `${SITE_URL}/productos/${product.slug}/?pais=ec`,
+        "es-GT": `${SITE_URL}/productos/${product.slug}/?pais=gt`,
+      },
     },
     openGraph: {
       type: "website",
@@ -48,7 +59,7 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
-          alt: `${product.cleanName} — FuXion Perú`,
+          alt: `${product.cleanName} — FuXion Oficial`,
         },
       ],
     },
@@ -72,12 +83,36 @@ export default async function ProductDetailPage({
 
   const relatedProducts = getRelatedProducts(product);
   const relatedArticles = getArticlesByProduct(product.slug, 12);
-  const offerExtras = getMerchantOfferExtras();
+  const countries = getAllCountries();
+
+  // Build multi-country Schema.org Offers across all countries where available
+  const multiCountryOffers = countries.flatMap((c) => {
+    const offer = product.countryOffers?.[c.code as CountryCode];
+    if (!offer || !offer.available) return [];
+    const extras = getMerchantOfferExtras(c.code as CountryCode);
+    return offer.presentations.map((pres) => ({
+      "@type": "Offer",
+      sku: pres.sku,
+      name: `${offer.localName} (${pres.pack}) — ${c.name}`,
+      priceCurrency: c.currencyCode,
+      price: pres.price.toFixed(2),
+      availability: pres.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+      url: pres.shopUrl,
+      eligibleRegion: {
+        "@type": "Country",
+        name: c.iso,
+      },
+      ...extras,
+    }));
+  });
 
   const productJsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: `${product.cleanName} — FuXion Perú`,
+    name: `${product.cleanName} — FuXion Oficial`,
     sku: product.sku,
     mpn: product.sku,
     brand: {
@@ -93,20 +128,8 @@ export default async function ProductDetailPage({
       ...product.gallery,
     ],
     offers:
-      product.presentations.length > 1
-        ? product.presentations.map((pres) => ({
-            "@type": "Offer",
-            sku: pres.sku,
-            name: `${product.cleanName} (${pres.pack})`,
-            priceCurrency: "PEN",
-            price: pres.price.toFixed(2),
-            availability: pres.inStock
-              ? "https://schema.org/InStock"
-              : "https://schema.org/OutOfStock",
-            itemCondition: "https://schema.org/NewCondition",
-            url: pres.shopUrl,
-            ...offerExtras,
-          }))
+      multiCountryOffers.length > 0
+        ? multiCountryOffers
         : {
             "@type": "Offer",
             sku: product.sku,
@@ -117,7 +140,7 @@ export default async function ProductDetailPage({
               : "https://schema.org/OutOfStock",
             itemCondition: "https://schema.org/NewCondition",
             url: product.shopUrl,
-            ...offerExtras,
+            ...getMerchantOfferExtras("pe"),
           },
     aggregateRating: {
       "@type": "AggregateRating",
@@ -162,9 +185,95 @@ export default async function ProductDetailPage({
             ]}
           />
 
-          {/* 1. BUY BOX TRANSACCIONAL + GALERÍA + SELECTOR DE PRESENTACIÓN */}
+          {/* 1. BUY BOX TRANSACCIONAL MULTI-PAÍS + GALERÍA + SELECTOR DE PRESENTACIÓN */}
           <section id="producto" className="mb-16">
             <ProductBuyBox product={product} />
+          </section>
+
+          {/* 1b. TABLA COMPARATIVA DE PRECIOS Y ENLACES OFICIALES EN LOS 6 PAÍSES */}
+          <section
+            id="precios-por-pais"
+            className="py-10 border-t border-[#D7E4EC]"
+          >
+            <div className="xrule" aria-hidden="true" />
+            <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
+              Disponibilidad Internacional y Moneda Local
+            </p>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-3">
+              Precio oficial y enlace de compra de {product.cleanName} por país
+            </h2>
+            <p className="text-sm sm:text-base text-[#5A6B78] mb-6 max-w-3xl">
+              Compra <strong>{product.cleanName}</strong> directamente en la
+              tienda oficial FuXion de tu país en tu moneda local y recíbelo en
+              la puerta de tu casa:
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {countries.map((c) => {
+                const offer = product.countryOffers?.[c.code as CountryCode];
+                const isAvail = Boolean(offer && offer.available);
+                return (
+                  <div
+                    key={c.code}
+                    className={`rounded-2xl border p-4 flex flex-col justify-between transition-all ${
+                      isAvail
+                        ? "border-[#D7E4EC] bg-[#F6FBFE] hover:border-[#0093DD]"
+                        : "border-gray-200 bg-gray-50/70 opacity-75"
+                    }`}
+                  >
+                    <div>
+                      <div className="flex items-center justify-between gap-2 mb-2">
+                        <span className="inline-flex items-center gap-1.5 text-sm font-extrabold text-[#12232E]">
+                          <span className="text-lg">{c.flag}</span>
+                          <span>{c.name}</span>
+                        </span>
+                        <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-white border border-[#D7E4EC] text-[#0093DD]">
+                          {c.currencyCode}
+                        </span>
+                      </div>
+
+                      {isAvail && offer ? (
+                        <>
+                          <p className="text-xs font-bold text-[#12232E] mb-0.5">
+                            {offer.localName}
+                          </p>
+                          <p className="text-[11px] text-[#5A6B78] mb-2">
+                            {offer.pack} · SKU #{offer.sku}
+                          </p>
+                          <p
+                            className="text-2xl font-extrabold text-[#0093DD] mb-3"
+                            style={{ fontFamily: "var(--display)" }}
+                          >
+                            {offer.formattedPrice}{" "}
+                            <span className="text-xs font-semibold text-[#5A6B78]">
+                              {c.currencyCode}
+                            </span>
+                          </p>
+                        </>
+                      ) : (
+                        <p className="text-xs text-[#5A6B78] my-3">
+                          No disponible en el catálogo actual de {c.name}.
+                          Revisa las alternativas en la tienda oficial.
+                        </p>
+                      )}
+                    </div>
+
+                    <a
+                      href={isAvail && offer ? offer.shopUrl : c.shopTiendaUrl}
+                      className={`w-full text-center rounded-xl py-2.5 px-3 text-xs font-extrabold transition-colors ${
+                        isAvail
+                          ? "bg-[#0093DD] hover:bg-[#007CBC] text-white"
+                          : "bg-white border border-[#D7E4EC] text-[#12232E] hover:border-[#0093DD]"
+                      }`}
+                    >
+                      {isAvail
+                        ? `Comprar en ${c.name} (${offer?.formattedPrice}) →`
+                        : `Ver Tienda ${c.name} →`}
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </section>
 
           {/* 2. BENEFICIOS Y PARA QUÉ SIRVE (SEO + CONVERSIÓN) */}
@@ -183,12 +292,7 @@ export default async function ProductDetailPage({
               <p className="text-[#2B3D4B] leading-relaxed mb-6">
                 {product.description}
               </p>
-              <a
-                href={product.shopUrl}
-                className="btn-fx btn-fx--buy text-sm font-bold"
-              >
-                Comprar {product.cleanName} ({product.formattedPrice}) →
-              </a>
+              <ProductInlineCta product={product} />
             </div>
 
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -279,12 +383,12 @@ export default async function ProductDetailPage({
                 <span className="text-xs text-[#EFFBC4] font-semibold">
                   ✓ Rinde {product.sticks || 28} porciones · {product.pack}
                 </span>
-                <a
-                  href={product.shopUrl}
+                <ProductInlineCta
+                  product={product}
+                  variant="lime"
+                  labelPrefix="Pedir"
                   className="btn-fx btn-fx--lime !py-2.5 !px-5 text-xs sm:text-sm font-bold"
-                >
-                  Pedir en Tienda Oficial →
-                </a>
+                />
               </div>
             </div>
           </section>
@@ -396,21 +500,15 @@ export default async function ProductDetailPage({
                   </h2>
                   <p className="text-sm sm:text-base text-[#5A6B78] leading-relaxed mb-5">
                     Revisa la tabla nutricional oficial de{" "}
-                    <strong>{product.cleanName}</strong> para el mercado de Perú
-                    (código SKU #{product.sku}). Elaborado bajo estándares
-                    HACCP, BPM y Clean Label.
+                    <strong>{product.cleanName}</strong>. Elaborado bajo
+                    estándares internacionales HACCP, BPM y Clean Label.
                   </p>
-                  <a
-                    href={product.shopUrl}
-                    className="btn-fx btn-fx--buy text-sm font-bold"
-                  >
-                    Comprar Ahora ({product.formattedPrice}) →
-                  </a>
+                  <ProductInlineCta product={product} />
                 </div>
                 <div className="lg:col-span-7 flex justify-center">
                   <img
                     src={product.nutritionalImage}
-                    alt={`Tabla de información nutricional de ${product.cleanName} FuXion Perú`}
+                    alt={`Tabla de información nutricional de ${product.cleanName} FuXion`}
                     className="rounded-2xl border border-[#D7E4EC] bg-white p-2 max-h-[520px] w-auto object-contain shadow-xs"
                     loading="lazy"
                   />
@@ -420,14 +518,17 @@ export default async function ProductDetailPage({
           )}
 
           {/* 5. PREGUNTAS FRECUENTES DEL PRODUCTO */}
-          <section id="preguntas-frecuentes" className="py-12 border-t border-[#D7E4EC]">
+          <section
+            id="preguntas-frecuentes"
+            className="py-12 border-t border-[#D7E4EC]"
+          >
             <div className="max-w-3xl">
               <div className="xrule" aria-hidden="true" />
               <p className="text-xs font-bold uppercase tracking-wider text-[#0093DD] mb-1">
                 Resolvemos tus dudas
               </p>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-[#12232E] mb-6">
-                Preguntas frecuentes sobre {product.cleanName} en Perú
+                Preguntas frecuentes sobre {product.cleanName}
               </h2>
 
               <div className="space-y-3.5">
@@ -464,7 +565,7 @@ export default async function ProductDetailPage({
               </h2>
               <p className="text-sm sm:text-base text-[#5A6B78] mb-8">
                 Potencia tus resultados combinando {product.cleanName} con estas
-                fórmulas complementarias del catálogo oficial de FuXion Perú:
+                fórmulas complementarias del catálogo oficial de FuXion:
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

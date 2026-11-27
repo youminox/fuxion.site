@@ -6,6 +6,9 @@ import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import TransactionalProductCard from "@/components/TransactionalProductCard";
 import ProductCard from "@/components/ProductCard";
+import BlogSidebarProductCard, {
+  BlogHeaderProductBar,
+} from "@/components/BlogSidebarProductCard";
 import ArticleBlocksRenderer, {
   slugifyHeading,
 } from "@/components/article-blocks/ArticleBlocksRenderer";
@@ -20,7 +23,6 @@ import {
   getRelatedArticlesForArticle,
   LEGAL_LOCATION,
   LEGAL_OWNER,
-  SHOP_TIENDA_URL,
   SITE_URL,
 } from "@/lib/data";
 
@@ -65,7 +67,7 @@ export async function generateMetadata({
       images: [
         {
           url: ogImage,
-          alt: article.heroAlt || `${article.title} — FuXion Perú`,
+          alt: article.heroAlt || `${article.title} — FuXion Oficial`,
         },
       ],
     },
@@ -98,7 +100,7 @@ export default async function BlogPostPage({
   const blogCategory = article.categorySlug
     ? getBlogCategoryBySlug(article.categorySlug)
     : undefined;
-  const offerExtras = getMerchantOfferExtras();
+  const offerExtras = getMerchantOfferExtras("pe");
   const primaryImageUrl = primaryProduct.bodegonImage.startsWith("http")
     ? primaryProduct.bodegonImage
     : `${SITE_URL}${primaryProduct.bodegonImage}`;
@@ -120,7 +122,7 @@ export default async function BlogPostPage({
       : [primaryImageUrl, ...primaryProduct.gallery],
     datePublished: article.publishedAt,
     dateModified: modifiedDate,
-    inLanguage: "es-PE",
+    inLanguage: "es",
     mainEntityOfPage: `${SITE_URL}/blog/${article.slug}/`,
     author: {
       "@type": "Person",
@@ -132,7 +134,7 @@ export default async function BlogPostPage({
     },
     publisher: {
       "@type": "Organization",
-      name: "FuXion Perú — fuxion.site",
+      name: "FuXion Oficial — fuxion.site",
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/img/logo-fuxion-azul.webp`,
@@ -256,7 +258,7 @@ export default async function BlogPostPage({
                     ⏱ {article.readingTime}
                   </span>
                   <span className="text-[#5A6B78]">
-                    Actualizado en Perú · {modifiedDate}
+                    Actualizado · {modifiedDate}
                   </span>
                 </div>
 
@@ -271,32 +273,8 @@ export default async function BlogPostPage({
                   {article.excerpt}
                 </p>
 
-                {/* Barra rápida de acceso al producto mencionado */}
-                <div className="mt-5 pt-4 border-t border-[#D7E4EC] flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={primaryProduct.bodegonImage || primaryProduct.mainImage}
-                      alt={primaryProduct.cleanName}
-                      className="w-11 h-11 rounded-xl bg-white border border-[#D7E4EC] object-contain p-1"
-                    />
-                    <div>
-                      <p className="text-xs font-bold text-[#12232E]">
-                        Producto destacado: {primaryProduct.cleanName} (
-                        {primaryProduct.formattedPrice})
-                      </p>
-                      <p className="text-[11px] text-[#5A6B78]">
-                        Código Oficial Perú SKU #{primaryProduct.sku} ·{" "}
-                        {primaryProduct.pack}
-                      </p>
-                    </div>
-                  </div>
-                  <a
-                    href={primaryProduct.shopUrl}
-                    className="btn-fx btn-fx--buy !py-2 !px-4 text-xs font-bold"
-                  >
-                    Ver en Tienda Oficial →
-                  </a>
-                </div>
+                {/* Barra rápida de acceso al producto mencionado adaptada al país del lector */}
+                <BlogHeaderProductBar product={primaryProduct} />
               </header>
 
               {article.heroImage && (
@@ -390,7 +368,7 @@ export default async function BlogPostPage({
                     );
                   })()}
 
-                  {/* Bloques dinámicos del artículo con tarjeta contextual en posición variable */}
+                  {/* Bloques dinámicos del artículo con tarjeta contextual multi-país */}
                   <ArticleBlocksRenderer
                     blocks={article.blocks}
                     product={primaryProduct}
@@ -402,7 +380,6 @@ export default async function BlogPostPage({
                 </>
               ) : (
                 <>
-                  {/* Fallback legado durante migración */}
                   <div
                     className="fx-prose"
                     dangerouslySetInnerHTML={{ __html: article.introHtml || "" }}
@@ -415,7 +392,7 @@ export default async function BlogPostPage({
                   />
                   <TransactionalProductCard
                     product={primaryProduct}
-                    contextLabel={`Tarjeta de Compra Directa · ${primaryProduct.cleanName} en Perú`}
+                    contextLabel={`Tarjeta de Compra Directa · ${primaryProduct.cleanName}`}
                   />
                   <div
                     className="fx-prose"
@@ -455,84 +432,8 @@ export default async function BlogPostPage({
               </section>
             </article>
 
-            {/* SIDEBAR STICKY DE CONVERSIÓN */}
-            <aside className="lg:col-span-4 lg:sticky lg:top-24 space-y-6">
-              {/* Caja lateral del producto principal */}
-              <div className="rounded-3xl border-2 border-[#0093DD] bg-white p-6 shadow-[0_18px_44px_-20px_rgba(0,147,221,0.25)]">
-                <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-[#EDF7FD] text-[#0093DD] mb-3">
-                  Compra Directa · Perú
-                </span>
-
-                <div className="aspect-[4/3] rounded-2xl bg-[#EDF7FD] p-3 grid place-items-center mb-4">
-                  <img
-                    src={
-                      primaryProduct.bodegonImage || primaryProduct.mainImage
-                    }
-                    alt={primaryProduct.cleanName}
-                    className="max-h-[175px] w-auto object-contain"
-                  />
-                </div>
-
-                <h3 className="text-xl font-extrabold text-[#12232E]">
-                  {primaryProduct.cleanName}
-                </h3>
-                <p className="text-xs text-[#5A6B78] mt-0.5 mb-3">
-                  {primaryProduct.pack} · SKU #{primaryProduct.sku}
-                </p>
-
-                <div className="flex items-baseline justify-between py-3 border-y border-[#EDF7FD] mb-4">
-                  <span className="text-xs font-bold text-[#5A6B78]">
-                    Precio Oficial Perú:
-                  </span>
-                  <span
-                    className="text-2xl font-extrabold text-[#0093DD]"
-                    style={{ fontFamily: "var(--display)" }}
-                  >
-                    {primaryProduct.formattedPrice}
-                  </span>
-                </div>
-
-                <div className="space-y-2.5">
-                  <a
-                    href={primaryProduct.shopUrl}
-                    className="btn-fx btn-fx--buy w-full !py-3 text-sm font-bold"
-                  >
-                    Comprar en Tienda Oficial →
-                  </a>
-                  <Link
-                    href={`/productos/${primaryProduct.slug}/`}
-                    className="btn-fx btn-fx--ghost w-full !py-2.5 text-xs"
-                  >
-                    Ver Ficha e Ingredientes
-                  </Link>
-                </div>
-
-                <p className="text-[11px] text-[#5A6B78] text-center mt-3">
-                  🔒 Pago seguro en Soles en carlos-lingan.site.fuxion.com · Envíos a
-                  Lima y provincias.
-                </p>
-              </div>
-
-              {/* Acceso a toda la tienda */}
-              <div className="rounded-2xl border border-[#D7E4EC] bg-[#0093DD] text-[#FFFFF0] p-5">
-                <p className="text-xs font-bold uppercase tracking-wider text-[#EFFBC4] mb-1">
-                  Catálogo Oficial
-                </p>
-                <h4 className="text-lg font-extrabold text-white mb-2">
-                  Explora todos los productos FuXion
-                </h4>
-                <p className="text-xs text-[#EAF6FD] leading-relaxed mb-4">
-                  Revisa todas las líneas de limpieza, energía, control de peso,
-                  colágeno, inmunidad y deporte.
-                </p>
-                <a
-                  href={SHOP_TIENDA_URL}
-                  className="btn-fx btn-fx--lime w-full !py-2.5 text-xs font-bold"
-                >
-                  Ir a Tienda Oficial →
-                </a>
-              </div>
-            </aside>
+            {/* SIDEBAR STICKY DE CONVERSIÓN MULTI-PAÍS */}
+            <BlogSidebarProductCard product={primaryProduct} />
           </div>
 
           {/* PRODUCTOS COMPLEMENTARIOS */}

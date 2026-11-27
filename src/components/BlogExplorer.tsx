@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import type { ArticleSummary } from "@/lib/data";
+import { getProductBySlug, type ArticleSummary } from "@/lib/data";
+import { useCountry } from "@/context/CountryContext";
 
 interface BlogExplorerProps {
   articles: ArticleSummary[];
@@ -16,6 +17,7 @@ export default function BlogExplorer({
   const [selectedCluster, setSelectedCluster] = useState("all");
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(24);
+  const { country, localize } = useCountry();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -57,7 +59,7 @@ export default function BlogExplorer({
               onChange={(e) => handleQueryChange(e.target.value)}
               placeholder="Buscar guía por producto o síntoma (ej. Prunex1, estreñimiento, bajar de peso, colágeno, hígado...)"
               className="w-full rounded-full border border-[#D7E4EC] bg-white pl-11 pr-4 py-3 text-sm text-[#12232E] placeholder:text-[#5A6B78] focus:outline-none focus:border-[#0093DD]"
-              aria-label="Buscar en las guías de FuXion Perú"
+              aria-label={`Buscar en las guías de FuXion ${country.name}`}
             />
             <svg
               className="absolute left-4 top-1/2 -translate-y-1/2 text-[#0093DD]"
@@ -74,8 +76,10 @@ export default function BlogExplorer({
             </svg>
           </div>
           <div className="text-xs sm:text-sm font-semibold text-[#12232E] px-2">
-            Mostrando <span className="text-[#0093DD]">{visibleArticles.length}</span> de{" "}
-            <span className="text-[#0093DD]">{filtered.length}</span> artículos ({articles.length} en total)
+            Mostrando{" "}
+            <span className="text-[#0093DD]">{visibleArticles.length}</span> de{" "}
+            <span className="text-[#0093DD]">{filtered.length}</span> artículos
+            ({articles.length} en total)
           </div>
         </div>
 
@@ -110,56 +114,69 @@ export default function BlogExplorer({
 
       {/* Grid de Artículos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {visibleArticles.map((art) => (
-          <article
-            key={art.slug}
-            className="rounded-2xl border border-[#D7E4EC] bg-white overflow-hidden flex flex-col justify-between hover:border-[#0093DD] hover:shadow-[0_18px_44px_-20px_rgba(0,147,221,0.25)] transition-all"
-          >
-            {art.heroImage && (
-              <Link href={`/blog/${art.slug}/`} className="block aspect-[16/9] bg-[#EDF7FD] overflow-hidden">
-                <img
-                  src={art.heroImage}
-                  alt={art.heroAlt || art.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover"
-                />
-              </Link>
-            )}
-            <div className="p-5 flex-1 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
-                    {art.clusterName}
-                  </span>
-                  <span>{art.readingTime}</span>
-                </div>
+        {visibleArticles.map((art) => {
+          const prod = getProductBySlug(art.primaryProductSlug);
+          const loc = prod ? localize(prod) : null;
+          const buyUrl = loc ? loc.shopUrl : country.shopTiendaUrl;
+          const buyText =
+            loc && loc.availableInCountry
+              ? `${country.flag} Comprar (${loc.formattedPrice}) →`
+              : `${country.flag} Tienda ${country.shortName} →`;
 
-                <h2 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2.5 hover:text-[#0093DD] transition-colors">
-                  <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
-                </h2>
-
-                <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
-                  {art.excerpt}
-                </p>
-              </div>
-
-              <div className="mt-4 pt-3.5 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
+          return (
+            <article
+              key={art.slug}
+              className="rounded-2xl border border-[#D7E4EC] bg-white overflow-hidden flex flex-col justify-between hover:border-[#0093DD] hover:shadow-[0_18px_44px_-20px_rgba(0,147,221,0.25)] transition-all"
+            >
+              {art.heroImage && (
                 <Link
                   href={`/blog/${art.slug}/`}
-                  className="text-[#0093DD] hover:underline"
+                  className="block aspect-[16/9] bg-[#EDF7FD] overflow-hidden"
                 >
-                  Leer artículo →
+                  <img
+                    src={art.heroImage}
+                    alt={art.heroAlt || art.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover"
+                  />
                 </Link>
-                <a
-                  href={art.primaryProductShopUrl}
-                  className="px-2.5 py-1 rounded-full bg-[#E8F6D5] text-[#2F5207] hover:bg-[#8CC63F] hover:text-[#1F3105] transition-colors"
-                >
-                  Comprar SKU #{art.primaryProductSku} →
-                </a>
+              )}
+              <div className="p-5 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center justify-between gap-2 text-xs text-[#5A6B78] mb-2.5">
+                    <span className="px-2.5 py-0.5 rounded-full bg-[#EDF7FD] text-[#0093DD] font-bold">
+                      {art.clusterName}
+                    </span>
+                    <span>{art.readingTime}</span>
+                  </div>
+
+                  <h2 className="text-lg font-extrabold text-[#12232E] leading-snug mb-2.5 hover:text-[#0093DD] transition-colors">
+                    <Link href={`/blog/${art.slug}/`}>{art.title}</Link>
+                  </h2>
+
+                  <p className="text-sm text-[#5A6B78] line-clamp-3 leading-relaxed">
+                    {art.excerpt}
+                  </p>
+                </div>
+
+                <div className="mt-4 pt-3.5 border-t border-[#EDF7FD] flex items-center justify-between text-xs font-bold">
+                  <Link
+                    href={`/blog/${art.slug}/`}
+                    className="text-[#0093DD] hover:underline"
+                  >
+                    Leer artículo →
+                  </Link>
+                  <a
+                    href={buyUrl}
+                    className="px-2.5 py-1 rounded-full bg-[#E8F6D5] text-[#2F5207] hover:bg-[#8CC63F] hover:text-[#1F3105] transition-colors"
+                  >
+                    {buyText}
+                  </a>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
 
       {/* Botón Mostrar Más */}
@@ -170,7 +187,8 @@ export default function BlogExplorer({
             onClick={() => setVisibleCount((prev) => prev + 36)}
             className="px-6 py-3 rounded-full bg-[#0093DD] hover:bg-[#0077B6] text-white font-bold text-sm shadow-sm transition-colors"
           >
-            Ver más artículos (+36) — Quedan {filtered.length - visibleCount} por mostrar
+            Ver más artículos (+36) — Quedan {filtered.length - visibleCount}{" "}
+            por mostrar
           </button>
           <button
             type="button"

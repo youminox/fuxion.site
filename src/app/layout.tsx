@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Outfit, Inter } from "next/font/google";
 import "./globals.css";
 import { SITE_NAME, SITE_URL } from "@/lib/data";
+import { CountryProvider } from "@/context/CountryContext";
 import FuxionChatWidget from "@/components/FuxionChatWidget";
 
 const outfit = Outfit({
@@ -22,27 +23,35 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
     default:
-      "FuXion Perú: Catálogo Oficial 2026, Precios y Tienda Online",
-    template: "%s | FuXion Perú",
+      "FuXion Oficial: Catálogo 2026, Precios y Tienda Online (Perú, Colombia, EE. UU., México, Ecuador y Guatemala)",
+    template: "%s | FuXion Catálogo Oficial",
   },
   description:
-    "Catálogo oficial de productos FuXion en Perú. Compra Prunex1, Thermo T3, Vita Xtra T+, Beauty-In, Flora Liv, Alpha Balance y más con envío directo a Lima y provincias.",
+    "Catálogo oficial de productos FuXion con precios en tu moneda local y compra directa en Perú (S/), Colombia (COP), Estados Unidos (USD), México (MXN), Ecuador (USD) y Guatemala (GTQ).",
   keywords: [
     "fuxion peru",
+    "fuxion colombia",
+    "fuxion estados unidos",
+    "fuxion mexico",
+    "fuxion ecuador",
+    "fuxion guatemala",
     "productos fuxion",
-    "catalogo fuxion peru 2026",
-    "fuxion precios peru",
-    "tienda fuxion lima",
-    "prunex1 precio peru",
+    "catalogo fuxion 2026",
+    "prunex1 fuxion",
     "thermo t3 fuxion",
-    "beauty in fuxion colageno",
+    "beauty in fuxion",
     "vita xtra t fuxion",
-    "flora liv fuxion",
   ],
   alternates: {
     canonical: `${SITE_URL}/`,
     languages: {
-      "es-PE": `${SITE_URL}/`,
+      "es-PE": `${SITE_URL}/?pais=pe`,
+      "es-CO": `${SITE_URL}/?pais=co`,
+      "es-US": `${SITE_URL}/?pais=us`,
+      "es-MX": `${SITE_URL}/?pais=mx`,
+      "es-EC": `${SITE_URL}/?pais=ec`,
+      "es-GT": `${SITE_URL}/?pais=gt`,
+      "x-default": `${SITE_URL}/`,
     },
   },
   openGraph: {
@@ -51,15 +60,15 @@ export const metadata: Metadata = {
     url: `${SITE_URL}/`,
     siteName: SITE_NAME,
     title:
-      "FuXion Perú — Catálogo Oficial de Productos Nutracéuticos",
+      "FuXion — Catálogo Oficial y Tienda Online en 6 Países",
     description:
-      "Descubre todos los productos del catálogo oficial de FuXion Perú: beneficios, ingredientes, cómo tomarlos y compra directa con entrega en Lima y todo el país.",
+      "Descubre todos los productos nutracéuticos FuXion con precios oficiales en la moneda de tu país (Perú, Colombia, EE. UU., México, Ecuador y Guatemala).",
     images: [
       {
         url: "/img/somos-fusion-nutraceutica.webp",
         width: 1200,
         height: 630,
-        alt: "FuXion Perú — Fusión Nutracéutica",
+        alt: "FuXion — Fusión Nutracéutica",
       },
     ],
   },
@@ -78,10 +87,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es-PE" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="es" className={`${outfit.variable} ${inter.variable}`}>
       <body className="antialiased selection:bg-[#0093DD] selection:text-white">
-        {children}
-        <FuxionChatWidget />
+        <CountryProvider>
+          {children}
+          <FuxionChatWidget />
+        </CountryProvider>
       </body>
     </html>
   );

@@ -5,13 +5,13 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import ProductCard from "@/components/ProductCard";
+import ProductInlineCta from "@/components/ProductInlineCta";
 import {
   cleanSeoTitle,
   getAllCategories,
   getArticlesByCategory,
   getCategoryBySlug,
   getProductsByCategory,
-  SHOP_TIENDA_URL,
   SITE_URL,
 } from "@/lib/data";
 
@@ -88,7 +88,7 @@ export default async function LineaPage({
           <div className="mx-auto max-w-[1180px] px-4 sm:px-6">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-bold uppercase tracking-wider text-[#EFFBC4] mb-3">
               <span>{category.icon}</span>
-              <span>{category.step} · FuXion Perú</span>
+              <span>{category.step} · FuXion Oficial</span>
             </span>
             <h1
               className="text-3xl sm:text-5xl font-extrabold text-white leading-tight mb-3"
@@ -173,23 +173,19 @@ export default async function LineaPage({
             </section>
           )}
 
-          {/* CTA hacia tienda oficial */}
+          {/* CTA hacia tienda oficial del país activo */}
           <div className="rounded-3xl border border-[#D7E4EC] bg-[#EDF7FD] p-6 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div>
               <h2 className="text-2xl font-extrabold text-[#12232E]">
-                Compra productos de la {category.name} en la Tienda Oficial
+                Compra productos de la {category.name} en tu Tienda Oficial
               </h2>
               <p className="text-sm sm:text-base text-[#5A6B78] mt-1">
-                Precios oficiales en Soles (S/), despacho rápido a Lima y
-                provincias y garantía de autenticidad FuXion Biotech SAC.
+                Precios oficiales en tu moneda local (Perú, Colombia, EE. UU.,
+                México, Ecuador y Guatemala) con despacho rápido y garantía de
+                autenticidad FuXion Biotech.
               </p>
             </div>
-            <a
-              href={SHOP_TIENDA_URL}
-              className="btn-fx btn-fx--buy text-sm sm:text-base font-bold shrink-0"
-            >
-              Ir a Tienda Oficial FuXion →
-            </a>
+            <ProductInlineCta className="btn-fx btn-fx--buy text-sm sm:text-base font-bold shrink-0" />
           </div>
         </div>
       </main>

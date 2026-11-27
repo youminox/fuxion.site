@@ -1,6 +1,11 @@
 import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
-import { CATALOG_MAP, CATALOG_PROMPT, type ProductInfo } from "./catalog.ts";
+import {
+  CATALOG_BY_COUNTRY,
+  CATALOG_PROMPT_BY_COUNTRY,
+  COUNTRY_META,
+  type ProductInfo,
+} from "./catalog.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -18,7 +23,6 @@ function calculateCostUsd(model: string, promptTokens: number, completionTokens:
   if (model.includes("mini")) {
     return Number(((promptTokens * 0.00000015) + (completionTokens * 0.0000006)).toFixed(6));
   }
-  // gpt-4o pricing: $2.50 / 1M input, $10.00 / 1M output
   return Number(((promptTokens * 0.0000025) + (completionTokens * 0.00001)).toFixed(6));
 }
 
@@ -30,6 +34,11 @@ Deno.serve(async (req: Request) => {
   try {
     const body = req.method === "POST" ? await req.json().catch(() => ({})) : {};
     const mode = body.mode || "chat";
+    const requestedCountry = String(body.country || "pe").toLowerCase().trim();
+    const countryCode = COUNTRY_META[requestedCountry] ? requestedCountry : "pe";
+    const countryMeta = COUNTRY_META[countryCode];
+    const activeCatalogMap = CATALOG_BY_COUNTRY[countryCode] || CATALOG_BY_COUNTRY["pe"];
+    const activeCatalogPrompt = CATALOG_PROMPT_BY_COUNTRY[countryCode] || CATALOG_PROMPT_BY_COUNTRY["pe"];
 
     // 1. Load live config
     const { data: configRow } = await supabase
@@ -45,7 +54,7 @@ Deno.serve(async (req: Request) => {
       max_messages_per_session: 25,
       daily_budget_usd: 10.0,
       welcome_message:
-        "¡Hola! 👋 Soy tu Asesor Nutracéutico IA de FuXion Perú. Cuéntame qué objetivo de salud o bienestar buscas hoy (o elige una opción abajo) y te recomendaré el producto ideal con su enlace directo de compra.",
+        `¡Hola! 👋 Soy tu Asesor Nutracéutico IA de FuXion ${countryMeta.name}. Cuéntame qué objetivo de salud o bienestar buscas hoy y te recomendaré el producto ideal en ${countryMeta.currencyLabel} con su enlace directo de compra.`,
       custom_instructions: "",
     };
 
@@ -104,7 +113,7 @@ Deno.serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           reply:
-            "En este momento el asistente automático se encuentra en mantenimiento breve. Puedes ver y comprar todos los productos directamente en la [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
+            `En este momento el asistente automático se encuentra en mantenimiento breve. Puedes ver y comprar todos los productos directamente en la [Tienda Oficial FuXion ${countryMeta.name}](${countryMeta.shopTiendaUrl}).`,
           recommended_products: [],
           suggested_options: ["Ir a la Tienda Oficial"],
           disabled: true,
@@ -144,8 +153,8 @@ Deno.serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           reply:
-            "Has alcanzado el límite de consultas automáticas del día. Explora todos nuestros productos con envío a todo el Perú en la [Tienda Oficial FuXion](https://carlos-lingan.site.fuxion.com/tienda/).",
-          recommended_products: [CATALOG_MAP["prunex1"], CATALOG_MAP["thermo-t3"], CATALOG_MAP["vita-xtra-t"]].filter(Boolean),
+            `Has alcanzado el límite de consultas automáticas del día. Explora todos nuestros productos con envío en ${countryMeta.name} en la [Tienda Oficial FuXion ${countryMeta.name}](${countryMeta.shopTiendaUrl}).`,
+          recommended_products: [activeCatalogMap["prunex1"], activeCatalogMap["thermo-t3"], activeCatalogMap["vita-xtra-t"]].filter(Boolean),
           suggested_options: [],
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -168,8 +177,8 @@ Deno.serve(async (req: Request) => {
         JSON.stringify({
           session_id: existingSession.id,
           reply:
-            "Hemos llegado al máximo de mensajes por sesión. ¡Ya tienes las mejores recomendaciones listas! Haz clic en cualquiera de los productos recomendados o ingresa directo a [carlos-lingan.site.fuxion.com/tienda](https://carlos-lingan.site.fuxion.com/tienda/) para finalizar tu pedido.",
-          recommended_products: [CATALOG_MAP["prunex1"], CATALOG_MAP["thermo-t3"], CATALOG_MAP["beauty-in"]].filter(Boolean),
+            `Hemos llegado al máximo de mensajes por sesión. ¡Ya tienes las mejores recomendaciones listas! Haz clic en cualquiera de los productos recomendados o ingresa directo a [Tienda Oficial FuXion ${countryMeta.name}](${countryMeta.shopTiendaUrl}) para finalizar tu pedido.`,
+          recommended_products: [activeCatalogMap["prunex1"], activeCatalogMap["thermo-t3"], activeCatalogMap["beauty-in"]].filter(Boolean),
           suggested_options: [],
         }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -206,25 +215,25 @@ Deno.serve(async (req: Request) => {
     }
 
     const activeModel = config.ai_model || "gpt-4o";
-    const systemPrompt = `Eres el Asesor Nutracéutico IA Oficial de FuXion Perú en la web https://fuxion.site/.
-Tu objetivo principal es asesorar con empatía, calidez y precisión científica al visitante en Perú para que descubra qué bebidas funcionales FuXion necesita y REALICE SU COMPRA haciendo clic en los enlaces oficiales de https://carlos-lingan.site.fuxion.com/.
+    const systemPrompt = `Eres el Asesor Nutracéutico IA Oficial de FuXion ${countryMeta.name} (${countryMeta.flag}) en la web https://fuxion.site/.
+Tu objetivo principal es asesorar con empatía, calidez y precisión científica al visitante en ${countryMeta.name} para que descubra qué bebidas funcionales FuXion necesita y REALICE SU COMPRA haciendo clic en los enlaces oficiales de ${countryMeta.shopTiendaUrl}.
 
 REGLAS OBLIGATORIAS E INQUEBRANTABLES:
-1. TODOS los enlaces que escribas en tu respuesta ("reply") DEBEN apuntar EXCLUSIVAMENTE a https://carlos-lingan.site.fuxion.com/... usando las URLs exactas del catálogo oficial listado abajo. Si mencionas el catálogo general usa https://carlos-lingan.site.fuxion.com/tienda/. NUNCA inventes enlaces ni uses otro dominio.
-2. Si el usuario hace una consulta general o recién saluda, pregúntale amablemente qué objetivo prioriza hoy (ej. limpiar el colon/estreñimiento, quemar grasa abdominal, subir energía, colágeno para piel/articulaciones, calmar estrés/dormir mejor, ganar masa muscular o defensas) y sugiérele desde ya 1 o 2 productos estrella.
-3. Cuando el usuario indique su necesidad o síntoma, recomiéndale de 1 a 3 productos ideales combinando el Sistema Base (ej. Prunex1 para limpiar primero + el producto específico para su meta).
-4. Menciona siempre el precio en Soles (S/), cómo se prepara y en qué horario se toma, e incluye en el texto el enlace directo de compra en formato Markdown: [Comprar Nombre en Tienda Oficial](https://carlos-lingan.site.fuxion.com/...).
+1. El visitante se encuentra comprando desde ${countryMeta.name.toUpperCase()} con moneda oficial ${countryMeta.currencyLabel} (${countryMeta.currencySymbol}).
+2. TODOS los enlaces que escribas en tu respuesta ("reply") DEBEN apuntar EXCLUSIVAMENTE a https://carlos-lingan.site.fuxion.com/${countryCode}/... usando las URLs exactas del catálogo oficial de ${countryMeta.name} listado abajo. Si mencionas el catálogo general usa ${countryMeta.shopTiendaUrl}. NUNCA inventes enlaces ni uses otro país.
+3. Recomienda ÚNICAMENTE productos que estén en el catálogo oficial de ${countryMeta.name} listado abajo. Usa el nombre local del producto en ${countryMeta.name} (por ejemplo, en EE.UU. Prunex1 se llama Guindon X; en Colombia Beauty-In se llama Cool Age, Youth Elixir se llama HGH y Thermo T3 se llama T T3; en México Beauty-In se llama Bell In y Youth Elixir se llama Néctar H+).
+4. Menciona siempre el precio oficial en ${countryMeta.currencyLabel} (${countryMeta.currencySymbol}), cómo se prepara y en qué horario se toma, e incluye en el texto el enlace directo de compra en formato Markdown: [Comprar Nombre en Tienda Oficial ${countryMeta.name}](https://carlos-lingan.site.fuxion.com/${countryCode}/...).
 5. Recuerda que son alimentos nutracéuticos 100% naturales (Clean Label, endulzados con stevia, sin azúcar), no medicamentos.
 6. Contexto actual del visitante: está navegando en la página ${pageUrl}.
 ${config.custom_instructions ? "7. INSTRUCCIÓN ADICIONAL DEL ADMINISTRADOR: " + config.custom_instructions : ""}
 
-CATÁLOGO OFICIAL FUXION PERÚ (60 PRODUCTOS EN SOLES CON SUS URLS DE COMPRA EN CARLOS-LINGAN.SITE.FUXION.COM):
-${CATALOG_PROMPT}
+CATÁLOGO OFICIAL FUXION ${countryMeta.name.toUpperCase()} (${countryMeta.currencyLabel} CON SUS URLS DE COMPRA EN CARLOS-LINGAN.SITE.FUXION.COM/${countryCode.toUpperCase()}/):
+${activeCatalogPrompt}
 
 FORMATO DE RESPUESTA (JSON ESTRICTO):
 Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
 {
-  "reply": "Tu respuesta en español (máximo 3 párrafos cortos, cálida, persuasiva, usando viñetas claras y enlaces Markdown [Comprar Producto](https://carlos-lingan.site.fuxion.com/...))",
+  "reply": "Tu respuesta en español (máximo 3 párrafos cortos, cálida, persuasiva, usando viñetas claras, precios en ${countryMeta.currencyCode} y enlaces Markdown [Comprar Producto](https://carlos-lingan.site.fuxion.com/${countryCode}/...))",
   "recommended_slugs": ["slug-exacto-1", "slug-exacto-2"],
   "suggested_options": [
     "Pregunta corta u opción 1 para que el usuario haga clic",
@@ -271,7 +280,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
       parsed = {
         reply: rawContent,
         recommended_slugs: ["prunex1", "thermo-t3"],
-        suggested_options: ["Ver catálogo completo", "¿Cómo comprar en Perú?"],
+        suggested_options: ["Ver catálogo completo", `¿Cómo comprar en ${countryMeta.name}?`],
       };
     }
 
@@ -279,7 +288,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
       ? parsed.recommended_slugs.slice(0, 3)
       : [];
     const recommendedProducts: ProductInfo[] = slugs
-      .map((s) => CATALOG_MAP[s])
+      .map((s) => activeCatalogMap[s])
       .filter(Boolean);
 
     const suggestedOptions: string[] = Array.isArray(parsed.suggested_options)
@@ -288,14 +297,13 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
 
     const replyText: string =
       parsed.reply ||
-      "Te recomiendo explorar estas opciones ideales en nuestra [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).";
+      `Te recomiendo explorar estas opciones ideales en nuestra [Tienda Oficial FuXion ${countryMeta.name}](${countryMeta.shopTiendaUrl}).`;
 
     const promptTokens = openaiData.usage?.prompt_tokens || 0;
     const completionTokens = openaiData.usage?.completion_tokens || 0;
     const totalTokens = openaiData.usage?.total_tokens || promptTokens + completionTokens;
     const costUsd = calculateCostUsd(activeModel, promptTokens, completionTokens);
 
-    // Save assistant message & update session metrics
     if (sessionId && existingSession) {
       await supabase.from("fuxion_chat_messages").insert({
         session_id: sessionId,
@@ -335,7 +343,6 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
         .eq("id", sessionId);
     }
 
-    // Also record in global token_usage table
     await supabase.from("token_usage").insert({
       source: "fuxion.site",
       content_type: "ai_chat",
@@ -345,12 +352,13 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
       total_tokens: totalTokens,
       images_generated: 0,
       estimated_cost_usd: costUsd,
-      slug: sessionId || visitorId,
+      slug: `${countryCode}:${sessionId || visitorId}`,
     });
 
     return new Response(
       JSON.stringify({
         session_id: sessionId,
+        country: countryCode,
         reply: replyText,
         recommended_products: recommendedProducts,
         suggested_options: suggestedOptions,
@@ -364,7 +372,7 @@ Responde ÚNICAMENTE con un objeto JSON válido con estas 3 llaves exactas:
       JSON.stringify({
         error: err.message || "Error interno",
         reply:
-          "Tuvimos un inconveniente momentáneo al procesar tu consulta. Puedes ver todos los productos en la [Tienda Oficial FuXion Perú](https://carlos-lingan.site.fuxion.com/tienda/).",
+          "Tuvimos un inconveniente momentáneo al procesar tu consulta. Puedes ver todos los productos en la [Tienda Oficial FuXion](https://carlos-lingan.site.fuxion.com/pe/tienda/).",
         recommended_products: [],
         suggested_options: ["Intentar de nuevo"],
       }),

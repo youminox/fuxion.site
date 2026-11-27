@@ -2,13 +2,41 @@ import productsData from "@/data/products.json";
 import categoriesData from "@/data/categories.json";
 import articlesData from "@/data/articles.json";
 import blogCategoriesData from "@/data/blogCategories.json";
+import countriesData from "@/data/countries.json";
+import countryCatalogData from "@/data/country_catalog.json";
 
 export const SITE_URL = "https://fuxion.site";
-export const SITE_NAME = "FuXion Perú";
+export const SITE_NAME = "FuXion Oficial";
 export const SHOP_BASE_URL = "https://carlos-lingan.site.fuxion.com";
-export const SHOP_TIENDA_URL = "https://carlos-lingan.site.fuxion.com/tienda/";
+export const SHOP_TIENDA_URL = "https://carlos-lingan.site.fuxion.com/pe/tienda/";
 export const LEGAL_OWNER = "CARLOS EDEN LINGAN BORJA";
 export const LEGAL_LOCATION = "Lima, Perú";
+
+export type CountryCode = "pe" | "co" | "us" | "mx" | "ec" | "gt";
+
+export const VALID_COUNTRY_CODES: CountryCode[] = ["pe", "co", "us", "mx", "ec", "gt"];
+export const DEFAULT_COUNTRY_CODE: CountryCode = "pe";
+
+export interface CountryConfig {
+  code: CountryCode;
+  iso: string;
+  locale: string;
+  name: string;
+  shortName: string;
+  flag: string;
+  currencyCode: string;
+  currencySymbol: string;
+  currencyName: string;
+  currencyLabel: string;
+  taxLabel: string;
+  shopHomeUrl: string;
+  shopTiendaUrl: string;
+  checkoutUrl: string;
+  shippingRegions: string;
+  shippingBadge: string;
+  deliveryEstimate: string;
+  entityName: string;
+}
 
 export interface ProductPresentation {
   sku: string;
@@ -24,6 +52,44 @@ export interface ProductPresentation {
   directProductUrl: string;
   isLanding: boolean;
   gallery: string[];
+}
+
+export interface CountryProductOffer {
+  countryCode: CountryCode;
+  available: boolean;
+  localName: string;
+  rawName: string;
+  sku: string;
+  allSkus: string[];
+  price: number;
+  formattedPrice: string;
+  currencyCode: string;
+  currencySymbol: string;
+  pack: string;
+  points: number;
+  sticks: number;
+  perStickFormatted: string;
+  inStock: boolean;
+  shopUrl: string;
+  directProductUrl: string;
+  presentations: ProductPresentation[];
+}
+
+export interface CountryDirectoryItem {
+  sku: string;
+  name: string;
+  cleanName: string;
+  productSlug: string;
+  categorySlug: string;
+  categoryName: string;
+  badge: string;
+  pack: string;
+  price: number;
+  formattedPrice: string;
+  perStickFormatted: string;
+  points: number;
+  inStock: boolean;
+  shopUrl: string;
 }
 
 export interface ProductFaq {
@@ -69,6 +135,19 @@ export interface Product {
   seoTitle: string;
   seoDescription: string;
   faqs: ProductFaq[];
+  availableCountries?: CountryCode[];
+  countryOffers?: Partial<Record<CountryCode, CountryProductOffer>>;
+}
+
+export interface LocalizedProduct extends Product {
+  activeCountry: CountryConfig;
+  availableInCountry: boolean;
+  localName: string;
+  rawLocalName: string;
+  currencyCode: string;
+  currencySymbol: string;
+  currencyLabel: string;
+  taxLabel: string;
 }
 
 export interface Category {
@@ -175,6 +254,7 @@ export interface ArticleSummary {
   categorySlug?: string;
   readingTime: string;
   focusTopic: string;
+  primaryProductSlug: string;
   primaryProductSku: string;
   primaryProductShopUrl: string;
   heroImage?: string;
@@ -214,17 +294,110 @@ export interface Article {
   faqs: { question: string; answer: string }[];
 }
 
-const products: Product[] = productsData as Product[];
+const countries: CountryConfig[] = countriesData as CountryConfig[];
+const products: Product[] = productsData as unknown as Product[];
 const categories: Category[] = categoriesData as Category[];
 const articles: Article[] = articlesData as Article[];
 const blogCategories: BlogCategoryHub[] = blogCategoriesData as BlogCategoryHub[];
+const directoryByCountry = (
+  countryCatalogData as unknown as {
+    directoryByCountry: Record<CountryCode, CountryDirectoryItem[]>;
+  }
+).directoryByCountry;
+
+export function isValidCountryCode(code?: string | null): code is CountryCode {
+  if (!code) return false;
+  return VALID_COUNTRY_CODES.includes(code.toLowerCase() as CountryCode);
+}
+
+export function getAllCountries(): CountryConfig[] {
+  return countries;
+}
+
+export function getCountryConfig(code?: string | null): CountryConfig {
+  const norm = (code || DEFAULT_COUNTRY_CODE).toLowerCase();
+  return (
+    countries.find((c) => c.code === norm) ||
+    countries.find((c) => c.code === DEFAULT_COUNTRY_CODE)!
+  );
+}
+
+export function localizeProduct(
+  product: Product,
+  countryCode: CountryCode = DEFAULT_COUNTRY_CODE
+): LocalizedProduct {
+  const country = getCountryConfig(countryCode);
+  const offer = product.countryOffers?.[country.code];
+
+  if (offer && offer.available) {
+    return {
+      ...product,
+      activeCountry: country,
+      availableInCountry: true,
+      localName: offer.localName || product.cleanName,
+      rawLocalName: offer.rawName || product.name,
+      sku: offer.sku,
+      allSkus: offer.allSkus,
+      price: offer.price,
+      formattedPrice: offer.formattedPrice,
+      currencyCode: offer.currencyCode,
+      currencySymbol: offer.currencySymbol,
+      currencyLabel: country.currencyLabel,
+      taxLabel: country.taxLabel,
+      pack: offer.pack,
+      points: offer.points,
+      sticks: offer.sticks,
+      perStickFormatted: offer.perStickFormatted,
+      inStock: offer.inStock,
+      shopUrl: offer.shopUrl,
+      directProductUrl: offer.directProductUrl,
+      presentations: offer.presentations,
+    };
+  }
+
+  // Fallback when product is not sold in the selected country
+  return {
+    ...product,
+    activeCountry: country,
+    availableInCountry: false,
+    localName: product.cleanName,
+    rawLocalName: product.name,
+    currencyCode: country.currencyCode,
+    currencySymbol: country.currencySymbol,
+    currencyLabel: country.currencyLabel,
+    taxLabel: country.taxLabel,
+    inStock: false,
+    shopUrl: country.shopTiendaUrl,
+    directProductUrl: country.shopTiendaUrl,
+  };
+}
+
+export function getProductsForCountry(
+  countryCode: CountryCode = DEFAULT_COUNTRY_CODE
+): LocalizedProduct[] {
+  const country = getCountryConfig(countryCode);
+  return products
+    .filter((p) => Boolean(p.countryOffers?.[country.code]?.available))
+    .map((p) => localizeProduct(p, country.code));
+}
+
+export function getCountryDirectory(
+  countryCode: CountryCode = DEFAULT_COUNTRY_CODE
+): CountryDirectoryItem[] {
+  const country = getCountryConfig(countryCode);
+  return directoryByCountry[country.code] || directoryByCountry.pe || [];
+}
 
 export function getAllProducts(): Product[] {
   return products;
 }
 
-export function getFlagshipProducts(): Product[] {
-  return products.filter((p) => p.isFlagship);
+export function getFlagshipProducts(
+  countryCode: CountryCode = DEFAULT_COUNTRY_CODE
+): LocalizedProduct[] {
+  const countryProds = getProductsForCountry(countryCode);
+  const flags = countryProds.filter((p) => p.isFlagship);
+  return flags.length > 0 ? flags : countryProds.slice(0, 10);
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
@@ -234,23 +407,44 @@ export function getProductBySlug(slug: string): Product | undefined {
   );
 }
 
-export function getProductsByCategory(categorySlug: string): Product[] {
+export function getProductsByCategory(
+  categorySlug: string,
+  countryCode?: CountryCode
+): Product[] {
+  if (countryCode) {
+    return getProductsForCountry(countryCode).filter(
+      (p) => p.categorySlug === categorySlug
+    );
+  }
   return products.filter((p) => p.categorySlug === categorySlug);
 }
 
-export function getRelatedProducts(product: Product): Product[] {
+export function getRelatedProducts(
+  product: Product,
+  countryCode?: CountryCode
+): Product[] {
+  const pool = countryCode ? getProductsForCountry(countryCode) : products;
   const combos = product.recommendedCombinations
-    .map((slug) => products.find((p) => p.slug === slug))
+    .map((slug) => pool.find((p) => p.slug === slug))
     .filter((p): p is Product => Boolean(p));
   if (combos.length >= 4) return combos.slice(0, 4);
 
-  const sameCat = products.filter(
+  const sameCat = pool.filter(
     (p) =>
       p.categorySlug === product.categorySlug &&
       p.slug !== product.slug &&
       !combos.some((c) => c.slug === p.slug)
   );
-  return [...combos, ...sameCat].slice(0, 4);
+  if (combos.length + sameCat.length >= 4) {
+    return [...combos, ...sameCat].slice(0, 4);
+  }
+  const others = pool.filter(
+    (p) =>
+      p.slug !== product.slug &&
+      !combos.some((c) => c.slug === p.slug) &&
+      !sameCat.some((c) => c.slug === p.slug)
+  );
+  return [...combos, ...sameCat, ...others].slice(0, 4);
 }
 
 export function getAllCategories(): Category[] {
@@ -313,6 +507,7 @@ export function toArticleSummary(a: Article): ArticleSummary {
     categorySlug: a.categorySlug,
     readingTime: a.readingTime,
     focusTopic: a.focusTopic,
+    primaryProductSlug: a.primaryProductSlug,
     primaryProductSku: a.primaryProductSku,
     primaryProductShopUrl: a.primaryProductShopUrl,
     heroImage: a.heroImage,
@@ -352,7 +547,6 @@ export function getRelatedArticlesForArticle(article: Article, limit = 6): Artic
       !rotatedCategory.some((c) => c.slug === a.slug)
   );
 
-  // Rotate cluster articles deterministically based on article.id so all articles get linked
   const rotatedCluster: Article[] = [];
   if (sameCluster.length > 0) {
     const startIdx = (article.id * 5) % sameCluster.length;
@@ -371,7 +565,8 @@ export function cleanSeoTitle(rawTitle: string): string {
     .trim();
 }
 
-export function getMerchantOfferExtras() {
+export function getMerchantOfferExtras(countryCode: CountryCode = "pe") {
+  const country = getCountryConfig(countryCode);
   return {
     priceValidUntil: "2027-12-31",
     shippingDetails: {
@@ -379,11 +574,11 @@ export function getMerchantOfferExtras() {
       shippingRate: {
         "@type": "MonetaryAmount",
         value: "0.00",
-        currency: "PEN",
+        currency: country.currencyCode,
       },
       shippingDestination: {
         "@type": "DefinedRegion",
-        addressCountry: "PE",
+        addressCountry: country.iso,
       },
       deliveryTime: {
         "@type": "ShippingDeliveryTime",
@@ -403,7 +598,7 @@ export function getMerchantOfferExtras() {
     },
     hasMerchantReturnPolicy: {
       "@type": "MerchantReturnPolicy",
-      applicableCountry: "PE",
+      applicableCountry: country.iso,
       returnPolicyCategory:
         "https://schema.org/MerchantReturnFiniteReturnWindow",
       merchantReturnDays: 7,
